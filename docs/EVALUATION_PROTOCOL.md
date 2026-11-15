@@ -1,12 +1,13 @@
 # C2 — Frozen retrieval evaluation protocol
 
-**Status: IN PROGRESS.** The split builder, checksum validation, exact-index
-lineage checks, frozen baseline runner, and synthetic smoke test are implemented.
-The real 520,000-row corpus, 384-dimensional embeddings, and FAISS index are
-absent from this checkout. Model cache availability was not verified. No full
-frozen split or baseline score has
-been produced. The values in `results/` remain historical and are not results
-of this protocol.
+**Status: DONE.** The frozen split and exact Flat-384 baseline were run on the
+full 520,000-row corpus. The tracked [C2 result summary](../results/evaluation/c2_frozen_baseline_summary.json),
+[split ID and label table](../results/evaluation/c2_query_ids.csv),
+[per-query test metrics](../results/evaluation/c2_flat_384_test_per_query.csv),
+and [frozen manifest](../results/evaluation/c2_frozen_manifest.json) retain the
+results and provenance without copying question text or large model artifacts
+into Git. The values in the historical results tables use a different query
+selection and must not be compared as paired scores.
 
 ## Inputs and split policy
 
@@ -36,28 +37,37 @@ loader checks every split and the corpus checksum, rejects duplicate IDs,
 family overlap, empty queries, invalid labels, and mismatched counts. The
 metric helper rejects empty query sets and cutoffs beyond ranking depth.
 
-## Run when the full artifacts are available
+## Reproduce the full run
 
-Use local paths to the same corpus, embeddings, and Flat-384 index build. The
-builder refuses to overwrite an existing frozen set. Keep the generated files
-and manifest together; their checksums bind the benchmark.
+Use the StackSample `Questions.csv` and `Answers.csv` under `data/stacksample/`.
+The source CSV SHA-256 values, corpus hash, model revision, index hash, and
+package versions are recorded in the result summary. The builder refuses to
+overwrite an existing frozen set. Keep the generated files and manifest
+together; their checksums bind the benchmark.
 
 ```bash
+PYTHONPATH=src python scripts/build_corpus.py --source-dir data/stacksample
+PYTHONPATH=src OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
+  python scripts/generate_embeddings.py --device cuda --batch-size 64
+PYTHONPATH=src python scripts/build_flat_index.py
+
 PYTHONPATH=src python scripts/prepare_evaluation.py \
-  --corpus /path/to/qa_corpus.parquet \
+  --corpus artifacts/corpus/qa_corpus.parquet \
   --output-dir artifacts/evaluation/frozen_v1
 
-PYTHONPATH=src python scripts/evaluate_retrieval.py \
-  --corpus /path/to/qa_corpus.parquet \
-  --index /path/to/flat_ip_384.faiss \
+PYTHONPATH=src OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
+  python scripts/evaluate_retrieval.py \
+  --corpus artifacts/corpus/qa_corpus.parquet \
+  --index artifacts/indexes/flat_ip_384.faiss \
   --evaluation-manifest artifacts/evaluation/frozen_v1/manifest.json \
-  --split development \
+  --split test \
   --device cuda
 ```
 
-Use development for debugging and hyperparameter choices. Run the final
-baseline once on `--split test` after the protocol and settings are fixed. Its
-default output is beside the frozen manifest in `flat_384_<split>/`, containing
+Use development for debugging and calibration for retrieval settings. The
+baseline above was run once on `--split test` after the protocol and settings
+were fixed. Its default output is beside the frozen manifest in
+`flat_384_<split>/`, containing
 `per_query_metrics.csv` and `results.json`. The per-query CSV includes query ID,
 family ID, label, rank, and retrieved IDs. JSON records aggregate metrics,
 latency, exact command, settings, machine/package details, corpus/index/embedding
@@ -74,11 +84,28 @@ created from the current corpus bytes. If the model revision cannot be read
 from the local model, results record `unknown`; this must be resolved before a
 fully pinned benchmark claim.
 
-## Completion gate
+## Completed C2 check
 
-On the real corpus, generate and retain the frozen files twice in separate
-locations and compare manifests and split checksums. Check actual split sizes,
-zero ID/family intersection, duplicate rates, and corpus/index/embedding
-lineage. Run the exact baseline on the frozen test set, save per-query output,
-and report Recall@10, MRR@10, nDCG@10 and the exact configuration. Until then,
-C2 remains IN PROGRESS; synthetic fixtures are only implementation checks.
+The split was generated twice in separate directories; both manifests and all
+three split CSVs were byte-identical. There were 400 development, 400
+calibration, and 1,200 test queries, with no query ID or family crossing splits.
+The 2,000 selected queries had zero exact duplicate normalized title or body
+rows. The corpus hash matched the embedding manifest, every vector in the
+exact FAISS index matched the embedding file, and the query encoder revision
+matched the embedding model revision.
+
+| Frozen Flat-384 test metric | Result |
+|---|---:|
+| Recall@1 | 0.515000 |
+| Recall@5 | 0.685833 |
+| Recall@10 | 0.743333 |
+| MRR@10 | 0.587885 |
+| nDCG@10 | 0.625245 |
+| Search p95, 100 single queries | 88.379 ms |
+
+These are 1,200 in-corpus title-to-own-body known-item queries, with one
+positive document each. The latency measures search only. The full frozen
+CSV files, raw per-query output, and large corpus/vector/index artifacts remain
+local and ignored by Git. The committed ID/label table and metrics preserve
+the evaluation evidence without source text. The tracked manifest is a
+provenance snapshot; recreating the full split CSVs requires the corpus.

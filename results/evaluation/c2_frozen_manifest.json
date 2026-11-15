@@ -1,0 +1,41 @@
+{
+  "corpus": {
+    "file": "qa_corpus.parquet",
+    "rows": 520000,
+    "sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b"
+  },
+  "duplicates_in_selected_queries": {
+    "exact_duplicate_body_rows": 0,
+    "exact_duplicate_title_rows": 0,
+    "families": 2000
+  },
+  "evaluation_type": "known_item_title_to_body_single_positive",
+  "family_rule": "exact normalized title or nonempty body",
+  "query_corpus_overlap": 2000,
+  "requested_calibration": 400,
+  "requested_development": 400,
+  "requested_queries": 2000,
+  "schema_version": 1,
+  "seed": 20260714,
+  "selection": "lowest_blake2b64(seed:question_id)",
+  "splits": {
+    "calibration": {
+      "families": 400,
+      "file": "calibration.csv",
+      "queries": 400,
+      "sha256": "5812cc589a3db5959118023ffe87dec450779482dfe880fc5c25a1c2c9821aea"
+    },
+    "development": {
+      "families": 400,
+      "file": "development.csv",
+      "queries": 400,
+      "sha256": "4869f9ca9fe643184a49d9a20ffb3b130ca25621722f1d53c82af92999a6beb1"
+    },
+    "test": {
+      "families": 1200,
+      "file": "test.csv",
+      "queries": 1200,
+      "sha256": "7a50030e656c9228986c2922110da90856a4aa558da623581e4af3224b2043c3"
+    }
+  }
+}

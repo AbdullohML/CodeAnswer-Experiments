@@ -5,9 +5,32 @@ explains which aggregates can be checked from committed files and which still
 need raw labels, per-query outputs, or a rerun. Citation validity here concerns
 number formatting, not whether a source supports an answer.
 
-The [C2 frozen evaluation protocol](EVALUATION_PROTOCOL.md) is implemented but
-has not yet been run on the full corpus; its future scores must be reported
-separately from the historical table below.
+The [C2 frozen evaluation protocol](EVALUATION_PROTOCOL.md) was run on the full
+corpus. Its scores are reported separately below because its query selection
+differs from the historical experiments.
+
+## C2 frozen Flat-384 baseline
+
+The deterministic split has 400 development, 400 calibration, and 1,200 test
+queries. Two split builds produced byte-identical files. The test run used the
+520,000-row corpus, normalized MiniLM embeddings, and an exact Flat-384 index.
+
+| Test metric | Result |
+|---|---:|
+| Recall@1 | 0.515000 |
+| Recall@5 | 0.685833 |
+| Recall@10 | 0.743333 |
+| MRR@10 | 0.587885 |
+| nDCG@10 | 0.625245 |
+| Search p95 | 88.379 ms |
+
+The [result summary](../results/evaluation/c2_frozen_baseline_summary.json),
+[split IDs and labels](../results/evaluation/c2_query_ids.csv), and
+[per-query test metrics](../results/evaluation/c2_flat_384_test_per_query.csv)
+record configuration, hashes, and the query-level evidence. Search latency
+excludes encoding and generation. The test is in-corpus known-item retrieval.
+
+## Historical experiments
 
 ## Evaluation protocol
 
