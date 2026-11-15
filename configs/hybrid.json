@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "method": "reciprocal_rank_fusion",
+  "rrf_constant": 60,
+  "candidate_depths": [20, 40],
+  "test_candidate_depth": 40,
+  "output_depth": 40,
+  "latency_queries": 100,
+  "warmup_queries": 3
+}

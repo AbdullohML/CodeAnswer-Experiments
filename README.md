@@ -70,6 +70,11 @@ queries and labels. It recorded Recall@10 **0.627500**, Recall@40 **0.726667**,
 MRR@10 **0.498723**, and nDCG@10 **0.529569**. Its index and search settings,
 per-query rankings, build time, size, and latency are saved with the results.
 
+The [A2 hybrid RRF experiment](docs/HYBRID_RRF.md) combined dense and BM25
+top-40 candidates on those same test queries. It recorded Recall@10
+**0.772500**, Recall@40 **0.849167**, MRR@10 **0.609828**, and nDCG@10
+**0.648677**; the documented search p95 was **648.974 ms**.
+
 ### Retrieval
 
 | System | Recall@10 | Search p95 | Index size |
@@ -311,7 +316,7 @@ original benchmark.
 | 1 | C1 | Start | DONE |
 | 2 | C2 | C1 | DONE |
 | 3 | A1 | C2 | DONE |
-| 4 | A2 | A1 | TODO |
+| 4 | A2 | A1 | DONE |
 | 5 | A3 | A2 | TODO |
 | 6 | A4 | A3 | TODO |
 | 7 | B1 | C2; can run alongside A tasks | TODO |
@@ -347,7 +352,7 @@ original benchmark.
 
 #### A2 — Hybrid retrieval with RRF
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P0. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Recover relevant candidates missed by either lexical or dense search.
 - **Implementation:** Fuse A1 BM25 and existing dense top-40 lists by reciprocal rank fusion; deduplicate by `doc_id` and expose the fusion constant.
 - **Experiments:** Compare at least two candidate depths and one fixed RRF setting on C2 queries.

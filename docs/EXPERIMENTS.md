@@ -40,6 +40,17 @@ and 626.449 ms at depth 40; the index was 236.73 MiB and took 30.089 s
 to build. See the A1 page for the paired comparison, tokenization, exact-term
 inspection, and per-query rankings.
 
+## A2 hybrid RRF on the same frozen test
+
+The [A2 fusion experiment](HYBRID_RRF.md) used fixed `k=60` and compared
+source depths 20 and 40 on development before evaluating depth 40 on test.
+On 1,200 test queries, hybrid Recall@10 was 0.772500 and Recall@40 was
+0.849167, versus dense 0.743333 and 0.828333. MRR@10 was 0.609828 and
+nDCG@10 was 0.648677. BM25 uniquely supplied 56 relevant documents to
+the top-40 source union. Hybrid search p95 was 648.974 ms on 100 queries,
+with query vectors precomputed. The A2 page includes source contributions,
+latency scope, full results, and paired per-query rankings.
+
 ## Historical experiments
 
 ## Evaluation protocol
