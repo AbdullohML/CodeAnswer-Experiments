@@ -64,6 +64,7 @@ def test_evaluate_retriever() -> None:
 
     assert result["system"] == "test"
     assert result["recall@1"] == 1.0
-    assert result["recall@10"] == 1.0
+    assert result["mrr@3"] == 1.0
+    assert "recall@10" not in result
     assert result["search_qps"] > 0
     assert retrieved_ids.shape == (3, 3)

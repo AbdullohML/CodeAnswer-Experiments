@@ -103,6 +103,7 @@ CodeAnswer/
 │   ├── build_optimized_index.py
 │   ├── compare_retrievers.py
 │   ├── evaluate_retrieval.py
+│   ├── prepare_evaluation.py
 │   └── generate_embeddings.py
 ├── src/codeanswer/
 │   ├── comparison.py
@@ -110,9 +111,11 @@ CodeAnswer/
 │   ├── data.py
 │   ├── embeddings.py
 │   ├── evaluation.py
+│   ├── evaluation_protocol.py
 │   ├── indexing.py
 │   ├── optimization.py
 │   ├── rag.py
+│   ├── provenance.py
 │   └── reranking.py
 ├── tests/
 ├── pyproject.toml
@@ -183,6 +186,11 @@ Evaluate it:
 PYTHONPATH=src python scripts/evaluate_retrieval.py \
   --device cuda
 ```
+
+This command uses the historical dynamic query selection. For the frozen C2
+protocol and a separate development/test split, see
+[`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md). The full frozen
+baseline still needs the local corpus, embeddings, index, and model.
 
 ## Build the optimized retriever
 
@@ -291,7 +299,7 @@ original benchmark.
 | Order | Task | Independent after | Status |
 |---:|---|---|---|
 | 1 | C1 | Start | DONE |
-| 2 | C2 | C1 | TODO |
+| 2 | C2 | C1 | IN PROGRESS |
 | 3 | A1 | C2 | TODO |
 | 4 | A2 | A1 | TODO |
 | 5 | A3 | A2 | TODO |
@@ -421,12 +429,12 @@ original benchmark.
 
 #### C2 — Freeze evaluation inputs and provenance
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P0. **Status:** IN PROGRESS. **Estimated effort:** Medium.
 - **Goal:** Make future comparisons paired and prevent tuning on the final test set.
 - **Implementation:** Save deterministic query IDs and labels; separate development/calibration/test IDs; check duplicate question families and corpus/artifact identity; reject empty sets and cutoffs beyond ranking depth; version the evaluation manifest.
 - **Experiments:** Recreate the split twice and run the existing dense baseline on the frozen test set.
 - **Metrics:** Split sizes, ID intersection, duplicate rate, baseline Recall@10, MRR@10, nDCG@10.
-- **Deliverables:** Split manifests, validation tests, baseline per-query outputs and command.
+- **Deliverables:** [Frozen evaluation protocol](docs/EVALUATION_PROTOCOL.md), split manifests, validation tests, baseline per-query outputs and command.
 - **Dependencies:** C1.
 - **Acceptance criteria:** Zero unintended split overlap; identical reruns; document that title queries are still in-corpus known-item tests.
 

@@ -70,17 +70,9 @@ def test_known_item_metrics() -> None:
     assert metrics["recall@2"] == 0.5
     assert metrics["recall@3"] == 0.75
 
-    expected_mrr = (
-        1.0
-        + 1.0 / 2
-        + 1.0 / 3
-    ) / 4
+    expected_mrr = (1.0 + 1.0 / 2 + 1.0 / 3) / 4
 
-    expected_ndcg = (
-        1.0
-        + 1.0 / np.log2(3)
-        + 1.0 / np.log2(4)
-    ) / 4
+    expected_ndcg = (1.0 + 1.0 / np.log2(3) + 1.0 / np.log2(4)) / 4
 
     assert metrics["mrr@3"] == pytest.approx(
         expected_mrr,
@@ -115,6 +107,23 @@ def test_rejects_incompatible_rankings() -> None:
         known_item_ranks(
             retrieved,
             relevant,
+        )
+
+
+def test_rejects_empty_or_truncated_evaluation() -> None:
+    with pytest.raises(ValueError, match="At least one evaluation query"):
+        evaluate_known_item(
+            np.empty((0, 2), dtype=np.int64),
+            np.empty(0, dtype=np.int64),
+            recall_ks=(1, 2),
+            metric_cutoff=2,
+        )
+    with pytest.raises(ValueError, match="ranking depth"):
+        evaluate_known_item(
+            np.asarray([[1, 2]]),
+            np.asarray([1]),
+            recall_ks=(1, 5),
+            metric_cutoff=2,
         )
 
 

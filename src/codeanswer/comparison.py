@@ -25,22 +25,16 @@ def ann_overlap_at_k(
     candidate = np.asarray(candidate_ids)
 
     if reference.ndim != 2 or candidate.ndim != 2:
-        raise ValueError(
-            "Both ranking arrays must be two-dimensional."
-        )
+        raise ValueError("Both ranking arrays must be two-dimensional.")
 
     if reference.shape[0] != candidate.shape[0]:
-        raise ValueError(
-            "Ranking arrays must contain the same number of queries."
-        )
+        raise ValueError("Ranking arrays must contain the same number of queries.")
 
     if k <= 0:
         raise ValueError("k must be positive.")
 
     if reference.shape[1] < k or candidate.shape[1] < k:
-        raise ValueError(
-            "Ranking arrays contain fewer than k results."
-        )
+        raise ValueError("Ranking arrays contain fewer than k results.")
 
     overlaps = []
 
@@ -50,11 +44,7 @@ def ann_overlap_at_k(
         strict=True,
     ):
         overlaps.append(
-            len(
-                set(map(int, reference_row))
-                & set(map(int, candidate_row))
-            )
-            / k
+            len(set(map(int, reference_row)) & set(map(int, candidate_row))) / k
         )
 
     return round(float(np.mean(overlaps)), 6)
@@ -76,12 +66,13 @@ def evaluate_retriever(
         query_vectors,
         top_k=top_k,
     )
+    ranking_depth = retrieved_ids.shape[1]
 
     quality, _ = evaluate_known_item(
         retrieved_ids,
         relevant_ids,
-        recall_ks=(1, 5, 10),
-        metric_cutoff=10,
+        recall_ks=tuple(k for k in (1, 5, 10) if k <= ranking_depth),
+        metric_cutoff=min(10, ranking_depth),
     )
 
     performance = benchmark_index(
@@ -94,19 +85,11 @@ def evaluate_retriever(
     result = {
         "system": system_name,
         **quality,
-        "batch_search_seconds": performance[
-            "batch_search_seconds"
-        ],
+        "batch_search_seconds": performance["batch_search_seconds"],
         "search_qps": performance["search_qps"],
-        "search_mean_ms": performance[
-            "search_ms"
-        ]["mean"],
-        "search_p50_ms": performance[
-            "search_ms"
-        ]["p50"],
-        "search_p95_ms": performance[
-            "search_ms"
-        ]["p95"],
+        "search_mean_ms": performance["search_ms"]["mean"],
+        "search_p50_ms": performance["search_ms"]["p50"],
+        "search_p95_ms": performance["search_ms"]["p95"],
     }
 
     return result, retrieved_ids

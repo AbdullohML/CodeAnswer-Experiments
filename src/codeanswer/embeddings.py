@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import json
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Protocol, Sequence
+from typing import Any, Protocol
 
 import numpy as np
 import pyarrow.parquet as pq
+
+from codeanswer.provenance import sha256_file
 
 
 class TextEncoder(Protocol):
@@ -38,6 +41,7 @@ class SentenceTransformerEncoder:
     device: str | None = None
 
     dimension: int = field(init=False)
+    model_revision: str = field(init=False)
     _model: Any = field(
         init=False,
         repr=False,
@@ -52,11 +56,7 @@ class SentenceTransformerEncoder:
         selected_device = self.device
 
         if selected_device is None:
-            selected_device = (
-                "cuda"
-                if torch.cuda.is_available()
-                else "cpu"
-            )
+            selected_device = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.device = selected_device
 
@@ -64,19 +64,19 @@ class SentenceTransformerEncoder:
             self.model_name,
             device=selected_device,
         )
-        self._model.max_seq_length = (
-            self.max_sequence_length
+        self._model.max_seq_length = self.max_sequence_length
+        first_module = next(iter(self._model._modules.values()), None)
+        model_config = getattr(
+            getattr(first_module, "auto_model", None), "config", None
+        )
+        self.model_revision = str(
+            getattr(model_config, "_commit_hash", None) or "unknown"
         )
 
-        dimension = (
-            self._model
-            .get_sentence_embedding_dimension()
-        )
+        dimension = self._model.get_sentence_embedding_dimension()
 
         if dimension is None:
-            raise RuntimeError(
-                "Could not determine embedding dimension."
-            )
+            raise RuntimeError("Could not determine embedding dimension.")
 
         self.dimension = int(dimension)
 
@@ -108,9 +108,7 @@ def _write_json(
 ) -> None:
     """Atomically write a JSON file."""
 
-    temporary_path = path.with_name(
-        f".{path.name}.temporary"
-    )
+    temporary_path = path.with_name(f".{path.name}.temporary")
 
     temporary_path.write_text(
         json.dumps(payload, indent=2),
@@ -131,8 +129,11 @@ def _validate_state(
     state: dict[str, Any],
     *,
     corpus_path: Path,
+    corpus_sha256: str,
     output_path: Path,
     model_name: str,
+    model_revision: str,
+    max_sequence_length: int,
     objects: int,
     dimension: int,
 ) -> None:
@@ -140,8 +141,11 @@ def _validate_state(
 
     expected = {
         "corpus_path": str(corpus_path),
+        "corpus_sha256": corpus_sha256,
         "output_path": str(output_path),
         "model_name": model_name,
+        "model_revision": model_revision,
+        "max_sequence_length": max_sequence_length,
         "objects": objects,
         "dimension": dimension,
     }
@@ -171,19 +175,14 @@ def _validate_vectors(
 
     if vectors.shape != expected_shape:
         raise ValueError(
-            "Encoder returned shape "
-            f"{vectors.shape}, expected {expected_shape}."
+            f"Encoder returned shape {vectors.shape}, expected {expected_shape}."
         )
 
     if vectors.dtype != np.float32:
-        raise ValueError(
-            "Encoder must return float32 vectors."
-        )
+        raise ValueError("Encoder must return float32 vectors.")
 
     if not np.isfinite(vectors).all():
-        raise ValueError(
-            "Encoder returned NaN or infinite values."
-        )
+        raise ValueError("Encoder returned NaN or infinite values.")
 
     norms = np.linalg.norm(
         vectors,
@@ -195,9 +194,7 @@ def _validate_vectors(
         1.0,
         atol=1e-3,
     ):
-        raise ValueError(
-            "Embeddings must be L2-normalized."
-        )
+        raise ValueError("Embeddings must be L2-normalized.")
 
 
 def generate_embeddings(
@@ -220,26 +217,17 @@ def generate_embeddings(
     """
 
     if expected_dimension <= 0:
-        raise ValueError(
-            "expected_dimension must be positive."
-        )
+        raise ValueError("expected_dimension must be positive.")
 
     if batch_size <= 0:
-        raise ValueError(
-            "batch_size must be positive."
-        )
+        raise ValueError("batch_size must be positive.")
 
-    corpus = Path(
-        corpus_path
-    ).expanduser().resolve()
-    output = Path(
-        output_path
-    ).expanduser().resolve()
+    corpus = Path(corpus_path).expanduser().resolve()
+    output = Path(output_path).expanduser().resolve()
 
     if not corpus.exists():
-        raise FileNotFoundError(
-            f"Corpus not found: {corpus}"
-        )
+        raise FileNotFoundError(f"Corpus not found: {corpus}")
+    corpus_sha256 = sha256_file(corpus)
 
     output.parent.mkdir(
         parents=True,
@@ -265,44 +253,31 @@ def generate_embeddings(
         )
 
     parquet_file = pq.ParquetFile(corpus)
-    schema_names = set(
-        parquet_file.schema_arrow.names
-    )
+    schema_names = set(parquet_file.schema_arrow.names)
 
     required_columns = {
         "doc_id",
         "question_body",
     }
-    missing_columns = (
-        required_columns - schema_names
-    )
+    missing_columns = required_columns - schema_names
 
     if missing_columns:
         raise ValueError(
-            "Corpus is missing columns: "
-            + ", ".join(sorted(missing_columns))
+            "Corpus is missing columns: " + ", ".join(sorted(missing_columns))
         )
 
-    objects = int(
-        parquet_file.metadata.num_rows
-    )
+    objects = int(parquet_file.metadata.num_rows)
 
     if objects <= 0:
-        raise ValueError(
-            "The corpus does not contain any rows."
-        )
+        raise ValueError("The corpus does not contain any rows.")
 
     active_encoder = encoder
 
     if active_encoder is None:
-        active_encoder = (
-            SentenceTransformerEncoder(
-                model_name=model_name,
-                max_sequence_length=(
-                    max_sequence_length
-                ),
-                device=device,
-            )
+        active_encoder = SentenceTransformerEncoder(
+            model_name=model_name,
+            max_sequence_length=(max_sequence_length),
+            device=device,
         )
 
     if active_encoder.dimension != expected_dimension:
@@ -313,49 +288,36 @@ def generate_embeddings(
             f"{active_encoder.dimension}."
         )
 
-    expected_bytes = (
-        objects
-        * expected_dimension
-        * np.dtype(np.float32).itemsize
-    )
+    expected_bytes = objects * expected_dimension * np.dtype(np.float32).itemsize
 
     processed = 0
     previous_seconds = 0.0
 
     if state_path.exists():
-        state = json.loads(
-            state_path.read_text(
-                encoding="utf-8"
-            )
-        )
+        state = json.loads(state_path.read_text(encoding="utf-8"))
 
         _validate_state(
             state,
             corpus_path=corpus,
+            corpus_sha256=corpus_sha256,
             output_path=output,
             model_name=active_encoder.model_name,
+            model_revision=getattr(active_encoder, "model_revision", "unknown"),
+            max_sequence_length=max_sequence_length,
             objects=objects,
             dimension=expected_dimension,
         )
 
-        processed = int(
-            state.get("processed", 0)
-        )
-        previous_seconds = float(
-            state.get("seconds_total", 0.0)
-        )
+        processed = int(state.get("processed", 0))
+        previous_seconds = float(state.get("seconds_total", 0.0))
 
         if not output.exists():
             raise FileNotFoundError(
-                "Embedding state exists, but the "
-                f"embedding file is missing: {output}"
+                f"Embedding state exists, but the embedding file is missing: {output}"
             )
 
         if output.stat().st_size != expected_bytes:
-            raise ValueError(
-                "Partial embedding file has an "
-                "unexpected size."
-            )
+            raise ValueError("Partial embedding file has an unexpected size.")
 
         embeddings = np.memmap(
             output,
@@ -390,10 +352,11 @@ def generate_embeddings(
             {
                 "status": "running",
                 "corpus_path": str(corpus),
+                "corpus_sha256": corpus_sha256,
                 "output_path": str(output),
-                "model_name": (
-                    active_encoder.model_name
-                ),
+                "model_name": (active_encoder.model_name),
+                "model_revision": getattr(active_encoder, "model_revision", "unknown"),
+                "max_sequence_length": max_sequence_length,
                 "device": active_encoder.device,
                 "objects": objects,
                 "dimension": expected_dimension,
@@ -403,9 +366,7 @@ def generate_embeddings(
         )
 
     if not 0 <= processed <= objects:
-        raise ValueError(
-            f"Invalid processed row count: {processed}"
-        )
+        raise ValueError(f"Invalid processed row count: {processed}")
 
     run_started_at = time.perf_counter()
     rows_seen = 0
@@ -431,21 +392,13 @@ def generate_embeddings(
             )
 
             doc_ids = np.asarray(
-                record_batch
-                .column(0)
-                .to_numpy(
-                    zero_copy_only=False
-                ),
+                record_batch.column(0).to_numpy(zero_copy_only=False),
                 dtype=np.int64,
             )[skip_rows:]
 
             texts = [
                 str(value or "")
-                for value in (
-                    record_batch
-                    .column(1)
-                    .to_pylist()[skip_rows:]
-                )
+                for value in (record_batch.column(1).to_pylist()[skip_rows:])
             ]
 
             expected_doc_ids = np.arange(
@@ -459,8 +412,7 @@ def generate_embeddings(
                 expected_doc_ids,
             ):
                 raise ValueError(
-                    "Corpus doc_id values must be "
-                    "contiguous and ordered from zero."
+                    "Corpus doc_id values must be contiguous and ordered from zero."
                 )
 
             vectors = active_encoder.encode(
@@ -471,45 +423,34 @@ def generate_embeddings(
             _validate_vectors(
                 vectors,
                 expected_rows=len(texts),
-                expected_dimension=(
-                    expected_dimension
-                ),
+                expected_dimension=(expected_dimension),
             )
 
-            new_processed = (
-                processed + len(texts)
-            )
+            new_processed = processed + len(texts)
 
-            embeddings[
-                processed:new_processed
-            ] = vectors
+            embeddings[processed:new_processed] = vectors
             embeddings.flush()
 
             processed = new_processed
             rows_seen = batch_end
 
-            elapsed_total = (
-                previous_seconds
-                + time.perf_counter()
-                - run_started_at
-            )
+            elapsed_total = previous_seconds + time.perf_counter() - run_started_at
 
             _write_json(
                 state_path,
                 {
                     "status": "running",
                     "corpus_path": str(corpus),
+                    "corpus_sha256": corpus_sha256,
                     "output_path": str(output),
-                    "model_name": (
-                        active_encoder.model_name
+                    "model_name": (active_encoder.model_name),
+                    "model_revision": getattr(
+                        active_encoder, "model_revision", "unknown"
                     ),
-                    "device": (
-                        active_encoder.device
-                    ),
+                    "max_sequence_length": max_sequence_length,
+                    "device": (active_encoder.device),
                     "objects": objects,
-                    "dimension": (
-                        expected_dimension
-                    ),
+                    "dimension": (expected_dimension),
                     "processed": processed,
                     "seconds_total": round(
                         elapsed_total,
@@ -519,21 +460,18 @@ def generate_embeddings(
             )
 
     except Exception as error:
-        elapsed_total = (
-            previous_seconds
-            + time.perf_counter()
-            - run_started_at
-        )
+        elapsed_total = previous_seconds + time.perf_counter() - run_started_at
 
         _write_json(
             state_path,
             {
                 "status": "failed",
                 "corpus_path": str(corpus),
+                "corpus_sha256": corpus_sha256,
                 "output_path": str(output),
-                "model_name": (
-                    active_encoder.model_name
-                ),
+                "model_name": (active_encoder.model_name),
+                "model_revision": getattr(active_encoder, "model_revision", "unknown"),
+                "max_sequence_length": max_sequence_length,
                 "device": active_encoder.device,
                 "objects": objects,
                 "dimension": expected_dimension,
@@ -552,10 +490,7 @@ def generate_embeddings(
     del embeddings
 
     if processed != objects:
-        raise RuntimeError(
-            f"Processed {processed:,} of "
-            f"{objects:,} corpus rows."
-        )
+        raise RuntimeError(f"Processed {processed:,} of {objects:,} corpus rows.")
 
     completed_embeddings = np.memmap(
         output,
@@ -577,46 +512,33 @@ def generate_embeddings(
         sample_size,
         dtype=np.int64,
     )
-    sample = np.asarray(
-        completed_embeddings[
-            sample_indices
-        ]
-    )
+    sample = np.asarray(completed_embeddings[sample_indices])
     sample_norms = np.linalg.norm(
         sample,
         axis=1,
     )
 
-    seconds_this_run = (
-        time.perf_counter()
-        - run_started_at
-    )
-    seconds_total = (
-        previous_seconds
-        + seconds_this_run
-    )
+    seconds_this_run = time.perf_counter() - run_started_at
+    seconds_total = previous_seconds + seconds_this_run
+    if sha256_file(corpus) != corpus_sha256:
+        raise ValueError("Corpus changed during embedding generation.")
 
     manifest = {
-        "created_at": (
-            datetime.now(UTC).isoformat()
-        ),
+        "created_at": (datetime.now(UTC).isoformat()),
         "corpus_path": str(corpus),
+        "corpus_sha256": corpus_sha256,
         "output_path": str(output),
-        "model_name": (
-            active_encoder.model_name
-        ),
+        "model_name": (active_encoder.model_name),
+        "model_revision": getattr(active_encoder, "model_revision", "unknown"),
         "device": active_encoder.device,
         "objects": objects,
         "dimension": expected_dimension,
         "dtype": "float32",
         "normalized": True,
         "batch_size": batch_size,
-        "max_sequence_length": (
-            max_sequence_length
-        ),
+        "max_sequence_length": (max_sequence_length),
         "file_mib": round(
-            output.stat().st_size
-            / 1024**2,
+            output.stat().st_size / 1024**2,
             2,
         ),
         "seconds_this_run": round(
@@ -659,26 +581,15 @@ def load_embeddings(
 ) -> np.memmap:
     """Open an existing raw float32 embedding matrix."""
 
-    path = Path(
-        embedding_path
-    ).expanduser().resolve()
+    path = Path(embedding_path).expanduser().resolve()
 
     if not path.exists():
-        raise FileNotFoundError(
-            f"Embedding file not found: {path}"
-        )
+        raise FileNotFoundError(f"Embedding file not found: {path}")
 
-    expected_bytes = (
-        objects
-        * dimension
-        * np.dtype(np.float32).itemsize
-    )
+    expected_bytes = objects * dimension * np.dtype(np.float32).itemsize
 
     if path.stat().st_size != expected_bytes:
-        raise ValueError(
-            "Embedding file size does not match "
-            "the requested shape."
-        )
+        raise ValueError("Embedding file size does not match the requested shape.")
 
     return np.memmap(
         path,

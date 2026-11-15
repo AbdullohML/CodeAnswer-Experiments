@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import math
 import time
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -31,14 +32,10 @@ def known_item_ranks(
     )
 
     if retrieved.ndim != 2:
-        raise ValueError(
-            "retrieved_ids must be a two-dimensional array."
-        )
+        raise ValueError("retrieved_ids must be a two-dimensional array.")
 
     if relevant.ndim != 1:
-        raise ValueError(
-            "relevant_ids must be a one-dimensional array."
-        )
+        raise ValueError("relevant_ids must be a one-dimensional array.")
 
     if retrieved.shape[0] != relevant.shape[0]:
         raise ValueError(
@@ -54,9 +51,7 @@ def known_item_ranks(
         dtype=np.int64,
     )
 
-    ranks[found] = (
-        matches[found].argmax(axis=1) + 1
-    )
+    ranks[found] = matches[found].argmax(axis=1) + 1
 
     return ranks
 
@@ -71,33 +66,29 @@ def evaluate_known_item(
     """Evaluate known-item retrieval rankings."""
 
     if metric_cutoff <= 0:
-        raise ValueError(
-            "metric_cutoff must be greater than zero."
-        )
+        raise ValueError("metric_cutoff must be greater than zero.")
 
-    recall_values = sorted(
-        set(int(value) for value in recall_ks)
-    )
+    recall_values = sorted(set(int(value) for value in recall_ks))
 
     if not recall_values or recall_values[0] <= 0:
-        raise ValueError(
-            "All recall cutoffs must be greater than zero."
-        )
+        raise ValueError("All recall cutoffs must be greater than zero.")
 
     ranks = known_item_ranks(
         retrieved_ids,
         relevant_ids,
     )
+    if len(ranks) == 0:
+        raise ValueError("At least one evaluation query is required.")
+    ranking_depth = np.asarray(retrieved_ids).shape[1]
+    if max(max(recall_values), metric_cutoff) > ranking_depth:
+        raise ValueError("Metric cutoff exceeds retrieved ranking depth.")
 
     metrics: dict[str, float | int] = {
         "queries": int(len(ranks)),
     }
 
     for cutoff in recall_values:
-        success = (
-            (ranks > 0)
-            & (ranks <= cutoff)
-        )
+        success = (ranks > 0) & (ranks <= cutoff)
 
         metrics[f"recall@{cutoff}"] = round(
             float(success.mean()),
@@ -105,19 +96,14 @@ def evaluate_known_item(
         )
 
     reciprocal_ranks = np.where(
-        (ranks > 0)
-        & (ranks <= metric_cutoff),
+        (ranks > 0) & (ranks <= metric_cutoff),
         1.0 / np.maximum(ranks, 1),
         0.0,
     )
 
     discounted_gains = np.where(
-        (ranks > 0)
-        & (ranks <= metric_cutoff),
-        1.0
-        / np.log2(
-            np.maximum(ranks, 1) + 1
-        ),
+        (ranks > 0) & (ranks <= metric_cutoff),
+        1.0 / np.log2(np.maximum(ranks, 1) + 1),
         0.0,
     )
 
@@ -141,20 +127,13 @@ def evaluate_known_item(
                 dtype=np.int64,
             ),
             "rank": ranks,
-            f"reciprocal_rank@{metric_cutoff}": (
-                reciprocal_ranks
-            ),
-            f"ndcg@{metric_cutoff}": (
-                discounted_gains
-            ),
+            f"reciprocal_rank@{metric_cutoff}": (reciprocal_ranks),
+            f"ndcg@{metric_cutoff}": (discounted_gains),
         }
     )
 
     for cutoff in recall_values:
-        per_query[f"recall@{cutoff}"] = (
-            (ranks > 0)
-            & (ranks <= cutoff)
-        ).astype(float)
+        per_query[f"recall@{cutoff}"] = ((ranks > 0) & (ranks <= cutoff)).astype(float)
 
     return metrics, per_query
 
@@ -165,9 +144,7 @@ def _latency_summary(
     """Summarize latency measurements."""
 
     if not latency_ms:
-        raise ValueError(
-            "At least one latency value is required."
-        )
+        raise ValueError("At least one latency value is required.")
 
     values = np.asarray(
         latency_ms,
@@ -206,19 +183,13 @@ def benchmark_index(
     )
 
     if queries.ndim != 2:
-        raise ValueError(
-            "query_vectors must be a two-dimensional array."
-        )
+        raise ValueError("query_vectors must be a two-dimensional array.")
 
     if queries.shape[0] == 0:
-        raise ValueError(
-            "At least one query vector is required."
-        )
+        raise ValueError("At least one query vector is required.")
 
     if latency_queries <= 0:
-        raise ValueError(
-            "latency_queries must be greater than zero."
-        )
+        raise ValueError("latency_queries must be greater than zero.")
 
     warmup_count = min(
         warmup_queries,
@@ -240,10 +211,7 @@ def benchmark_index(
         top_k=top_k,
     )
 
-    batch_seconds = (
-        time.perf_counter()
-        - batch_started_at
-    )
+    batch_seconds = time.perf_counter() - batch_started_at
 
     measured_queries = min(
         latency_queries,
@@ -261,24 +229,12 @@ def benchmark_index(
             top_k=top_k,
         )
 
-        latency_ms.append(
-            (
-                time.perf_counter()
-                - started_at
-            )
-            * 1_000
-        )
+        latency_ms.append((time.perf_counter() - started_at) * 1_000)
 
-    query_rate = (
-        queries.shape[0] / batch_seconds
-        if batch_seconds > 0
-        else math.inf
-    )
+    query_rate = queries.shape[0] / batch_seconds if batch_seconds > 0 else math.inf
 
     return {
-        "batch_queries": int(
-            queries.shape[0]
-        ),
+        "batch_queries": int(queries.shape[0]),
         "batch_search_seconds": round(
             batch_seconds,
             6,
@@ -288,7 +244,5 @@ def benchmark_index(
             2,
         ),
         "latency_queries": measured_queries,
-        "search_ms": _latency_summary(
-            latency_ms
-        ),
+        "search_ms": _latency_summary(latency_ms),
     }

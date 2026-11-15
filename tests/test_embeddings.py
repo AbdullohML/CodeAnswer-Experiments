@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 import numpy as np
 import pandas as pd
@@ -13,6 +13,7 @@ from codeanswer.embeddings import (
     generate_embeddings,
     load_embeddings,
 )
+from codeanswer.provenance import sha256_file
 
 
 class FakeEncoder:
@@ -111,6 +112,7 @@ def test_generate_and_load_embeddings(
     assert manifest["objects"] == 5
     assert manifest["dimension"] == 4
     assert manifest["normalized"] is True
+    assert manifest["corpus_sha256"] == sha256_file(corpus_path)
     assert embeddings.shape == (5, 4)
 
     norms = np.linalg.norm(
@@ -183,3 +185,56 @@ def test_embedding_generation_resumes(
     assert manifest["objects"] == 5
     assert embeddings.shape == (5, 4)
     assert not state_path.exists()
+
+
+def test_resume_rejects_changed_corpus(tmp_path: Path) -> None:
+    corpus_path = tmp_path / "corpus.parquet"
+    output_path = tmp_path / "embeddings.f32"
+    _write_corpus(corpus_path)
+    with pytest.raises(RuntimeError, match="Simulated encoder failure"):
+        generate_embeddings(
+            corpus_path=corpus_path,
+            output_path=output_path,
+            model_name="fake-encoder",
+            expected_dimension=4,
+            batch_size=2,
+            encoder=FakeEncoder(fail_on_call=2),
+        )
+    frame = pd.read_parquet(corpus_path)
+    frame.loc[0, "question_body"] = "Changed source text"
+    frame.to_parquet(corpus_path, index=False)
+    with pytest.raises(ValueError, match="corpus_sha256"):
+        generate_embeddings(
+            corpus_path=corpus_path,
+            output_path=output_path,
+            model_name="fake-encoder",
+            expected_dimension=4,
+            batch_size=2,
+            encoder=FakeEncoder(),
+        )
+
+
+def test_resume_rejects_changed_sequence_length(tmp_path: Path) -> None:
+    corpus_path = tmp_path / "corpus.parquet"
+    output_path = tmp_path / "embeddings.f32"
+    _write_corpus(corpus_path)
+    with pytest.raises(RuntimeError, match="Simulated encoder failure"):
+        generate_embeddings(
+            corpus_path=corpus_path,
+            output_path=output_path,
+            model_name="fake-encoder",
+            expected_dimension=4,
+            batch_size=2,
+            max_sequence_length=256,
+            encoder=FakeEncoder(fail_on_call=2),
+        )
+    with pytest.raises(ValueError, match="max_sequence_length"):
+        generate_embeddings(
+            corpus_path=corpus_path,
+            output_path=output_path,
+            model_name="fake-encoder",
+            expected_dimension=4,
+            batch_size=2,
+            max_sequence_length=128,
+            encoder=FakeEncoder(),
+        )

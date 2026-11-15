@@ -5,6 +5,10 @@ explains which aggregates can be checked from committed files and which still
 need raw labels, per-query outputs, or a rerun. Citation validity here concerns
 number formatting, not whether a source supports an answer.
 
+The [C2 frozen evaluation protocol](EVALUATION_PROTOCOL.md) is implemented but
+has not yet been run on the full corpus; its future scores must be reported
+separately from the historical table below.
+
 ## Evaluation protocol
 
 The experiments use 520,000 answered Stack Overflow questions.
