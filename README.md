@@ -288,31 +288,31 @@ the preceding row. ProCQA integration is conditional on C3; if it is unsuitable,
 record C4 and C5 as BLOCKED with the reason and continue with C6 on the
 original benchmark.
 
-| Order | Task | Status | Independent after |
+| Order | Task | Independent after | Status |
 |---:|---|---|---|
-| 1 | C1 | DONE | Start |
-| 2 | C2 | TODO | C1 |
-| 3 | A1 | TODO | C2 |
-| 4 | A2 | TODO | A1 |
-| 5 | A3 | TODO | A2 |
-| 6 | A4 | TODO | A3 |
-| 7 | B1 | TODO | C2; can run alongside A tasks |
-| 8 | B2 | TODO | C2; can run alongside B1 |
-| 9 | B3 | TODO | C2; can run alongside B1/B2 |
-| 10 | B4 | TODO | B1, B2, B3 |
-| 11 | C3 | TODO | C1; can run alongside A/B tasks |
-| 12 | C4 | TODO | C3, if suitable |
-| 13 | C5 | TODO | C4 and A3 |
-| 14 | C6 | TODO | A3; include C5 if available |
-| 15 | D1 | TODO | C1; can run alongside retrieval work |
-| 16 | D2 | TODO | C2 and D1 |
-| 17 | D3 | TODO | A4 and D2 |
-| 18 | D4 | TODO | D3 |
-| 19 | D5 | TODO | D4 |
-| 20 | E1 | TODO | A3, B4, D4 |
-| 21 | E2 | TODO | C6, D5, E1 |
-| 22 | E3 | TODO | E2 |
-| 23 | E4 | TODO | E2 |
+| 1 | C1 | Start | DONE |
+| 2 | C2 | C1 | TODO |
+| 3 | A1 | C2 | TODO |
+| 4 | A2 | A1 | TODO |
+| 5 | A3 | A2 | TODO |
+| 6 | A4 | A3 | TODO |
+| 7 | B1 | C2; can run alongside A tasks | TODO |
+| 8 | B2 | C2; can run alongside B1 | TODO |
+| 9 | B3 | C2; can run alongside B1/B2 | TODO |
+| 10 | B4 | B1, B2, B3 | TODO |
+| 11 | C3 | C1; can run alongside A/B tasks | TODO |
+| 12 | C4 | C3, if suitable | TODO |
+| 13 | C5 | C4 and A3 | TODO |
+| 14 | C6 | A3; include C5 if available | TODO |
+| 15 | D1 | C1; can run alongside retrieval work | TODO |
+| 16 | D2 | C2 and D1 | TODO |
+| 17 | D3 | A4 and D2 | TODO |
+| 18 | D4 | D3 | TODO |
+| 19 | D5 | D4 | TODO |
+| 20 | E1 | A3, B4, D4 | TODO |
+| 21 | E2 | C6, D5, E1 | TODO |
+| 22 | E3 | E2 | TODO |
+| 23 | E4 | E2 | TODO |
 
 ### A — Retrieval improvements
 
@@ -584,7 +584,8 @@ code. Verify listed dependencies are DONE. Implement only A2 and necessary
 prerequisites; ask before substantial additional work. Add or update meaningful
 tests, run the specified experiments when feasible, save actual results and
 configurations, and update relevant documentation. Mark the task DONE only
-when its acceptance criteria are met; otherwise mark it IN PROGRESS or BLOCKED
+when its acceptance criteria are met, updating both its task entry and the
+rightmost table column; otherwise mark it IN PROGRESS or BLOCKED in both places
 and explain why. Make one meaningful Git commit for the task. Never fabricate
 metrics, modify unrelated components, or push to GitHub without my permission.
 
