@@ -257,6 +257,333 @@ models/
 - Qwen generation is the main latency bottleneck.
 - Invalid citation formatting often triggers the extractive fallback.
 
+## Project Improvement Roadmap
+
+This roadmap extends the existing exact MiniLM/FAISS baseline, PCA-128 and
+HNSW comparison, cross-encoder, and Ollama RAG pipeline. The committed
+retrieval results use 2,000 title-to-body **known-item** queries from the
+indexed corpus; they do not measure relevance to new user questions. The
+committed RAG aggregates lack their labeled examples and runnable evaluation
+script. All tasks below are **TODO**; existing components are starting points,
+not evidence that these new experiments are complete. IDs remain permanent
+even if a task is later dropped. Record that decision under its ID.
+
+Use the same frozen query IDs, corpus and relevance judgments for paired
+comparisons. Save exact commands, seeds, artifact identities, model versions,
+hardware, and per-query outputs alongside aggregates. Use the existing
+embeddings and indexes where compatible. The laptop budget is 16 GiB RAM and
+an RTX 3050 with 4 GiB VRAM; start with 200-query smoke runs, batch model
+inference, build one extra index at a time, and run Qwen2.5:3B via local
+Ollama. Do not call a smoke result a full benchmark.
+
+### Recommended execution order and progress
+
+This is one dependency-respecting order. The **Independent after** column
+marks work that can proceed once the listed gate is done, without waiting for
+the preceding row. ProCQA integration is conditional on C3; if it is unsuitable,
+record C4 and C5 as BLOCKED with the reason and continue with C6 on the
+original benchmark.
+
+| Order | Task | Status | Independent after |
+|---:|---|---|---|
+| 1 | C1 | TODO | Start |
+| 2 | C2 | TODO | C1 |
+| 3 | A1 | TODO | C2 |
+| 4 | A2 | TODO | A1 |
+| 5 | A3 | TODO | A2 |
+| 6 | A4 | TODO | A3 |
+| 7 | B1 | TODO | C2; can run alongside A tasks |
+| 8 | B2 | TODO | C2; can run alongside B1 |
+| 9 | B3 | TODO | C2; can run alongside B1/B2 |
+| 10 | B4 | TODO | B1, B2, B3 |
+| 11 | C3 | TODO | C1; can run alongside A/B tasks |
+| 12 | C4 | TODO | C3, if suitable |
+| 13 | C5 | TODO | C4 and A3 |
+| 14 | C6 | TODO | A3; include C5 if available |
+| 15 | D1 | TODO | C1; can run alongside retrieval work |
+| 16 | D2 | TODO | C2 and D1 |
+| 17 | D3 | TODO | A4 and D2 |
+| 18 | D4 | TODO | D3 |
+| 19 | D5 | TODO | D4 |
+| 20 | E1 | TODO | A3, B4, D4 |
+| 21 | E2 | TODO | C6, D5, E1 |
+| 22 | E3 | TODO | E2 |
+| 23 | E4 | TODO | E2 |
+
+### A — Retrieval improvements
+
+#### A1 — BM25 baseline
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Test lexical matching of identifiers, error strings, and versions.
+- **Implementation:** Add a reproducible BM25 index/search path over the same corpus IDs; document tokenization and build limits.
+- **Experiments:** Smoke run, then rank the C2 frozen queries at 10 and 40; inspect exact-term cases.
+- **Metrics:** Recall@10/40, MRR@10, nDCG@10, build time, index size, search p50/p95.
+- **Deliverables:** BM25 module/CLI, tests, config, per-query rankings, results table.
+- **Dependencies:** C2.
+- **Acceptance criteria:** Deterministic IDs and rankings; all metrics use C2 judgments; results and settings are saved.
+
+#### A2 — Hybrid retrieval with RRF
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Recover relevant candidates missed by either lexical or dense search.
+- **Implementation:** Fuse A1 BM25 and existing dense top-40 lists by reciprocal rank fusion; deduplicate by `doc_id` and expose the fusion constant.
+- **Experiments:** Compare at least two candidate depths and one fixed RRF setting on C2 queries.
+- **Metrics:** Recall@10/40, MRR@10, nDCG@10, union contribution, search p50/p95.
+- **Deliverables:** Fusion code, tests for ties/duplicates, rankings and config.
+- **Dependencies:** A1, C2.
+- **Acceptance criteria:** Deterministic fusion; both sources contribute; paired outputs share query IDs and relevance labels.
+
+#### A3 — Fair retrieval comparison
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Establish a defensible BM25, dense, and hybrid comparison.
+- **Implementation:** Extend the comparison runner to use C2 queries, common cutoffs, identical corpus, saved configurations and per-query rankings.
+- **Experiments:** Run all three methods on the full frozen set; repeat on a small exact-term slice.
+- **Metrics:** Recall@1/5/10/40, MRR@10, nDCG@10, p50/p95 and query throughput.
+- **Deliverables:** Reproducible command, paired CSV/JSON, summary table and limitations.
+- **Dependencies:** A2, C2.
+- **Acceptance criteria:** Each reported difference uses the same queries and labels; no retrieved-score scale is compared across methods.
+
+#### A4 — Cross-encoder reranking ablation
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Measure the reranker's added value for each candidate generator.
+- **Implementation:** Reuse the existing cross-encoder on equal top-40 candidate budgets for BM25, dense and hybrid; separate cross-encoder score from the answer-vote bonus.
+- **Experiments:** Paired before/after reranking for all three, plus vote-bonus on/off; batch on GPU or CPU.
+- **Metrics:** Candidate Recall@40, final Recall@3/10, MRR@10, nDCG@10, rerank p50/p95, VRAM.
+- **Deliverables:** Ablation runner, tests, per-query ranks and results table.
+- **Dependencies:** A3.
+- **Acceptance criteria:** Same candidate and scoring rules across strategies; report both gains and losses, including cost.
+
+### B — Indexing and optimization
+
+#### B1 — PCA dimension sweep
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Test whether the current 128 dimensions are a good trade-off.
+- **Implementation:** Reuse 384-dimensional embeddings; compare no PCA (384) with PCA 256, 128 and 64, each with exact IP search and normalized vectors.
+- **Experiments:** Fit on a fixed documented sample, then evaluate C2 queries at each dimension; use one extra artifact at a time.
+- **Metrics:** Explained variance, Recall@10/40, MRR@10, index bytes, transform and search p95.
+- **Deliverables:** Dimension-specific manifests, comparison table and plot.
+- **Dependencies:** C2.
+- **Acceptance criteria:** All dimensions use the same queries; compare retrieval loss separately from ANN loss and record fit sample IDs.
+
+#### B2 — HNSW versus exact search
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Isolate approximate-search loss from PCA loss.
+- **Implementation:** Compare HNSW and IndexFlatIP in the same dimension, at least 128; add 384 only if memory permits.
+- **Experiments:** Search identical C2 query vectors and corpus vectors with matched top-k.
+- **Metrics:** Known-item Recall@10/40, top-k ANN overlap, p50/p95, index bytes.
+- **Deliverables:** Same-space paired rankings and quality/latency table.
+- **Dependencies:** C2.
+- **Acceptance criteria:** Exact search is the ANN reference in each dimensional space; distinguish ANN overlap from relevance recall.
+
+#### B3 — efSearch sweep
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Reassess the existing 16/32/64/128 sweep on the frozen evaluation set.
+- **Implementation:** Extend `compare_retrievers.py` to save per-query rankings and parameterized efSearch values for the selected HNSW index.
+- **Experiments:** Repeat the four existing settings at top-10 and top-40; add a higher value only if the curve has not saturated.
+- **Metrics:** Recall@10/40, same-space ANN overlap, QPS, p50/p95.
+- **Deliverables:** Reproducible sweep table and quality/latency curve.
+- **Dependencies:** C2.
+- **Acceptance criteria:** State the chosen efSearch and its measured trade-off; retain the historical sweep as historical evidence.
+
+#### B4 — Build and runtime resource costs
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Measure the cost omitted by the current search-only timing and index-size reports.
+- **Implementation:** Instrument PCA fit/transform, index build, process peak RSS, GPU VRAM, load time, and query stages, including corpus fetch.
+- **Experiments:** Run on the available full artifacts where feasible, plus a named small subset; repeat latency after warm-up.
+- **Metrics:** Build seconds, peak RSS/VRAM, file size, load seconds, search and fetch p50/p95.
+- **Deliverables:** Hardware/config manifest and resource table for exact and selected HNSW setups.
+- **Dependencies:** B1, B2, B3.
+- **Acceptance criteria:** Specify cold/warm and full/subset results; do not equate index bytes with total memory.
+
+### C — Dataset and evaluation
+
+#### C1 — Audit evaluation and leakage
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Establish what existing results actually prove and where leakage or label bias may occur.
+- **Implementation:** Trace corpus sampling, title-to-body labels, PCA fit, query selection, threshold calibration and RAG aggregates; inventory missing raw inputs.
+- **Experiments:** Recompute available aggregate formulas from committed data and run tiny adversarial metric fixtures; no full benchmark required.
+- **Metrics:** Query/label counts, overlap across splits, duplicate rate, reproducibility gaps.
+- **Deliverables:** Audit note with evidence, corrected metric definitions and a leakage-prevention plan.
+- **Dependencies:** None.
+- **Acceptance criteria:** Explicitly distinguish known-item retrieval, ANN overlap, answer/abstain behavior and answer correctness; identify unverified claims.
+
+#### C2 — Freeze evaluation inputs and provenance
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Make future comparisons paired and prevent tuning on the final test set.
+- **Implementation:** Save deterministic query IDs and labels; separate development/calibration/test IDs; check duplicate question families and corpus/artifact identity; version the evaluation manifest.
+- **Experiments:** Recreate the split twice and run the existing dense baseline on the frozen test set.
+- **Metrics:** Split sizes, ID intersection, duplicate rate, baseline Recall@10, MRR@10, nDCG@10.
+- **Deliverables:** Split manifests, validation tests, baseline per-query outputs and command.
+- **Dependencies:** C1.
+- **Acceptance criteria:** Zero unintended split overlap; identical reruns; document that title queries are still in-corpus known-item tests.
+
+#### C3 — ProCQA feasibility check
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Decide whether ProCQA provides a legitimate second retrieval benchmark.
+- **Implementation:** Check the authoritative dataset card/paper and sample schema for license, size, access, domains, answer/document IDs and relevance judgments.
+- **Experiments:** Inspect metadata and a small sample only; map its labels to the CodeAnswer corpus or a separate index.
+- **Metrics:** Usable query/judgment counts, overlap/coverage, disk and memory estimate.
+- **Deliverables:** Go/no-go note, license/source links and subset specification.
+- **Dependencies:** C1.
+- **Acceptance criteria:** State whether labels are valid for retrieval, whether comparison to StackSample is meaningful, and whether local use is permitted.
+
+#### C4 — Integrate a ProCQA subset
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Add a realistic, locally runnable benchmark if C3 supports it.
+- **Implementation:** Build a versioned subset loader, relevance mapping and separate artifact namespace; avoid mixing its IDs with StackSample IDs.
+- **Experiments:** Validate a tiny fixture, then create a bounded subset fitting 16 GiB RAM; record exclusions.
+- **Metrics:** Query/document/judgment counts, positive-label coverage, build time and disk size.
+- **Deliverables:** Loader, tests, manifest and benchmark protocol.
+- **Dependencies:** C3 go decision.
+- **Acceptance criteria:** Reproducible IDs and labels, license terms recorded, no silent missing positives.
+
+#### C5 — Retrieval on the new benchmark
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Check whether the known-item rankings generalize.
+- **Implementation:** Adapt A3's runner to C4's corpus/judgments and build only required indexes; keep benchmark results separate.
+- **Experiments:** Paired BM25, dense and hybrid runs on the bounded subset; add reranking if labels and resources allow.
+- **Metrics:** Recall@10/40, MRR@10, nDCG@10, p50/p95 and judged-query coverage.
+- **Deliverables:** Per-query outputs, manifest and comparison table.
+- **Dependencies:** C4, A3.
+- **Acceptance criteria:** Same judged queries for all strategies; declare unjudged-result handling and any incomparable corpus differences.
+
+#### C6 — Error analysis and uncertainty
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Explain where measured retrieval gains and losses arise.
+- **Implementation:** Join A3 per-query ranks, group by identifier/error/version and query length, and inspect representative wins/losses.
+- **Experiments:** Paired bootstrap confidence intervals or query-level randomization on the fixed set; include C5 if available.
+- **Metrics:** Per-query reciprocal-rank changes, subgroup Recall@10/40, confidence intervals.
+- **Deliverables:** Error taxonomy, examples and uncertainty table.
+- **Dependencies:** A3; C5 optional.
+- **Acceptance criteria:** No significance claim without paired query-level evidence; discuss known-item label limits.
+
+### D — End-to-end RAG
+
+#### D1 — Audit extractive fallback and citation gate
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Explain the recorded 61.9% fallback rate and actual safety behavior.
+- **Implementation:** Trace citation coverage, invalid-number handling, word limit, source truncation, empty evidence and Ollama failures; classify final versus raw generated output.
+- **Experiments:** Add targeted fixture cases and manually inspect a small saved answer sample if available.
+- **Metrics:** Trigger counts, raw/final citation coverage and validity, fallback and error rates.
+- **Deliverables:** Behavior matrix, tests and prioritized fixes.
+- **Dependencies:** C1.
+- **Acceptance criteria:** Document that the current 50% line-coverage gate checks citation syntax, not claim support; no unsupported safety claim remains.
+
+#### D2 — Reproducible RAG evaluation harness
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Make the existing calibration and small RAG aggregates auditable.
+- **Implementation:** Add labeled development/calibration/test fixtures and a runner that saves raw generation, final answer, abstention, sources and all stage timings; recalibrate only on calibration data.
+- **Experiments:** Reproduce the available small protocol with local Qwen, or mark historical figures unverified if raw inputs cannot be recovered.
+- **Metrics:** Behavior accuracy, in-domain answer rate, out-of-domain abstention, fallback rate and p50/p95 latency.
+- **Deliverables:** Harness, tests, labels/manifest and per-query JSONL.
+- **Dependencies:** C2, D1.
+- **Acceptance criteria:** Test labels never select thresholds; each aggregate is traceable to individual runs and generator settings.
+
+#### D3 — BM25, dense and hybrid RAG
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Measure whether retrieval changes improve final answers.
+- **Implementation:** Add a retriever adapter to the existing pipeline; hold top-40 candidates, reranker, three sources, prompt and Qwen2.5:3B settings fixed.
+- **Experiments:** Run the three strategies on D2's small held-out set; repeat a subset for runtime stability.
+- **Metrics:** Answer/abstain behavior, fallback rate, citation validity, total and stage p50/p95, token use.
+- **Deliverables:** Paired per-query outputs and RAG comparison table.
+- **Dependencies:** A4, D2.
+- **Acceptance criteria:** Only the candidate strategy varies; report model failures and fallback separately from successful generation.
+
+#### D4 — Answer and citation quality
+
+- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Goal:** Separate valid citation numbers from supported, useful answers.
+- **Implementation:** Define a small blinded human rubric for answer correctness, claim-to-source support and abstention; score generated and extractive outputs separately.
+- **Experiments:** Review D3 answers with fixed criteria and adjudicate disagreements; include near-domain unanswerable cases.
+- **Metrics:** Correctness/support rates, raw/final citation validity and coverage, abstention precision/recall, reviewer agreement.
+- **Deliverables:** Rubric, anonymized judgments and quality table.
+- **Dependencies:** D3.
+- **Acceptance criteria:** Every reported quality score has a defined denominator and inspectable judgment; no embedding proxy is presented as factual faithfulness.
+
+#### D5 — RAG failure analysis
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Turn observed errors into targeted next steps.
+- **Implementation:** Categorize misses from retrieval, reranking, thresholding, source formatting, citation checks, generation and fallback.
+- **Experiments:** Inspect representative D4 failures and test one low-cost prompt or gate hypothesis on development examples only.
+- **Metrics:** Error counts by stage, fallback causes, latency cost of the tested hypothesis.
+- **Deliverables:** Failure table and ranked improvement proposals.
+- **Dependencies:** D4.
+- **Acceptance criteria:** Examples link to per-query records; distinguish tested evidence from proposed fixes.
+
+### E — Documentation and interview preparation
+
+#### E1 — Architecture and methodology update
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Make the current design and evaluation boundaries easy to explain.
+- **Implementation:** Update the architecture diagram, corpus/query definitions, artifact lineage and benchmark protocols in README/docs.
+- **Experiments:** Check every claim against code, manifests and finished task outputs.
+- **Metrics:** Documented configuration coverage and count of unsupported claims corrected.
+- **Deliverables:** Updated README and methodology notes.
+- **Dependencies:** A3, B4, D4.
+- **Acceptance criteria:** Descriptions match implementation and mark historical numbers clearly.
+
+#### E2 — Experimental results summary
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Present quality, speed and resource trade-offs in one place.
+- **Implementation:** Consolidate verified A/B/C/D tables with artifact references, denominators and confidence intervals where applicable.
+- **Experiments:** Recompute tables from saved outputs and verify cited configs.
+- **Metrics:** Retrieval quality, answer quality, p50/p95, memory, build time and uncertainty.
+- **Deliverables:** Results summary with compact plots and reproducibility commands.
+- **Dependencies:** C6, D5, E1.
+- **Acceptance criteria:** Every headline number has a source file, dataset/split, method and measurement scope.
+
+#### E3 — Interview preparation guide
+
+- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Explain technical decisions and limits confidently in the Yandex interview.
+- **Implementation:** Reconcile the existing untracked interview guide with verified results; cover BM25/RRF, PCA/HNSW, reranking, leakage, abstention and failure cases.
+- **Experiments:** Walk through at least two queries and recalculate headline trade-offs from E2.
+- **Metrics:** Coverage of decisions, measured trade-offs and known limitations.
+- **Deliverables:** Updated guide with concise questions and evidence-backed answers.
+- **Dependencies:** E2.
+- **Acceptance criteria:** No claim of model training, answer correctness or whole-pipeline speedup beyond evidence.
+
+#### E4 — CV-ready project description
+
+- **Priority:** P2. **Status:** TODO. **Estimated effort:** Small.
+- **Goal:** Summarize impact without overstating results.
+- **Implementation:** Write two short bullets describing the pipeline and a verified, scoped measurement.
+- **Experiments:** Cross-check every number against E2 and its source files.
+- **Metrics:** Number of verified quantitative claims.
+- **Deliverables:** CV-ready bullets in docs.
+- **Dependencies:** E2.
+- **Acceptance criteria:** Each claim specifies its benchmark and scope; unverified RAG quality figures are excluded.
+
+### How to Execute Roadmap Tasks with Codex
+
+When I say **“Implement task A2”**, read this README and inspect the relevant
+code. Verify listed dependencies are DONE. Implement only A2 and necessary
+prerequisites; ask before substantial additional work. Add or update meaningful
+tests, run the specified experiments when feasible, save actual results and
+configurations, and update relevant documentation. Mark the task DONE only
+when its acceptance criteria are met; otherwise mark it IN PROGRESS or BLOCKED
+and explain why. Make one meaningful Git commit for the task. Never fabricate
+metrics, modify unrelated components, or push to GitHub without my permission.
+
 ## License
 
 MIT
