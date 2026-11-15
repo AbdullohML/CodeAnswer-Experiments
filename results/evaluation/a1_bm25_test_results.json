@@ -1,0 +1,82 @@
+{
+  "system": "SQLite-FTS5-BM25",
+  "evaluation_type": "known_item_title_to_body_single_positive",
+  "split": "test",
+  "smoke_limit": null,
+  "quality": {
+    "queries": 1200,
+    "recall@1": 0.439167,
+    "recall@5": 0.576667,
+    "recall@10": 0.6275,
+    "recall@40": 0.726667,
+    "mrr@10": 0.498723,
+    "ndcg@10": 0.529569
+  },
+  "performance": {
+    "batch_queries": 1200,
+    "batch_search_seconds@40": 417.508795,
+    "search_qps@40": 2.87,
+    "single_query": {
+      "10": {
+        "latency_queries": 100,
+        "search_ms": {
+          "mean": 349.8,
+          "p50": 351.803,
+          "p95": 614.834
+        }
+      },
+      "40": {
+        "latency_queries": 100,
+        "search_ms": {
+          "mean": 360.447,
+          "p50": 368.463,
+          "p95": 626.449
+        }
+      }
+    }
+  },
+  "index": {
+    "schema_version": 1,
+    "backend": "sqlite_fts5",
+    "index_file": "bm25_fts5.sqlite",
+    "index_sha256": "fafb69241d24be96cef92e2381ac60bfdbcccd6d111ec3c57a3406466f6aa1ec",
+    "index_size_bytes": 248225792,
+    "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b",
+    "corpus_rows": 520000,
+    "doc_id_mapping": "fts5_rowid = doc_id + 1",
+    "sqlite_version": "3.51.0",
+    "config_sha256": "c439a60450119dbfd99e2fd0b93c8518848941072b1aca0a576a21a0a8d29362",
+    "settings": {
+      "schema_version": 1,
+      "backend": "sqlite_fts5",
+      "indexed_field": "question_body",
+      "tokenizer": "unicode61 remove_diacritics 1 tokenchars '_'",
+      "query_operator": "OR",
+      "bm25_k1": 1.2,
+      "bm25_b": 0.75,
+      "top_ks": [
+        10,
+        40
+      ],
+      "latency_queries": 100,
+      "warmup_queries": 3
+    },
+    "build_seconds": 30.089
+  },
+  "config_sha256": "c439a60450119dbfd99e2fd0b93c8518848941072b1aca0a576a21a0a8d29362",
+  "evaluation_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324",
+  "per_query_sha256": "7fe0cb639da0e0b2341d051e1ee6b690953589e8d68aea12fd9267d7044389ae",
+  "exact_term_inspection": null,
+  "environment": {
+    "command": [
+      "scripts/evaluate_bm25.py",
+      "--split",
+      "test"
+    ],
+    "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+    "python": "3.13.9",
+    "sqlite": "3.51.0",
+    "pyarrow": "25.0.0",
+    "cpu_logical_count": 12
+  }
+}

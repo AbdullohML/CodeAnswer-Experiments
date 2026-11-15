@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "backend": "sqlite_fts5",
+  "indexed_field": "question_body",
+  "tokenizer": "unicode61 remove_diacritics 1 tokenchars '_'",
+  "query_operator": "OR",
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "top_ks": [10, 40],
+  "latency_queries": 100,
+  "warmup_queries": 3
+}

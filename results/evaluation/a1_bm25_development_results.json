@@ -1,0 +1,176 @@
+{
+  "system": "SQLite-FTS5-BM25",
+  "evaluation_type": "known_item_title_to_body_single_positive",
+  "split": "development",
+  "smoke_limit": null,
+  "quality": {
+    "queries": 400,
+    "recall@1": 0.435,
+    "recall@5": 0.5875,
+    "recall@10": 0.65,
+    "recall@40": 0.7325,
+    "mrr@10": 0.504703,
+    "ndcg@10": 0.539552
+  },
+  "performance": {
+    "batch_queries": 400,
+    "batch_search_seconds@40": 133.506114,
+    "search_qps@40": 3.0,
+    "single_query": {
+      "10": {
+        "latency_queries": 100,
+        "search_ms": {
+          "mean": 343.077,
+          "p50": 327.864,
+          "p95": 653.291
+        }
+      },
+      "40": {
+        "latency_queries": 100,
+        "search_ms": {
+          "mean": 366.601,
+          "p50": 361.684,
+          "p95": 704.47
+        }
+      }
+    }
+  },
+  "index": {
+    "schema_version": 1,
+    "backend": "sqlite_fts5",
+    "index_file": "bm25_fts5.sqlite",
+    "index_sha256": "fafb69241d24be96cef92e2381ac60bfdbcccd6d111ec3c57a3406466f6aa1ec",
+    "index_size_bytes": 248225792,
+    "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b",
+    "corpus_rows": 520000,
+    "doc_id_mapping": "fts5_rowid = doc_id + 1",
+    "sqlite_version": "3.51.0",
+    "config_sha256": "c439a60450119dbfd99e2fd0b93c8518848941072b1aca0a576a21a0a8d29362",
+    "settings": {
+      "schema_version": 1,
+      "backend": "sqlite_fts5",
+      "indexed_field": "question_body",
+      "tokenizer": "unicode61 remove_diacritics 1 tokenchars '_'",
+      "query_operator": "OR",
+      "bm25_k1": 1.2,
+      "bm25_b": 0.75,
+      "top_ks": [
+        10,
+        40
+      ],
+      "latency_queries": 100,
+      "warmup_queries": 3
+    },
+    "build_seconds": 30.089
+  },
+  "config_sha256": "c439a60450119dbfd99e2fd0b93c8518848941072b1aca0a576a21a0a8d29362",
+  "evaluation_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324",
+  "per_query_sha256": "cb9f836906be2b17759fb86852d2d67088e5a9fc187ef5ea62fa49a81675bf86",
+  "exact_term_inspection": {
+    "underscore_identifier": {
+      "queries": 9,
+      "recall@40": 1.0,
+      "examples": [
+        {
+          "query_id": 32329110,
+          "relevant_doc_id": 473604,
+          "rank@40": 2
+        },
+        {
+          "query_id": 28749990,
+          "relevant_doc_id": 368967,
+          "rank@40": 10
+        },
+        {
+          "query_id": 11031720,
+          "relevant_doc_id": 433165,
+          "rank@40": 6
+        },
+        {
+          "query_id": 34021790,
+          "relevant_doc_id": 341797,
+          "rank@40": 1
+        },
+        {
+          "query_id": 34146000,
+          "relevant_doc_id": 433970,
+          "rank@40": 3
+        }
+      ]
+    },
+    "version_number": {
+      "queries": 5,
+      "recall@40": 0.8,
+      "examples": [
+        {
+          "query_id": 27917280,
+          "relevant_doc_id": 404568,
+          "rank@40": 1
+        },
+        {
+          "query_id": 24075270,
+          "relevant_doc_id": 515815,
+          "rank@40": 1
+        },
+        {
+          "query_id": 32751250,
+          "relevant_doc_id": 147020,
+          "rank@40": 1
+        },
+        {
+          "query_id": 11525270,
+          "relevant_doc_id": 160944,
+          "rank@40": 1
+        },
+        {
+          "query_id": 20826690,
+          "relevant_doc_id": 112840,
+          "rank@40": 0
+        }
+      ]
+    },
+    "error_word": {
+      "queries": 14,
+      "recall@40": 0.785714,
+      "examples": [
+        {
+          "query_id": 11886990,
+          "relevant_doc_id": 166501,
+          "rank@40": 0
+        },
+        {
+          "query_id": 39304350,
+          "relevant_doc_id": 502696,
+          "rank@40": 2
+        },
+        {
+          "query_id": 12023970,
+          "relevant_doc_id": 309318,
+          "rank@40": 1
+        },
+        {
+          "query_id": 14791430,
+          "relevant_doc_id": 286333,
+          "rank@40": 6
+        },
+        {
+          "query_id": 20128710,
+          "relevant_doc_id": 86739,
+          "rank@40": 1
+        }
+      ]
+    }
+  },
+  "environment": {
+    "command": [
+      "scripts/evaluate_bm25.py",
+      "--split",
+      "development"
+    ],
+    "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+    "python": "3.13.9",
+    "sqlite": "3.51.0",
+    "pyarrow": "25.0.0",
+    "cpu_logical_count": 12
+  }
+}

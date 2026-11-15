@@ -30,6 +30,16 @@ The [result summary](../results/evaluation/c2_frozen_baseline_summary.json),
 record configuration, hashes, and the query-level evidence. Search latency
 excludes encoding and generation. The test is in-corpus known-item retrieval.
 
+## A1 BM25 on the same frozen test
+
+The [A1 BM25 baseline](BM25_BASELINE.md) indexes question bodies in SQLite
+FTS5 with the same 520,000 `doc_id`s and evaluates the same 1,200 C2 test
+queries. It recorded Recall@10 0.627500, Recall@40 0.726667, MRR@10
+0.498723, and nDCG@10 0.529569. Search p95 was 614.834 ms at depth 10
+and 626.449 ms at depth 40; the index was 236.73 MiB and took 30.089 s
+to build. See the A1 page for the paired comparison, tokenization, exact-term
+inspection, and per-query rankings.
+
 ## Historical experiments
 
 ## Evaluation protocol

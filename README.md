@@ -65,6 +65,11 @@ The completed [C2 frozen Flat-384 test](docs/EVALUATION_PROTOCOL.md) used
 Its query selection differs from the historical experiments, so these scores
 are not paired with the table below.
 
+The [A1 BM25 baseline](docs/BM25_BASELINE.md) uses the same frozen C2 test
+queries and labels. It recorded Recall@10 **0.627500**, Recall@40 **0.726667**,
+MRR@10 **0.498723**, and nDCG@10 **0.529569**. Its index and search settings,
+per-query rankings, build time, size, and latency are saved with the results.
+
 ### Retrieval
 
 | System | Recall@10 | Search p95 | Index size |
@@ -305,7 +310,7 @@ original benchmark.
 |---:|---|---|---|
 | 1 | C1 | Start | DONE |
 | 2 | C2 | C1 | DONE |
-| 3 | A1 | C2 | TODO |
+| 3 | A1 | C2 | DONE |
 | 4 | A2 | A1 | TODO |
 | 5 | A3 | A2 | TODO |
 | 6 | A4 | A3 | TODO |
@@ -331,7 +336,7 @@ original benchmark.
 
 #### A1 — BM25 baseline
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P0. **Status:** DONE. **Estimated effort:** Medium.
 - **Goal:** Test lexical matching of identifiers, error strings, and versions.
 - **Implementation:** Add a reproducible BM25 index/search path over the same corpus IDs; document tokenization and build limits.
 - **Experiments:** Smoke run, then rank the C2 frozen queries at 10 and 40; inspect exact-term cases.

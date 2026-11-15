@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "backend": "sqlite_fts5",
+  "index_file": "bm25_fts5.sqlite",
+  "index_sha256": "fafb69241d24be96cef92e2381ac60bfdbcccd6d111ec3c57a3406466f6aa1ec",
+  "index_size_bytes": 248225792,
+  "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b",
+  "corpus_rows": 520000,
+  "doc_id_mapping": "fts5_rowid = doc_id + 1",
+  "sqlite_version": "3.51.0",
+  "config_sha256": "c439a60450119dbfd99e2fd0b93c8518848941072b1aca0a576a21a0a8d29362",
+  "settings": {
+    "schema_version": 1,
+    "backend": "sqlite_fts5",
+    "indexed_field": "question_body",
+    "tokenizer": "unicode61 remove_diacritics 1 tokenchars '_'",
+    "query_operator": "OR",
+    "bm25_k1": 1.2,
+    "bm25_b": 0.75,
+    "top_ks": [
+      10,
+      40
+    ],
+    "latency_queries": 100,
+    "warmup_queries": 3
+  },
+  "build_seconds": 30.089
+}
