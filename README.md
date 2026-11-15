@@ -35,7 +35,7 @@ Calibrated answerability threshold
         cited answer or extractive fallback
 ```
 
-## Validated iterations
+## Recorded iterations
 
 ### 1. Exact dense-search baseline
 
@@ -51,9 +51,13 @@ nearest-neighbor search with a controllable latency-quality trade-off.
 
 The optimized retriever returns 40 candidates, a cross-encoder reranks
 them, and local Qwen generates an answer from the best three sources.
-The system validates citations and abstains when evidence is weak.
+The system checks citation numbering and abstains when evidence is weak.
 
-## Main results
+## Recorded results
+
+These are historical experiment aggregates. See the
+[C1 evaluation audit](docs/EVALUATION_AUDIT.md) for their definitions,
+reproducibility limits, and leakage risks.
 
 ### Retrieval
 
@@ -70,7 +74,7 @@ than the exact baseline and uses approximately 57% less index storage.
 
 | Metric | Result |
 |---|---:|
-| Behavior accuracy | 96.43% |
+| Behavior accuracy (answer/abstain) | 96.43% |
 | In-domain answer rate | 100% |
 | Out-of-domain abstention | 87.5% |
 | Citation coverage | 100% |
@@ -264,9 +268,9 @@ HNSW comparison, cross-encoder, and Ollama RAG pipeline. The committed
 retrieval results use 2,000 title-to-body **known-item** queries from the
 indexed corpus; they do not measure relevance to new user questions. The
 committed RAG aggregates lack their labeled examples and runnable evaluation
-script. All tasks below are **TODO**; existing components are starting points,
-not evidence that these new experiments are complete. IDs remain permanent
-even if a task is later dropped. Record that decision under its ID.
+script. Tasks below have tracked statuses; existing components are starting
+points, not evidence that these new experiments are complete. IDs remain
+permanent even if a task is later dropped. Record that decision under its ID.
 
 Use the same frozen query IDs, corpus and relevance judgments for paired
 comparisons. Save exact commands, seeds, artifact identities, model versions,
@@ -286,7 +290,7 @@ original benchmark.
 
 | Order | Task | Status | Independent after |
 |---:|---|---|---|
-| 1 | C1 | TODO | Start |
+| 1 | C1 | DONE | Start |
 | 2 | C2 | TODO | C1 |
 | 3 | A1 | TODO | C2 |
 | 4 | A2 | TODO | A1 |
@@ -350,11 +354,11 @@ original benchmark.
 - **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
 - **Goal:** Measure the reranker's added value for each candidate generator.
 - **Implementation:** Reuse the existing cross-encoder on equal top-40 candidate budgets for BM25, dense and hybrid; separate cross-encoder score from the answer-vote bonus.
-- **Experiments:** Paired before/after reranking for all three, plus vote-bonus on/off; batch on GPU or CPU.
+- **Experiments:** Paired before/after reranking for all three, plus vote-bonus on/off and title-plus-body versus body-only input; batch on GPU or CPU.
 - **Metrics:** Candidate Recall@40, final Recall@3/10, MRR@10, nDCG@10, rerank p50/p95, VRAM.
 - **Deliverables:** Ablation runner, tests, per-query ranks and results table.
 - **Dependencies:** A3.
-- **Acceptance criteria:** Same candidate and scoring rules across strategies; report both gains and losses, including cost.
+- **Acceptance criteria:** Same candidate and scoring rules across strategies; report gains, losses and cost; do not generalize title-matched known-item results to new user queries.
 
 ### B — Indexing and optimization
 
@@ -406,12 +410,12 @@ original benchmark.
 
 #### C1 — Audit evaluation and leakage
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P0. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Establish what existing results actually prove and where leakage or label bias may occur.
 - **Implementation:** Trace corpus sampling, title-to-body labels, PCA fit, query selection, threshold calibration and RAG aggregates; inventory missing raw inputs.
 - **Experiments:** Recompute available aggregate formulas from committed data and run tiny adversarial metric fixtures; no full benchmark required.
 - **Metrics:** Query/label counts, overlap across splits, duplicate rate, reproducibility gaps.
-- **Deliverables:** Audit note with evidence, corrected metric definitions and a leakage-prevention plan.
+- **Deliverables:** [Evaluation audit](docs/EVALUATION_AUDIT.md) with evidence, corrected metric definitions and a leakage-prevention plan.
 - **Dependencies:** None.
 - **Acceptance criteria:** Explicitly distinguish known-item retrieval, ANN overlap, answer/abstain behavior and answer correctness; identify unverified claims.
 
@@ -419,7 +423,7 @@ original benchmark.
 
 - **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
 - **Goal:** Make future comparisons paired and prevent tuning on the final test set.
-- **Implementation:** Save deterministic query IDs and labels; separate development/calibration/test IDs; check duplicate question families and corpus/artifact identity; version the evaluation manifest.
+- **Implementation:** Save deterministic query IDs and labels; separate development/calibration/test IDs; check duplicate question families and corpus/artifact identity; reject empty sets and cutoffs beyond ranking depth; version the evaluation manifest.
 - **Experiments:** Recreate the split twice and run the existing dense baseline on the frozen test set.
 - **Metrics:** Split sizes, ID intersection, duplicate rate, baseline Recall@10, MRR@10, nDCG@10.
 - **Deliverables:** Split manifests, validation tests, baseline per-query outputs and command.

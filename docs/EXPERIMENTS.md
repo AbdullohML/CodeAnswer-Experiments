@@ -1,5 +1,10 @@
 # CodeAnswer Experiments
 
+These are recorded historical results. The [C1 evaluation audit](EVALUATION_AUDIT.md)
+explains which aggregates can be checked from committed files and which still
+need raw labels, per-query outputs, or a rerun. Citation validity here concerns
+number formatting, not whether a source supports an answer.
+
 ## Evaluation protocol
 
 The experiments use 520,000 answered Stack Overflow questions.
