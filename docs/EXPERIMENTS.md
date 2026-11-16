@@ -63,6 +63,18 @@ The fixed 29-query exact-term slice and paired CSV are linked from the A3
 page. These timings include encoding for dense and hybrid and use a different
 boundary from the prior search-only latency figures.
 
+## A4 cross-encoder reranking on the frozen test
+
+The [A4 ablation](RERANKING_ABLATION.md) reranked each strategy's saved top-40
+set using the configured MS MARCO cross-encoder. On the 1,200 paired known-item
+queries, vote-off title-plus-body Recall@10 was 0.726667 for BM25, 0.828333
+for dense, and 0.848333 for hybrid. Body-only Recall@10 was 0.677500,
+0.757500, and 0.751667 respectively, versus 0.627500, 0.743333, and
+0.772500 before reranking. The title-plus-body mode includes the query title
+in its own judged document and should not be read as new-user-question
+performance. The A4 page gives the vote-bonus ablation, paired gains and
+losses, resource costs, and per-query evidence.
+
 ## Historical experiments
 
 ## Evaluation protocol

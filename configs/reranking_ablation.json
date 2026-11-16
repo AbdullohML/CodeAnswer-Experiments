@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "candidate_depth": 40,
+  "batch_size": 32,
+  "max_length": 384,
+  "vote_weight": 0.03,
+  "input_modes": ["title_body", "body_only"],
+  "seed": 20260714
+}

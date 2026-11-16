@@ -323,7 +323,7 @@ original benchmark.
 | 3 | A1 | C2 | DONE |
 | 4 | A2 | A1 | DONE |
 | 5 | A3 | A2 | DONE |
-| 6 | A4 | A3 | TODO |
+| 6 | A4 | A3 | DONE |
 | 7 | B1 | C2; can run alongside A tasks | TODO |
 | 8 | B2 | C2; can run alongside B1 | TODO |
 | 9 | B3 | C2; can run alongside B1/B2 | TODO |
@@ -379,7 +379,7 @@ original benchmark.
 
 #### A4 — Cross-encoder reranking ablation
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P0. **Status:** DONE. **Estimated effort:** Medium.
 - **Goal:** Measure the reranker's added value for each candidate generator.
 - **Implementation:** Reuse the existing cross-encoder on equal top-40 candidate budgets for BM25, dense and hybrid; separate cross-encoder score from the answer-vote bonus.
 - **Experiments:** Paired before/after reranking for all three, plus vote-bonus on/off and title-plus-body versus body-only input; batch on GPU or CPU.
@@ -387,6 +387,10 @@ original benchmark.
 - **Deliverables:** Ablation runner, tests, per-query ranks and results table.
 - **Dependencies:** A3.
 - **Acceptance criteria:** Same candidate and scoring rules across strategies; report gains, losses and cost; do not generalize title-matched known-item results to new user queries.
+
+The completed [A4 ablation](docs/RERANKING_ABLATION.md) reports the full
+1,200-query paired test, vote and input-mode variants, query-level rankings,
+and measured GPU cost.
 
 ### B — Indexing and optimization
 
