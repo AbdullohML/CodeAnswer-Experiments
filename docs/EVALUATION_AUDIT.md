@@ -3,8 +3,7 @@
 Scope: tracked code, configuration, tests, and committed result files at base
 commit `298a018` (2026-11-15). This is an audit of the **recorded** experiments,
 not a rerun of the 520,000-document benchmark. At audit time, `data/` and
-`artifacts/` contained no dataset, embeddings, indexes, or query logs. The
-existing untracked interview guide was not used as evidence or changed.
+`artifacts/` contained no dataset, embeddings, indexes, or query logs.
 
 ## What is measured
 

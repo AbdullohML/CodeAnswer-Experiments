@@ -587,7 +587,7 @@ original benchmark.
 
 - **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
 - **Goal:** Explain technical decisions and limits confidently in the Yandex interview.
-- **Implementation:** Reconcile the existing untracked interview guide with verified results; cover BM25/RRF, PCA/HNSW, reranking, leakage, abstention and failure cases.
+- **Implementation:** Update the interview guide with verified results; cover BM25/RRF, PCA/HNSW, reranking, leakage, abstention and failure cases.
 - **Experiments:** Walk through at least two queries and recalculate headline trade-offs from E2.
 - **Metrics:** Coverage of decisions, measured trade-offs and known limitations.
 - **Deliverables:** Updated guide with concise questions and evidence-backed answers.
@@ -604,18 +604,6 @@ original benchmark.
 - **Deliverables:** CV-ready bullets in docs.
 - **Dependencies:** E2.
 - **Acceptance criteria:** Each claim specifies its benchmark and scope; unverified RAG quality figures are excluded.
-
-### How to Execute Roadmap Tasks with Codex
-
-When I say **“Implement task A2”**, read this README and inspect the relevant
-code. Verify listed dependencies are DONE. Implement only A2 and necessary
-prerequisites; ask before substantial additional work. Add or update meaningful
-tests, run the specified experiments when feasible, save actual results and
-configurations, and update relevant documentation. Mark the task DONE only
-when its acceptance criteria are met, updating both its task entry and the
-rightmost table column; otherwise mark it IN PROGRESS or BLOCKED in both places
-and explain why. Make one meaningful Git commit for the task. Never fabricate
-metrics, modify unrelated components, or push to GitHub without my permission.
 
 ## License
 
