@@ -1,4 +1,4 @@
-"""Compare Flat-384, Flat-PCA128, and HNSW-PCA128."""
+"""Compare historical optimized retrievers or frozen A3 systems."""
 
 from __future__ import annotations
 
@@ -47,6 +47,17 @@ def parse_arguments() -> argparse.Namespace:
         "--output-dir",
         default=None,
     )
+    parser.add_argument(
+        "--evaluation-manifest",
+        default=None,
+        help="Run the paired C2 BM25/dense/hybrid comparison.",
+    )
+    parser.add_argument("--split", choices=["development", "test"], default="test")
+    parser.add_argument("--comparison-config", default="configs/fair_comparison.json")
+    parser.add_argument("--bm25-config", default="configs/bm25.json")
+    parser.add_argument("--hybrid-config", default="configs/hybrid.json")
+    parser.add_argument("--source-results-dir", default="results/evaluation")
+    parser.add_argument("--limit", type=int, default=None, help="Frozen smoke run only")
 
     return parser.parse_args()
 
@@ -113,6 +124,11 @@ def build_flat_index(
 def main() -> None:
     arguments = parse_arguments()
     config = load_config(arguments.config)
+    if arguments.evaluation_manifest:
+        from codeanswer.fair_comparison import run_frozen_comparison
+
+        run_frozen_comparison(arguments, config)
+        return
 
     corpus_path = (
         config.paths.artifacts_dir

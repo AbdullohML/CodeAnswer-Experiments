@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "retrieval_depth": 40,
+  "recall_cutoffs": [1, 5, 10, 40],
+  "rank_metric_cutoff": 10,
+  "latency_queries": 100,
+  "warmup_queries": 3,
+  "exact_term_queries_per_category": 10
+}

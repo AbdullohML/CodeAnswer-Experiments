@@ -75,6 +75,11 @@ top-40 candidates on those same test queries. It recorded Recall@10
 **0.772500**, Recall@40 **0.849167**, MRR@10 **0.609828**, and nDCG@10
 **0.648677**; the documented search p95 was **648.974 ms**.
 
+The [A3 paired comparison](docs/FAIR_RETRIEVAL_COMPARISON.md) reran all three
+top-40 rankings on the same 1,200 test queries and measured raw-title
+single-query latency on a shared 100-query prefix. It includes a fixed
+29-query exact-term slice and per-query wins and losses.
+
 ### Retrieval
 
 | System | Recall@10 | Search p95 | Index size |
@@ -317,7 +322,7 @@ original benchmark.
 | 2 | C2 | C1 | DONE |
 | 3 | A1 | C2 | DONE |
 | 4 | A2 | A1 | DONE |
-| 5 | A3 | A2 | TODO |
+| 5 | A3 | A2 | DONE |
 | 6 | A4 | A3 | TODO |
 | 7 | B1 | C2; can run alongside A tasks | TODO |
 | 8 | B2 | C2; can run alongside B1 | TODO |
@@ -363,7 +368,7 @@ original benchmark.
 
 #### A3 — Fair retrieval comparison
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P0. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Establish a defensible BM25, dense, and hybrid comparison.
 - **Implementation:** Extend the comparison runner to use C2 queries, common cutoffs, identical corpus, saved configurations and per-query rankings.
 - **Experiments:** Run all three methods on the full frozen set; repeat on a small exact-term slice.

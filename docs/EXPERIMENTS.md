@@ -51,6 +51,18 @@ the top-40 source union. Hybrid search p95 was 648.974 ms on 100 queries,
 with query vectors precomputed. The A2 page includes source contributions,
 latency scope, full results, and paired per-query rankings.
 
+## A3 paired retrieval comparison
+
+The [A3 comparison](FAIR_RETRIEVAL_COMPARISON.md) reran all 1,200 frozen test
+rankings for BM25, dense, and hybrid, then measured raw-title single-query
+latency on the same 100 queries. Hybrid Recall@10 was 0.772500 versus dense
+0.743333, with 78 paired gains and 43 losses. Hybrid Recall@40 was 0.849167
+versus dense 0.828333, with 48 gains and 23 losses. Raw-title p95 was
+596.505 ms for BM25, 56.232 ms for dense, and 653.776 ms for hybrid.
+The fixed 29-query exact-term slice and paired CSV are linked from the A3
+page. These timings include encoding for dense and hybrid and use a different
+boundary from the prior search-only latency figures.
+
 ## Historical experiments
 
 ## Evaluation protocol
