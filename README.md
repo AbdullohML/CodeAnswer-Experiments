@@ -325,7 +325,7 @@ original benchmark.
 | 5 | A3 | A2 | DONE |
 | 6 | A4 | A3 | DONE |
 | 7 | B1 | C2; can run alongside A tasks | DONE |
-| 8 | B2 | C2; can run alongside B1 | TODO |
+| 8 | B2 | C2; can run alongside B1 | DONE |
 | 9 | B3 | C2; can run alongside B1/B2 | TODO |
 | 10 | B4 | B1, B2, B3 | TODO |
 | 11 | C3 | C1; can run alongside A/B tasks | TODO |
@@ -410,7 +410,7 @@ fit sample, exact per-dimension rankings, measured trade-off, and plot.
 
 #### B2 — HNSW versus exact search
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Medium.
 - **Goal:** Isolate approximate-search loss from PCA loss.
 - **Implementation:** Compare HNSW and IndexFlatIP in the same dimension, at least 128; add 384 only if memory permits.
 - **Experiments:** Search identical C2 query vectors and corpus vectors with matched top-k.
@@ -418,6 +418,10 @@ fit sample, exact per-dimension rankings, measured trade-off, and plot.
 - **Deliverables:** Same-space paired rankings and quality/latency table.
 - **Dependencies:** C2.
 - **Acceptance criteria:** Exact search is the ANN reference in each dimensional space; distinguish ANN overlap from relevance recall.
+
+The completed [B2 comparison](docs/HNSW_EXACT_COMPARISON.md) reports paired
+exact/HNSW rankings in 128 and 384 dimensions, overlap, recall, costs, and
+the separate PCA and ANN losses.
 
 #### B3 — efSearch sweep
 

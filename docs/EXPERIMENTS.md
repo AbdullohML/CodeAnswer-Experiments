@@ -86,6 +86,17 @@ and 8.859 ms respectively. Every index was exact, so these quality losses
 come from projection and normalization, not HNSW approximation. The B1 page
 links the fit IDs, per-query rankings, dimension manifests, and trade-off plot.
 
+## B2 HNSW versus exact search
+
+The [B2 comparison](HNSW_EXACT_COMPARISON.md) searched the identical frozen
+queries and normalized corpus vectors with exact FlatIP and HNSW in both
+128 and 384 dimensions. At 128, HNSW Recall@10 was 0.700000 versus exact
+0.710000; at 384 it was 0.732500 versus exact 0.743333. Mean ANN top-10
+overlap with the exact rankings was 0.989750 and 0.986083 respectively.
+HNSW search p95 was 0.715 ms at 128 and 1.283 ms at 384, while its indexes
+were larger than the exact indexes. The B2 page separates PCA loss from
+same-space ANN loss and links all 2,400 paired per-query rankings.
+
 ## Historical experiments
 
 ## Evaluation protocol
