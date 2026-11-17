@@ -1,0 +1,13 @@
+direction,query_index,query_id,relevant_doc_id,title_token_count,underscore_identifier,version_number,error_word,bm25_rank,dense_rank,hybrid_rank,delta_recall@10,delta_mrr@10
+gain,144,30300160,440260,6,False,False,False,10,38,1,1.0,1.0
+gain,145,19809550,150348,8,False,False,False,1,11,1,1.0,1.0
+gain,174,19313600,135214,6,False,False,False,1,13,1,1.0,1.0
+gain,186,28949350,361497,16,False,False,False,7,14,1,1.0,1.0
+gain,217,32242670,20471,8,False,False,True,1,0,1,1.0,1.0
+gain,488,877440,132794,9,False,False,False,2,18,1,1.0,1.0
+loss,1106,23560410,318369,3,False,False,False,0,1,16,-1.0,-1.0
+loss,1167,1951300,498731,5,False,False,False,0,1,12,-1.0,-1.0
+loss,1078,3524110,453230,12,False,False,False,0,2,13,-1.0,-0.5
+loss,407,24609340,15779,5,False,False,False,0,3,11,-1.0,-0.3333333333333333
+loss,402,15140870,25538,7,False,False,False,0,4,14,-1.0,-0.25
+loss,419,752320,442003,5,False,False,False,0,4,12,-1.0,-0.25

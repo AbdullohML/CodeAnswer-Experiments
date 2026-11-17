@@ -293,12 +293,14 @@ models/
 
 This roadmap extends the existing exact MiniLM/FAISS baseline, PCA-128 and
 HNSW comparison, cross-encoder, and Ollama RAG pipeline. The committed
-retrieval results use 2,000 title-to-body **known-item** queries from the
-indexed corpus; they do not measure relevance to new user questions. The
-committed RAG aggregates lack their labeled examples and runnable evaluation
+historical retrieval results use 2,000 title-to-body **known-item** queries
+from the indexed corpus; the frozen protocol uses 400 development, 400
+calibration, and 1,200 test queries from that same corpus. Neither measures
+relevance to new user questions. The committed RAG aggregates lack their
+labeled examples and runnable evaluation
 script. Tasks below have tracked statuses; existing components are starting
-points, not evidence that these new experiments are complete. IDs remain
-permanent even if a task is later dropped. Record that decision under its ID.
+points, not evidence that these new experiments are complete. Existing task
+IDs are stable; removed work is not reassigned to them.
 
 Use the same frozen query IDs, corpus and relevance judgments for paired
 comparisons. Save exact commands, seeds, artifact identities, model versions,
@@ -312,9 +314,8 @@ Ollama. Do not call a smoke result a full benchmark.
 
 This is one dependency-respecting order. The **Independent after** column
 marks work that can proceed once the listed gate is done, without waiting for
-the preceding row. ProCQA integration is conditional on C3; if it is unsuitable,
-record C4 and C5 as BLOCKED with the reason and continue with C6 on the
-original benchmark.
+the preceding row. The remaining evaluation work uses the existing StackSample
+corpus and C2 frozen splits; no second dataset is planned.
 
 | Order | Task | Independent after | Status |
 |---:|---|---|---|
@@ -328,19 +329,16 @@ original benchmark.
 | 8 | B2 | C2; can run alongside B1 | DONE |
 | 9 | B3 | C2; can run alongside B1/B2 | DONE |
 | 10 | B4 | B1, B2, B3 | DONE |
-| 11 | C3 | C1; can run alongside A/B tasks | TODO |
-| 12 | C4 | C3, if suitable | TODO |
-| 13 | C5 | C4 and A3 | TODO |
-| 14 | C6 | A3; include C5 if available | TODO |
-| 15 | D1 | C1; can run alongside retrieval work | TODO |
-| 16 | D2 | C2 and D1 | TODO |
-| 17 | D3 | A4 and D2 | TODO |
-| 18 | D4 | D3 | TODO |
-| 19 | D5 | D4 | TODO |
-| 20 | E1 | A3, B4, D4 | TODO |
-| 21 | E2 | C6, D5, E1 | TODO |
-| 22 | E3 | E2 | TODO |
-| 23 | E4 | E2 | TODO |
+| 11 | C6 | A3 | DONE |
+| 12 | D1 | C1; can run alongside retrieval work | TODO |
+| 13 | D2 | C2 and D1 | TODO |
+| 14 | D3 | A4 and D2 | TODO |
+| 15 | D4 | D3 | TODO |
+| 16 | D5 | D4 | TODO |
+| 17 | E1 | A3, B4, D4 | TODO |
+| 18 | E2 | C6, D5, E1 | TODO |
+| 19 | E3 | E2 | TODO |
+| 20 | E4 | E2 | TODO |
 
 ### A — Retrieval improvements
 
@@ -478,49 +476,20 @@ by the earlier search-only results.
 - **Dependencies:** C1.
 - **Acceptance criteria:** Zero unintended split overlap; identical reruns; document that title queries are still in-corpus known-item tests.
 
-#### C3 — ProCQA feasibility check
-
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
-- **Goal:** Decide whether ProCQA provides a legitimate second retrieval benchmark.
-- **Implementation:** Check the authoritative dataset card/paper and sample schema for license, size, access, domains, answer/document IDs and relevance judgments.
-- **Experiments:** Inspect metadata and a small sample only; map its labels to the CodeAnswer corpus or a separate index.
-- **Metrics:** Usable query/judgment counts, overlap/coverage, disk and memory estimate.
-- **Deliverables:** Go/no-go note, license/source links and subset specification.
-- **Dependencies:** C1.
-- **Acceptance criteria:** State whether labels are valid for retrieval, whether comparison to StackSample is meaningful, and whether local use is permitted.
-
-#### C4 — Integrate a ProCQA subset
-
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
-- **Goal:** Add a realistic, locally runnable benchmark if C3 supports it.
-- **Implementation:** Build a versioned subset loader, relevance mapping and separate artifact namespace; avoid mixing its IDs with StackSample IDs.
-- **Experiments:** Validate a tiny fixture, then create a bounded subset fitting 16 GiB RAM; record exclusions.
-- **Metrics:** Query/document/judgment counts, positive-label coverage, build time and disk size.
-- **Deliverables:** Loader, tests, manifest and benchmark protocol.
-- **Dependencies:** C3 go decision.
-- **Acceptance criteria:** Reproducible IDs and labels, license terms recorded, no silent missing positives.
-
-#### C5 — Retrieval on the new benchmark
-
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
-- **Goal:** Check whether the known-item rankings generalize.
-- **Implementation:** Adapt A3's runner to C4's corpus/judgments and build only required indexes; keep benchmark results separate.
-- **Experiments:** Paired BM25, dense and hybrid runs on the bounded subset; add reranking if labels and resources allow.
-- **Metrics:** Recall@10/40, MRR@10, nDCG@10, p50/p95 and judged-query coverage.
-- **Deliverables:** Per-query outputs, manifest and comparison table.
-- **Dependencies:** C4, A3.
-- **Acceptance criteria:** Same judged queries for all strategies; declare unjudged-result handling and any incomparable corpus differences.
-
 #### C6 — Error analysis and uncertainty
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Explain where measured retrieval gains and losses arise.
-- **Implementation:** Join A3 per-query ranks, group by identifier/error/version and query length, and inspect representative wins/losses.
-- **Experiments:** Paired bootstrap confidence intervals or query-level randomization on the fixed set; include C5 if available.
+- **Implementation:** Join A3 per-query ranks on the C2 frozen StackSample test IDs, group by identifier/error/version and query length, and inspect representative wins/losses.
+- **Experiments:** Paired bootstrap confidence intervals or query-level randomization on the fixed 1,200-query test set.
 - **Metrics:** Per-query reciprocal-rank changes, subgroup Recall@10/40, confidence intervals.
 - **Deliverables:** Error taxonomy, examples and uncertainty table.
-- **Dependencies:** A3; C5 optional.
+- **Dependencies:** A3.
 - **Acceptance criteria:** No significance claim without paired query-level evidence; discuss known-item label limits.
+
+The completed [C6 analysis](docs/ERROR_ANALYSIS.md) reports paired bootstrap
+intervals, full-test rank-change mechanisms, descriptive title slices, and
+inspected wins/losses on the same frozen StackSample test set.
 
 ### D — End-to-end RAG
 

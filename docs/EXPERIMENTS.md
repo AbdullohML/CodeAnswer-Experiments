@@ -1,5 +1,16 @@
 # CodeAnswer Experiments
 
+## C6 paired error analysis
+
+The [C6 analysis](ERROR_ANALYSIS.md) reused A3's 1,200 frozen StackSample
+test queries. Hybrid minus dense Recall@10 was +0.029167, with a 95% paired
+bootstrap interval of [+0.010833, +0.046667] over 10,000 query-level
+resamples. The hybrid gained 78 and lost 43 top-10 positives; every gain had
+the gold document in BM25's top 40, while every loss lacked it there.
+Identifier, version, error-word, and query-length slices are descriptive,
+with no subgroup significance claim. This remains an in-corpus known-item
+evaluation, not a test of generated answer quality.
+
 ## B4 resource profile
 
 The [B4 resource profile](RESOURCE_COSTS.md) measured full and 20,000-vector

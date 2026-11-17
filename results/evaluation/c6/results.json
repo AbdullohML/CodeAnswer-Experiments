@@ -1,0 +1,74 @@
+{
+  "task": "C6",
+  "scope": "frozen in-corpus StackSample title-to-own-body known-item test",
+  "queries": 1200,
+  "settings": {
+    "schema_version": 1,
+    "split": "test",
+    "query_count": 1200,
+    "bootstrap_seed": 20260714,
+    "bootstrap_replicates": 10000,
+    "confidence_level": 0.95,
+    "short_max_tokens": 5,
+    "medium_max_tokens": 10,
+    "examples_per_direction": 6
+  },
+  "uncertainty_method": "query-level paired percentile bootstrap; resample the same IDs for both systems; no multiple-comparison correction for slices",
+  "hybrid_minus_dense": {
+    "recall@10": {
+      "mean_delta": 0.029167,
+      "ci_low": 0.010833,
+      "ci_high": 0.046667
+    },
+    "recall@40": {
+      "mean_delta": 0.020833,
+      "ci_low": 0.0075,
+      "ci_high": 0.034167
+    },
+    "mrr@10": {
+      "mean_delta": 0.021943,
+      "ci_low": 0.003959,
+      "ci_high": 0.040049
+    }
+  },
+  "paired_top10_gain_count": 78,
+  "paired_top10_loss_count": 43,
+  "paired_top40_gain_count": 48,
+  "paired_top40_loss_count": 23,
+  "top10_mechanisms": {
+    "gains_with_bm25_gold_in_top40": 78,
+    "gains_with_dense_gold_absent_top40": 26,
+    "losses_with_bm25_gold_absent_top40": 43,
+    "both_sources_gold_absent_top40": 150
+  },
+  "group_policy": "Regex categories use A3's patterns on all 1200 titles and may overlap. Token bins use whitespace-separated title tokens. All groups are descriptive; no subgroup significance claim.",
+  "example_policy": "Six largest top-10 reciprocal-rank gains and losses, with ties broken by frozen query order; titles not committed",
+  "provenance": {
+    "config_sha256": "00da2529efe6763f27fe81e8ec7ad9df2c9e51b33c276dab5ac9f4abb766c986",
+    "a3_results_sha256": "c180ef42086c0faf5f6163dfa7c53077785fa61fb95ef6508807f6b26fee486f",
+    "a3_paired_sha256": "19e498ca2dbcb972d2bcf07397cb17b4fb559aee982c0b82a0b716c439c1d4b2",
+    "frozen_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324",
+    "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b"
+  },
+  "files": {
+    "per_query": {
+      "file": "per_query.csv",
+      "sha256": "b2b3e17cfded2ac5164d41f85ef56ee4250d47146102cab9edfc96630895f1cf"
+    },
+    "groups": {
+      "file": "group_table.csv",
+      "sha256": "83109755f27c30d0ea76a9d30c2f1b4934c9dd66ec152960f07a1d9172b69334"
+    },
+    "examples": {
+      "file": "illustrative_examples.csv",
+      "sha256": "4ec9e8d4767e5c316e54b0c73aa4cad72906d8215cf21e02efc8b330db129a23"
+    }
+  },
+  "environment": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3"
+  },
+  "elapsed_seconds": 1.046,
+  "command": "scripts/analyze_retrieval_errors.py"
+}
