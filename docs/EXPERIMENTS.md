@@ -1,5 +1,16 @@
 # CodeAnswer Experiments
 
+## D2 local-Qwen behavior evaluation
+
+The [D2 protocol and results](RAG_EVALUATION.md) freeze 60 labeled behavior
+queries across development, calibration and test. The new B1/B2 HNSW path
+uses calibration-only score selection and saves complete per-query traces.
+On the 28-query held-out test, all 20 StackSample title queries were answered
+and all eight clearly nonprogramming controls were abstained; 14 of the 20
+answers used extractive fallback. The answer/abstain labels do not test
+correctness or source support, and these new results are not a reproduction
+of the historical RAG aggregates.
+
 ## D1 citation and fallback audit
 
 The [D1 audit](FALLBACK_CITATION_AUDIT.md) exercises the current citation

@@ -1,0 +1,39 @@
+{
+  "protocol": "D2 new local run; historical RAG aggregates are unverified",
+  "labels_sha256": "a41a736ee8a8764811c86eb268a7a6daf39fce108ae949a5ccae86b2d55ab308",
+  "calibration_source": "calibration only",
+  "selected_threshold": 2.803920269012451,
+  "corpus_path": "artifacts/corpus/qa_corpus.parquet",
+  "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b",
+  "pca_path": "artifacts/b1/pca_384_to_256.joblib",
+  "pca_sha256": "6a14901bed744a24b8bec12a74b25bccf8aa7c45ade19065ef0eae0a89f326ca",
+  "pca_dimensions": 128,
+  "index_path": "artifacts/b2/hnsw_128.faiss",
+  "index_sha256": "bbd34835c59a6b71ec11d2f19a27f5c3b0331c5b2e60d225c23ce1cf748cbe9b",
+  "encoder_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "reranker_model_path": "artifacts/models/ms-marco-MiniLM-L-6-v2",
+  "reranker_model_sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+  "generator": {
+    "model": "qwen2.5:3b",
+    "base_url": "http://localhost:11434",
+    "temperature": 0.0,
+    "context_length": 4096,
+    "seed": 20260714,
+    "max_tokens": 320,
+    "maximum_answer_words": 140
+  },
+  "retrieval_candidates": 40,
+  "final_sources": 3,
+  "ef_search": 128,
+  "device": "cpu",
+  "files_sha256": {
+    "calibration.jsonl": "88a98c5f4e939a05829fcf623e9db2121d43bf20d040ae0855d8f25c5567f286",
+    "selected_threshold.json": "ab94c1d9e082fd666728dfcebcc11ca02277ff7e9873f62f8ae66a562363bbb8",
+    "development.jsonl": "cdd5a96c0c237875fc2a32fa19d3a5fd70000b2039dd0d3452efa6be9d4ce9fd",
+    "test.jsonl": "91103943533c08937e21988d61dc1654c64af9e8dcc468bd364c1e0b9a864f3b"
+  },
+  "config_sha256": "793ab0da5679d0c33ffafb07a09210697b1919e0c54c123f01789518033c243f",
+  "pipeline_source_sha256": "47b7cfe508f95d7ba9fb27d8c9642d58db93939a34a1bd6d449091657bbdd6dc",
+  "c2_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324"
+}

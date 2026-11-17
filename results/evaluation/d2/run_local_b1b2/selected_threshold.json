@@ -1,0 +1,10 @@
+{
+  "threshold": 2.803920269012451,
+  "accuracy": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "selected_from": "calibration",
+  "calibration_query_count": 20,
+  "labels_sha256": "a41a736ee8a8764811c86eb268a7a6daf39fce108ae949a5ccae86b2d55ab308"
+}

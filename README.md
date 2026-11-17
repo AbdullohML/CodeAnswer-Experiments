@@ -334,7 +334,7 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 10 | B4 | B1, B2, B3 | DONE |
 | 11 | C6 | A3 | DONE |
 | 12 | D1 | C1; can run alongside retrieval work | DONE |
-| 13 | D2 | C2 and D1 | TODO |
+| 13 | D2 | C2 and D1 | DONE |
 | 14 | D3 | A4 and D2 | TODO |
 | 15 | D4 | D3 | TODO |
 | 16 | D5 | D4 | TODO |
@@ -514,7 +514,7 @@ unverified without its raw examples.
 
 #### D2 — Reproducible RAG evaluation harness
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P0. **Status:** DONE. **Estimated effort:** Medium.
 - **Goal:** Make the existing calibration and small RAG aggregates auditable.
 - **Implementation:** Add labeled development/calibration/test fixtures and a runner that saves raw generation, final answer, abstention, sources and all stage timings; recalibrate only on calibration data.
 - **Experiments:** Reproduce the available small protocol with local Qwen, or mark historical figures unverified if raw inputs cannot be recovered.
@@ -522,6 +522,15 @@ unverified without its raw examples.
 - **Deliverables:** Harness, tests, labels/manifest and per-query JSONL.
 - **Dependencies:** C2, D1.
 - **Acceptance criteria:** Test labels never select thresholds; each aggregate is traceable to individual runs and generator settings.
+
+The completed [D2 evaluation](docs/RAG_EVALUATION.md) freezes 60
+StackSample-title and handwritten out-of-domain behavior labels across
+development, calibration and test. It selects the threshold on calibration
+scores only, then saves local-Qwen prompts, raw/final answers, sources,
+fallback reasons, errors and stage timings per query. On the 28-query test,
+simple answer/abstain behavior was 28/28; 14/20 returned answers used
+extractive fallback. These controls do not measure answer correctness or
+source support, and the historical RAG aggregates remain unverified.
 
 #### D3 — BM25, dense and hybrid RAG
 

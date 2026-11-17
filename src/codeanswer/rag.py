@@ -223,16 +223,22 @@ Do not add a separate Sources section.
         max_tokens=320,
     )
 
-    answer = str(result["text"]).strip()
+    gate_started_at = time.perf_counter()
+    raw_answer = str(result["text"]).strip()
+    answer = raw_answer
 
     metrics = citation_metrics(
         answer,
         source_count=len(sources),
     )
 
-    used_fallback = (
-        metrics["citation_validity"] < 1.0 or metrics["citation_coverage"] < 0.5
-    )
+    raw_metrics = metrics.copy()
+    fallback_reasons = []
+    if metrics["citation_validity"] < 1.0:
+        fallback_reasons.append("numeric_citation_validity_below_one")
+    if metrics["citation_coverage"] < 0.5:
+        fallback_reasons.append("long_line_coverage_below_half")
+    used_fallback = bool(fallback_reasons)
 
     if used_fallback:
         answer = extractive_fallback(
@@ -250,6 +256,11 @@ Do not add a separate Sources section.
         "generation_ms": float(result.get("elapsed_ms", 0.0)),
         "prompt_tokens": int(result.get("prompt_tokens", 0)),
         "output_tokens": int(result.get("output_tokens", 0)),
+        "raw_answer": raw_answer,
+        "raw_citation_coverage": raw_metrics["citation_coverage"],
+        "raw_citation_validity": raw_metrics["citation_validity"],
+        "fallback_reasons": fallback_reasons,
+        "gate_ms": round((time.perf_counter() - gate_started_at) * 1000, 3),
         "used_fallback": used_fallback,
         **metrics,
     }
@@ -325,25 +336,29 @@ class CodeAnswerPipeline:
             [query],
             batch_size=1,
         )
+        encode_finished_at = time.perf_counter()
 
         reduced_query = transform_queries(
             self.pca,
             query_vector,
         )
+        projection_finished_at = time.perf_counter()
 
         vector_scores, vector_ids = search_index(
             self.index,
             reduced_query,
             top_k=self.retrieval_candidates,
         )
+        search_finished_at = time.perf_counter()
 
-        retrieval_ms = (time.perf_counter() - retrieval_started_at) * 1000
+        retrieval_ms = (search_finished_at - retrieval_started_at) * 1000
 
         document_ids = [
             int(document_id) for document_id in vector_ids[0] if document_id >= 0
         ]
 
         candidates = self._fetch_documents(document_ids)
+        fetch_finished_at = time.perf_counter()
 
         candidates.insert(
             1,
@@ -361,11 +376,21 @@ class CodeAnswerPipeline:
             batch_size=self.reranker_batch_size,
         )
 
-        rerank_ms = (time.perf_counter() - rerank_started_at) * 1000
+        rerank_finished_at = time.perf_counter()
+        rerank_ms = (rerank_finished_at - rerank_started_at) * 1000
 
         return sources, {
             "retrieval_ms": round(retrieval_ms, 3),
             "rerank_ms": round(rerank_ms, 3),
+            "encode_ms": round((encode_finished_at - retrieval_started_at) * 1000, 3),
+            "projection_ms": round(
+                (projection_finished_at - encode_finished_at) * 1000, 3
+            ),
+            "search_ms": round((search_finished_at - projection_finished_at) * 1000, 3),
+            "fetch_ms": round((fetch_finished_at - search_finished_at) * 1000, 3),
+            "rerank_model_ms": round(
+                (rerank_finished_at - fetch_finished_at) * 1000, 3
+            ),
         }
 
     def answer(self, query: str) -> dict[str, Any]:

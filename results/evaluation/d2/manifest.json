@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "purpose": "behavior answer/abstain only; no correctness or source-support labels",
+  "in_domain_selection": "first N rows of each disjoint C2 frozen split",
+  "in_domain_boundary": "indexed StackSample question titles; may be easy known-item queries",
+  "out_of_domain_selection": "handwritten nonprogramming controls listed in preparation script",
+  "threshold_selection_split": "calibration",
+  "test_threshold_policy": "fixed before reading test scores",
+  "labels_file": "labels.jsonl",
+  "labels_sha256": "a41a736ee8a8764811c86eb268a7a6daf39fce108ae949a5ccae86b2d55ab308",
+  "counts": {
+    "development": {
+      "answer": 8,
+      "abstain": 4
+    },
+    "calibration": {
+      "answer": 10,
+      "abstain": 10
+    },
+    "test": {
+      "answer": 20,
+      "abstain": 8
+    }
+  },
+  "source_c2_csv_sha256": {
+    "development": "4869f9ca9fe643184a49d9a20ffb3b130ca25621722f1d53c82af92999a6beb1",
+    "calibration": "5812cc589a3db5959118023ffe87dec450779482dfe880fc5c25a1c2c9821aea",
+    "test": "7a50030e656c9228986c2922110da90856a4aa558da623581e4af3224b2043c3"
+  },
+  "source_c2_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324"
+}
