@@ -75,6 +75,17 @@ in its own judged document and should not be read as new-user-question
 performance. The A4 page gives the vote-bonus ablation, paired gains and
 losses, resource costs, and per-query evidence.
 
+## B1 exact PCA dimension sweep
+
+The [B1 sweep](PCA_DIMENSION_SWEEP.md) fitted one 256-component PCA basis on
+100,000 recorded document IDs, then compared its 256/128/64 prefixes with
+the exact 384-dimensional baseline on all 1,200 frozen test queries.
+Recall@10 was 0.743333 at 384, 0.737500 at 256, 0.710000 at 128, and
+0.602500 at 64. Search p95 fell from 80.618 ms at 384 to 47.200, 17.834,
+and 8.859 ms respectively. Every index was exact, so these quality losses
+come from projection and normalization, not HNSW approximation. The B1 page
+links the fit IDs, per-query rankings, dimension manifests, and trade-off plot.
+
 ## Historical experiments
 
 ## Evaluation protocol

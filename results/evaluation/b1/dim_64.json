@@ -1,0 +1,29 @@
+{
+  "dimension": 64,
+  "explained_variance": 0.609507,
+  "index_bytes": 133120045,
+  "embedding_bytes": 133120000,
+  "quality": {
+    "queries": 1200,
+    "recall@10": 0.6025,
+    "recall@40": 0.7325,
+    "mrr@10": 0.44238,
+    "ndcg@10": 0.480492
+  },
+  "timing": {
+    "queries": 100,
+    "batch_search_seconds": 4.042,
+    "transform_p95_ms": 0.219,
+    "search_p50_ms": 7.574,
+    "search_p95_ms": 8.859
+  },
+  "gained@10_vs_384": 14,
+  "lost@10_vs_384": 183,
+  "retrieval_delta_recall@10_vs_384": -0.140833,
+  "ann_loss": 0.0,
+  "ann_loss_reason": "both systems use exact IndexFlatIP",
+  "index_sha256": "c764071677826ead96ed282d092c57c84e31606832991abfed72ceea4b75dec8",
+  "embedding_sha256": "e209ae48cf15cea9837c5b5f080449ae73e85f9a78c916fc750179105388256d",
+  "corpus_transform_seconds": 0.523,
+  "index_build_seconds": 0.117
+}

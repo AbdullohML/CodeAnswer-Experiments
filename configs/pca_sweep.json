@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "dimensions": [384, 256, 128, 64],
+  "fit_components": 256,
+  "sample_size": 100000,
+  "seed": 20260714,
+  "transform_batch_size": 10000,
+  "search_batch_size": 32,
+  "latency_queries": 100,
+  "warmup_queries": 3,
+  "faiss_threads": 4
+}

@@ -1,0 +1,206 @@
+{
+  "task": "B1",
+  "scope": "single-positive in-corpus title-to-body known-item",
+  "smoke_limit": null,
+  "dimensions": [
+    384,
+    256,
+    128,
+    64
+  ],
+  "query_count": 1200,
+  "settings": {
+    "schema_version": 1,
+    "dimensions": [
+      384,
+      256,
+      128,
+      64
+    ],
+    "fit_components": 256,
+    "sample_size": 100000,
+    "seed": 20260714,
+    "transform_batch_size": 10000,
+    "search_batch_size": 32,
+    "latency_queries": 100,
+    "warmup_queries": 3,
+    "faiss_threads": 4
+  },
+  "settings_sha256": "45b3f7b8da7287b6dcd972f7606ce9e3f586b879aeeb2a0967623e189f6dc170",
+  "command": [
+    "scripts/evaluate_pca_sweep.py",
+    "--output-dir",
+    "results/evaluation/b1"
+  ],
+  "provenance": {
+    "frozen_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324",
+    "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b",
+    "source_embedding_sha256": "c70fac0a93ef59a93a6f1a199aaa7c70cd42252309e080303cb827b9e9d737e1",
+    "source_index_sha256": "5fe8122cf981e464303487469933b9e1cb6d0b1cb2c19266e55d39e9c8057077",
+    "sample_ids_sha256": "6fce8b7197b8224f2961bb0bb1c542993f77f16048157b1acf885b90acc62dda",
+    "pca_model_sha256": "6a14901bed744a24b8bec12a74b25bccf8aa7c45ade19065ef0eae0a89f326ca",
+    "query_vectors_sha256": "134004be182633f89434c41b743cb4b4abfcce9a2b15de4834ad13b794db5c57",
+    "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+  },
+  "fit": {
+    "created_at": "2026-11-17T12:27:09.180841+00:00",
+    "source_embedding_path": "/home/abdullloh/CodeAnswer-Experiments/artifacts/embeddings/question_body_minilm_384.f32",
+    "output_embedding_path": "/home/abdullloh/CodeAnswer-Experiments/artifacts/b1/embeddings_256.f32",
+    "pca_model_path": "/home/abdullloh/CodeAnswer-Experiments/artifacts/b1/pca_384_to_256.joblib",
+    "objects": 520000,
+    "input_dimension": 384,
+    "output_dimension": 256,
+    "sample_size": 100000,
+    "seed": 20260714,
+    "explained_variance": 0.970214,
+    "fit_seconds": 3.541,
+    "transform_seconds": 1.49,
+    "source_mib": 761.72,
+    "output_mib": 507.81,
+    "memory_reduction_percent": 33.33,
+    "sample_norm_mean": 1.0,
+    "sample_norm_std": 0.0
+  },
+  "query_encode_seconds": 2.54,
+  "summaries": [
+    {
+      "dimension": 384,
+      "explained_variance": 1.0,
+      "index_bytes": 798720045,
+      "embedding_bytes": 798720000,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.743333,
+        "recall@40": 0.828333,
+        "mrr@10": 0.587885,
+        "ndcg@10": 0.625245
+      },
+      "timing": {
+        "queries": 100,
+        "batch_search_seconds": 20.773,
+        "transform_p95_ms": 0.0,
+        "search_p50_ms": 57.544,
+        "search_p95_ms": 80.618
+      },
+      "gained@10_vs_384": 0,
+      "lost@10_vs_384": 0,
+      "retrieval_delta_recall@10_vs_384": 0.0,
+      "ann_loss": 0.0,
+      "ann_loss_reason": "both systems use exact IndexFlatIP",
+      "index_sha256": "5fe8122cf981e464303487469933b9e1cb6d0b1cb2c19266e55d39e9c8057077",
+      "embedding_sha256": "c70fac0a93ef59a93a6f1a199aaa7c70cd42252309e080303cb827b9e9d737e1",
+      "corpus_transform_seconds": 0.0,
+      "index_build_seconds": 0.977
+    },
+    {
+      "dimension": 256,
+      "explained_variance": 0.970214,
+      "index_bytes": 532480045,
+      "embedding_bytes": 532480000,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.7375,
+        "recall@40": 0.8225,
+        "mrr@10": 0.581411,
+        "ndcg@10": 0.619067
+      },
+      "timing": {
+        "queries": 100,
+        "batch_search_seconds": 15.866,
+        "transform_p95_ms": 0.293,
+        "search_p50_ms": 40.041,
+        "search_p95_ms": 47.2
+      },
+      "gained@10_vs_384": 6,
+      "lost@10_vs_384": 13,
+      "retrieval_delta_recall@10_vs_384": -0.005833,
+      "ann_loss": 0.0,
+      "ann_loss_reason": "both systems use exact IndexFlatIP",
+      "index_sha256": "0e389eeb03dda40b404c24618524224c2a546921e162c55ef5589032f4f05527",
+      "embedding_sha256": "0f9f6e27c2da5513a06dc1aa880fd9effa29807d62af649014bdfc1b153a7bee",
+      "corpus_transform_seconds": 1.49,
+      "index_build_seconds": 0.52
+    },
+    {
+      "dimension": 128,
+      "explained_variance": 0.798672,
+      "index_bytes": 266240045,
+      "embedding_bytes": 266240000,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.71,
+        "recall@40": 0.81,
+        "mrr@10": 0.535694,
+        "ndcg@10": 0.577338
+      },
+      "timing": {
+        "queries": 100,
+        "batch_search_seconds": 7.476,
+        "transform_p95_ms": 0.277,
+        "search_p50_ms": 16.632,
+        "search_p95_ms": 17.834
+      },
+      "gained@10_vs_384": 16,
+      "lost@10_vs_384": 56,
+      "retrieval_delta_recall@10_vs_384": -0.033333,
+      "ann_loss": 0.0,
+      "ann_loss_reason": "both systems use exact IndexFlatIP",
+      "index_sha256": "6d9af75cdc1e66467c16de984c56770aceb42562283bc4bbc77e87f7c0405ada",
+      "embedding_sha256": "89f4ea0f2dbede4e19ae9a8435c82e0ae36ab53dc63e014fe62c5b7da1b7be67",
+      "corpus_transform_seconds": 1.279,
+      "index_build_seconds": 0.28
+    },
+    {
+      "dimension": 64,
+      "explained_variance": 0.609507,
+      "index_bytes": 133120045,
+      "embedding_bytes": 133120000,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.6025,
+        "recall@40": 0.7325,
+        "mrr@10": 0.44238,
+        "ndcg@10": 0.480492
+      },
+      "timing": {
+        "queries": 100,
+        "batch_search_seconds": 4.042,
+        "transform_p95_ms": 0.219,
+        "search_p50_ms": 7.574,
+        "search_p95_ms": 8.859
+      },
+      "gained@10_vs_384": 14,
+      "lost@10_vs_384": 183,
+      "retrieval_delta_recall@10_vs_384": -0.140833,
+      "ann_loss": 0.0,
+      "ann_loss_reason": "both systems use exact IndexFlatIP",
+      "index_sha256": "c764071677826ead96ed282d092c57c84e31606832991abfed72ceea4b75dec8",
+      "embedding_sha256": "e209ae48cf15cea9837c5b5f080449ae73e85f9a78c916fc750179105388256d",
+      "corpus_transform_seconds": 0.523,
+      "index_build_seconds": 0.117
+    }
+  ],
+  "files": {
+    "dim_64.json": "67880181d03d7326be45178cf6093f6e465e6fdb91306dca0ffaf0469c3d399d",
+    "dim_384.json": "eaf84bcb3bafa9870b8a6708f4c5c55f57314b8622b8aaa61ceced49b60d9d3d",
+    "dim_256.json": "fbe56f41943ab62b424322c0c1b52953ab86c582810e8e692471ed7f4b566078",
+    "fit_sample_ids.csv.gz": "6fce8b7197b8224f2961bb0bb1c542993f77f16048157b1acf885b90acc62dda",
+    "dim_128.json": "da5f2be3feccf75090e777e2190a5157b29bc4b929345510dc26c87948666e18",
+    "comparison.csv": "81e3a34b213b0496f28f534d5090de1df5e49f84f454a69c560a0d33356d3c12",
+    "tradeoff.svg": "fa7a07caf7ba0085da2275fb319492481a040f05e2d5f0c95d3888ed6ac8c9ea",
+    "per_query.csv.gz": "4661444d1be0997b41a4abba440a45ad45757a864f0d546bdae724aeca7d69f2"
+  },
+  "environment": {
+    "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+    "logical_cpus": 12,
+    "device": "cpu",
+    "faiss_threads": 4,
+    "packages": {
+      "numpy": "2.3.5",
+      "scikit-learn": "1.8.0",
+      "faiss-cpu": "1.14.3",
+      "sentence-transformers": "5.6.0",
+      "torch": "2.11.0"
+    }
+  }
+}

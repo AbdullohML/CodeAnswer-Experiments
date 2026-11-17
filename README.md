@@ -324,7 +324,7 @@ original benchmark.
 | 4 | A2 | A1 | DONE |
 | 5 | A3 | A2 | DONE |
 | 6 | A4 | A3 | DONE |
-| 7 | B1 | C2; can run alongside A tasks | TODO |
+| 7 | B1 | C2; can run alongside A tasks | DONE |
 | 8 | B2 | C2; can run alongside B1 | TODO |
 | 9 | B3 | C2; can run alongside B1/B2 | TODO |
 | 10 | B4 | B1, B2, B3 | TODO |
@@ -396,7 +396,7 @@ and measured GPU cost.
 
 #### B1 — PCA dimension sweep
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Medium.
 - **Goal:** Test whether the current 128 dimensions are a good trade-off.
 - **Implementation:** Reuse 384-dimensional embeddings; compare no PCA (384) with PCA 256, 128 and 64, each with exact IP search and normalized vectors.
 - **Experiments:** Fit on a fixed documented sample, then evaluate C2 queries at each dimension; use one extra artifact at a time.
@@ -404,6 +404,9 @@ and measured GPU cost.
 - **Deliverables:** Dimension-specific manifests, comparison table and plot.
 - **Dependencies:** C2.
 - **Acceptance criteria:** All dimensions use the same queries; compare retrieval loss separately from ANN loss and record fit sample IDs.
+
+The completed [B1 sweep](docs/PCA_DIMENSION_SWEEP.md) records the shared PCA
+fit sample, exact per-dimension rankings, measured trade-off, and plot.
 
 #### B2 — HNSW versus exact search
 
