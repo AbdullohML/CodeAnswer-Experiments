@@ -1,4 +1,4 @@
-"""Checks paired C6 metrics and resampling semantics."""
+"""Checks paired C3 metrics and resampling semantics."""
 
 from __future__ import annotations
 

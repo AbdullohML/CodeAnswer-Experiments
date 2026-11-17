@@ -33,9 +33,9 @@ rates. The historical 0.619048 fallback aggregate cannot be attributed to
 specific triggers because raw examples and logs are absent. The gate checks
 numeric citation syntax and coverage of long lines, not claim support.
 
-## C6 paired error analysis
+## C3 paired error analysis
 
-The [C6 analysis](ERROR_ANALYSIS.md) reused A3's 1,200 frozen StackSample
+The [C3 analysis](ERROR_ANALYSIS.md) reused A3's 1,200 frozen StackSample
 test queries. Hybrid minus dense Recall@10 was +0.029167, with a 95% paired
 bootstrap interval of [+0.010833, +0.046667] over 10,000 query-level
 resamples. The hybrid gained 78 and lost 43 top-10 positives; every gain had

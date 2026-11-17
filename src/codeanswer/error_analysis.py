@@ -85,7 +85,7 @@ def _load_inputs(root: Path, settings: dict) -> tuple[pd.DataFrame, pd.DataFrame
     queries, _ = load_frozen_split(frozen_path, corpus_path, split=settings["split"])
     paired = pd.read_csv(paired_path)
     if len(queries) != settings["query_count"] or len(paired) != len(queries):
-        raise ValueError("Frozen query count differs from C6 configuration")
+        raise ValueError("Frozen query count differs from C3 configuration")
     for name in ("query_id", "family_id", "relevant_doc_id"):
         if not np.array_equal(paired[name].to_numpy(), queries[name].to_numpy()):
             raise ValueError(f"A3 {name} differs from frozen test")
@@ -207,7 +207,7 @@ def run(root: Path, output: Path) -> dict:
         or settings.get("medium_max_tokens") != 10
         or settings.get("examples_per_direction") != 6
     ):
-        raise ValueError("Unsupported C6 configuration")
+        raise ValueError("Unsupported C3 configuration")
     queries, paired, a3 = _load_inputs(root, settings)
     groups, annotations = _groups(queries, settings)
     per_query = pd.concat(
@@ -259,7 +259,7 @@ def run(root: Path, output: Path) -> dict:
     group_table.to_csv(paths["groups"], index=False, lineterminator="\n")
     examples.to_csv(paths["examples"], index=False, lineterminator="\n")
     result = {
-        "task": "C6",
+        "task": "C3",
         "scope": "frozen in-corpus StackSample title-to-own-body known-item test",
         "queries": len(queries),
         "settings": settings,

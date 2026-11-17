@@ -302,8 +302,9 @@ calibration, and 1,200 test queries from that same corpus. Neither measures
 relevance to new user questions. The committed RAG aggregates lack their
 labeled examples and runnable evaluation
 script. Tasks below have tracked statuses; existing components are starting
-points, not evidence that these new experiments are complete. Existing task
-IDs are stable; removed work is not reassigned to them.
+points, not evidence that these new experiments are complete. The completed
+paired error analysis was renumbered from C6 to C3 after the unused C3–C5
+dataset branch was removed. D4 and D5 are outside the active roadmap.
 
 Use the same frozen query IDs, corpus and relevance judgments for paired
 comparisons. Save exact commands, seeds, artifact identities, model versions,
@@ -315,7 +316,7 @@ Ollama. Do not call a smoke result a full benchmark.
 
 ### Recommended execution order and progress
 
-This is one dependency-respecting order. The **Independent after** column
+This is one dependency-respecting order for active tasks. The **Independent after** column
 marks work that can proceed once the listed gate is done, without waiting for
 the preceding row. The remaining evaluation work uses the existing StackSample
 corpus and C2 frozen splits; no second dataset is planned.
@@ -332,16 +333,14 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 8 | B2 | C2; can run alongside B1 | DONE |
 | 9 | B3 | C2; can run alongside B1/B2 | DONE |
 | 10 | B4 | B1, B2, B3 | DONE |
-| 11 | C6 | A3 | DONE |
+| 11 | C3 | A3 | DONE |
 | 12 | D1 | C1; can run alongside retrieval work | DONE |
 | 13 | D2 | C2 and D1 | DONE |
 | 14 | D3 | A4 and D2 | DONE |
-| 15 | D4 | D3 | SKIPPED |
-| 16 | D5 | D4 | SKIPPED |
-| 17 | E1 | A3, B4, D3 | TODO |
-| 18 | E2 | C6, D3, E1 | TODO |
-| 19 | E3 | E2 | TODO |
-| 20 | E4 | E2 | TODO |
+| 15 | E1 | A3, B4, D3 | TODO |
+| 16 | E2 | C3, D3, E1 | TODO |
+| 17 | E3 | E2 | TODO |
+| 18 | E4 | E2 | TODO |
 
 ### A — Retrieval improvements
 
@@ -479,7 +478,7 @@ by the earlier search-only results.
 - **Dependencies:** C1.
 - **Acceptance criteria:** Zero unintended split overlap; identical reruns; document that title queries are still in-corpus known-item tests.
 
-#### C6 — Error analysis and uncertainty
+#### C3 — Error analysis and uncertainty
 
 - **Priority:** P1. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Explain where measured retrieval gains and losses arise.
@@ -490,7 +489,7 @@ by the earlier search-only results.
 - **Dependencies:** A3.
 - **Acceptance criteria:** No significance claim without paired query-level evidence; discuss known-item label limits.
 
-The completed [C6 analysis](docs/ERROR_ANALYSIS.md) reports paired bootstrap
+The completed [C3 analysis](docs/ERROR_ANALYSIS.md) reports paired bootstrap
 intervals, full-test rank-change mechanisms, descriptive title slices, and
 inspected wins/losses on the same frozen StackSample test set.
 
@@ -553,15 +552,9 @@ Saved per-query outputs and a six-query repeat show changed sources and
 some raw generation variation. Answer correctness and source support remain
 unjudged.
 
-#### D4 — Answer and citation quality
-
-**Status: SKIPPED.** Human judgments of correctness and claim-to-source
-support were removed from this interview roadmap. D2/D3 measure behavior
-and citation format only; their answers are not quality-rated.
-
-#### D5 — RAG failure analysis
-
-**Status: SKIPPED.** This task depended on D4's judged answer failures.
+Human answer-quality review and its dependent failure-analysis task were
+removed from this interview roadmap. D2/D3 measure behavior and citation
+format only; their answers are not quality-rated.
 
 ### E — Documentation and interview preparation
 
@@ -584,7 +577,7 @@ and citation format only; their answers are not quality-rated.
 - **Experiments:** Recompute tables from saved outputs and verify cited configs.
 - **Metrics:** Retrieval quality, answer/abstain behavior, citation format, p50/p95, memory, build time and uncertainty.
 - **Deliverables:** Results summary with compact plots and reproducibility commands.
-- **Dependencies:** C6, D3, E1.
+- **Dependencies:** C3, D3, E1.
 - **Acceptance criteria:** Every headline number has a source file, dataset/split, method and measurement scope.
 
 #### E3 — Interview preparation guide

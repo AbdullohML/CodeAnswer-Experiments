@@ -1,5 +1,5 @@
 {
-  "task": "C6",
+  "task": "C3",
   "scope": "frozen in-corpus StackSample title-to-own-body known-item test",
   "queries": 1200,
   "settings": {
@@ -69,6 +69,6 @@
     "numpy": "2.3.5",
     "pandas": "2.2.3"
   },
-  "elapsed_seconds": 1.046,
+  "elapsed_seconds": 0.736,
   "command": "scripts/analyze_retrieval_errors.py"
 }

@@ -1,13 +1,13 @@
-# C6 — Paired retrieval error analysis and uncertainty
+# C3 — Paired retrieval error analysis and uncertainty
 
 **Status: DONE.** This analysis reuses the [A3 paired per-query rankings](../results/evaluation/a3_test_paired_per_query.csv)
 for all 1,200 frozen C2 StackSample test titles. Each query has one judged
 positive: the body of that same indexed question. No new corpus, index, model,
 or relevance label was introduced. The [fixed settings](../configs/error_analysis.json),
-[result manifest](../results/evaluation/c6/results.json),
-[per-query deltas](../results/evaluation/c6/per_query.csv),
-[subgroup table](../results/evaluation/c6/group_table.csv), and
-[illustrative query IDs](../results/evaluation/c6/illustrative_examples.csv)
+[result manifest](../results/evaluation/c3/results.json),
+[per-query deltas](../results/evaluation/c3/per_query.csv),
+[subgroup table](../results/evaluation/c3/group_table.csv), and
+[illustrative query IDs](../results/evaluation/c3/illustrative_examples.csv)
 retain the evidence. The runner validates A3's hash, query order, labels,
 per-query ranks, and aggregate metrics against the frozen manifest before
 calculating anything.
@@ -73,9 +73,9 @@ composition rather than a general rule about query length.
 
 ## Inspected examples
 
-The [example CSV](../results/evaluation/c6/illustrative_examples.csv)
+The [example CSV](../results/evaluation/c3/illustrative_examples.csv)
 selects the six largest top-10 reciprocal-rank gains and losses, breaking
-ties by frozen query order. Its query IDs join directly to the C6 per-query
+ties by frozen query order. Its query IDs join directly to the C3 per-query
 table and A3 rankings. I inspected the selected titles and top candidates
 using the local corpus and A1/A2 top-40 ID lists. The examples below are
 deliberately illustrative; selection by outcome makes them unsuitable for
