@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "phase": "runtime",
+  "scope": "full",
+  "system": "flat128",
+  "settings": {
+    "schema_version": 1,
+    "threads": 4,
+    "subset_rows": 20000,
+    "full_rows": 520000,
+    "pca_sample_full": 100000,
+    "pca_sample_subset": 10000,
+    "pca_components": 256,
+    "seed": 20260714,
+    "batch_size": 10000,
+    "query_count": 100,
+    "warmup_queries": 3,
+    "repeats": 2,
+    "top_k": 40,
+    "hnsw_m": 16,
+    "hnsw_ef_construction": 100,
+    "hnsw_ef_search": 128
+  },
+  "hardware": {
+    "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+    "python": "3.13.9",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
+    "logical_cpus": 12,
+    "ram_total_gib": 14.901,
+    "gpu": {
+      "available": false,
+      "reason": "nvidia-smi exit 9"
+    },
+    "packages": {
+      "faiss-cpu": "1.14.3",
+      "numpy": "2.3.5",
+      "scikit-learn": "1.8.0",
+      "pyarrow": "25.0.0",
+      "psutil": "7.2.2",
+      "sentence-transformers": "5.6.0",
+      "torch": "2.11.0"
+    }
+  },
+  "command": "/home/abdullloh/CodeAnswer-Experiments/scripts/profile_resources.py runtime --scope full --output-dir /home/abdullloh/CodeAnswer-Experiments/results/evaluation/b4 --system flat128",
+  "details": {
+    "scope": "full",
+    "system": "flat128",
+    "rows": 520000,
+    "query_ids_source": "first 100 frozen test queries in file order",
+    "first_load_seconds": 0.235,
+    "second_load_seconds": 0.193,
+    "first_query_ms": {
+      "encode": 34.846,
+      "pca": 0.185,
+      "search": 19.658,
+      "fetch40": 636.651,
+      "total_to_fetch": 691.34
+    },
+    "warm_rounds": [
+      {
+        "encode": {
+          "p50_ms": 8.594,
+          "p95_ms": 10.363
+        },
+        "pca": {
+          "p50_ms": 0.12,
+          "p95_ms": 0.165
+        },
+        "search": {
+          "p50_ms": 15.432,
+          "p95_ms": 17.284
+        },
+        "fetch40": {
+          "p50_ms": 513.323,
+          "p95_ms": 561.447
+        },
+        "total_to_fetch": {
+          "p50_ms": 538.992,
+          "p95_ms": 586.654
+        }
+      },
+      {
+        "encode": {
+          "p50_ms": 8.727,
+          "p95_ms": 10.553
+        },
+        "pca": {
+          "p50_ms": 0.12,
+          "p95_ms": 0.17
+        },
+        "search": {
+          "p50_ms": 15.998,
+          "p95_ms": 17.451
+        },
+        "fetch40": {
+          "p50_ms": 515.84,
+          "p95_ms": 570.999
+        },
+        "total_to_fetch": {
+          "p50_ms": 539.331,
+          "p95_ms": 592.41
+        }
+      }
+    ],
+    "memory": {
+      "rss_start_mib": 873.359,
+      "rss_peak_mib": 3951.969,
+      "rss_delta_mib": 3078.609
+    },
+    "index_bytes": 266240045,
+    "index_sha256": "6d9af75cdc1e66467c16de984c56770aceb42562283bc4bbc77e87f7c0405ada",
+    "embedding_sha256": "89f4ea0f2dbede4e19ae9a8435c82e0ae36ab53dc63e014fe62c5b7da1b7be67",
+    "frozen_test_sha256": "7a50030e656c9228986c2922110da90856a4aa558da623581e4af3224b2043c3",
+    "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b",
+    "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "timing_boundary": "CPU encode, optional PCA, FAISS top-40 search, Parquet fetch and cleaning; excludes rerank and generation",
+    "load_boundary": "fresh process, first and second FAISS read_index; OS page cache not cleared",
+    "gpu_peak_vram_mib": null,
+    "gpu_note": "CPU-only phase; GPU driver unavailable"
+  }
+}

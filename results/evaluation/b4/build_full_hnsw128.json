@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "phase": "build",
+  "scope": "full",
+  "system": "hnsw128",
+  "settings": {
+    "schema_version": 1,
+    "threads": 4,
+    "subset_rows": 20000,
+    "full_rows": 520000,
+    "pca_sample_full": 100000,
+    "pca_sample_subset": 10000,
+    "pca_components": 256,
+    "seed": 20260714,
+    "batch_size": 10000,
+    "query_count": 100,
+    "warmup_queries": 3,
+    "repeats": 2,
+    "top_k": 40,
+    "hnsw_m": 16,
+    "hnsw_ef_construction": 100,
+    "hnsw_ef_search": 128
+  },
+  "hardware": {
+    "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+    "python": "3.13.9",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
+    "logical_cpus": 12,
+    "ram_total_gib": 14.901,
+    "gpu": {
+      "available": false,
+      "reason": "nvidia-smi exit 9"
+    },
+    "packages": {
+      "faiss-cpu": "1.14.3",
+      "numpy": "2.3.5",
+      "scikit-learn": "1.8.0",
+      "pyarrow": "25.0.0",
+      "psutil": "7.2.2",
+      "sentence-transformers": "5.6.0",
+      "torch": "2.11.0"
+    }
+  },
+  "command": "/home/abdullloh/CodeAnswer-Experiments/scripts/profile_resources.py build --scope full --output-dir /home/abdullloh/CodeAnswer-Experiments/results/evaluation/b4 --system hnsw128",
+  "details": {
+    "scope": "full",
+    "system": "hnsw128",
+    "rows": 520000,
+    "dimension": 128,
+    "build_seconds_add_only": 64.437,
+    "file_bytes": 341263354,
+    "file_source": "existing full artifact",
+    "memory": {
+      "rss_start_mib": 217.215,
+      "rss_peak_mib": 819.797,
+      "rss_delta_mib": 602.582
+    },
+    "embedding_sha256": "89f4ea0f2dbede4e19ae9a8435c82e0ae36ab53dc63e014fe62c5b7da1b7be67",
+    "existing_index_sha256": "bbd34835c59a6b71ec11d2f19a27f5c3b0331c5b2e60d225c23ce1cf748cbe9b",
+    "index_type": "IndexHNSWFlat",
+    "note": "Full build adds vectors in memory; existing artifact size is reported. File serialization is excluded from build seconds.",
+    "gpu_peak_vram_mib": null,
+    "gpu_note": "CPU-only phase; GPU driver unavailable"
+  }
+}

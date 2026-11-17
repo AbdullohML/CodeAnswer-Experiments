@@ -327,7 +327,7 @@ original benchmark.
 | 7 | B1 | C2; can run alongside A tasks | DONE |
 | 8 | B2 | C2; can run alongside B1 | DONE |
 | 9 | B3 | C2; can run alongside B1/B2 | DONE |
-| 10 | B4 | B1, B2, B3 | TODO |
+| 10 | B4 | B1, B2, B3 | DONE |
 | 11 | C3 | C1; can run alongside A/B tasks | TODO |
 | 12 | C4 | C3, if suitable | TODO |
 | 13 | C5 | C4 and A3 | TODO |
@@ -440,7 +440,7 @@ query rankings, ANN overlap and recall, latency/QPS curve, and the current
 
 #### B4 — Build and runtime resource costs
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Medium.
 - **Goal:** Measure the cost omitted by the current search-only timing and index-size reports.
 - **Implementation:** Instrument PCA fit/transform, index build, process peak RSS, GPU VRAM, load time, and query stages, including corpus fetch.
 - **Experiments:** Run on the available full artifacts where feasible, plus a named small subset; repeat latency after warm-up.
@@ -448,6 +448,11 @@ query rankings, ANN overlap and recall, latency/QPS curve, and the current
 - **Deliverables:** Hardware/config manifest and resource table for exact and selected HNSW setups.
 - **Dependencies:** B1, B2, B3.
 - **Acceptance criteria:** Specify cold/warm and full/subset results; do not equate index bytes with total memory.
+
+The completed [B4 profile](docs/RESOURCE_COSTS.md) measures full and 20k-subset
+PCA/build costs, full-index load and warmed query stages, process peak RSS,
+and the unavailable GPU VRAM boundary. It exposes corpus fetch time omitted
+by the earlier search-only results.
 
 ### C — Dataset and evaluation
 

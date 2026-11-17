@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "description": "B4 sequential isolated-process resource profile",
+  "plan": [
+    {
+      "phase": "pca",
+      "scope": "subset",
+      "system": null
+    },
+    {
+      "phase": "pca",
+      "scope": "full",
+      "system": null
+    },
+    {
+      "phase": "build",
+      "scope": "subset",
+      "system": "flat384"
+    },
+    {
+      "phase": "build",
+      "scope": "subset",
+      "system": "flat128"
+    },
+    {
+      "phase": "build",
+      "scope": "subset",
+      "system": "hnsw128"
+    },
+    {
+      "phase": "build",
+      "scope": "full",
+      "system": "flat384"
+    },
+    {
+      "phase": "build",
+      "scope": "full",
+      "system": "flat128"
+    },
+    {
+      "phase": "build",
+      "scope": "full",
+      "system": "hnsw128"
+    },
+    {
+      "phase": "runtime",
+      "scope": "full",
+      "system": "flat384"
+    },
+    {
+      "phase": "runtime",
+      "scope": "full",
+      "system": "flat128"
+    },
+    {
+      "phase": "runtime",
+      "scope": "full",
+      "system": "hnsw128"
+    }
+  ],
+  "hardware_and_settings": "embedded in each phase JSON",
+  "table": "resource_table.csv"
+}

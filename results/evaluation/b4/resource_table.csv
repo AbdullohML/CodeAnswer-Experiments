@@ -1,0 +1,12 @@
+phase,scope,system,rows,peak_rss_mib,peak_gpu_vram_mib,build_or_fit_s,index_file_mib,first_load_s,second_load_s,search_p50_ms,search_p95_ms,fetch_p50_ms,fetch_p95_ms
+pca,subset,pca,20000,340.164,,0.245,,,,,,,
+pca,full,pca,520000,1684.305,,3.321,,,,,,,
+build,subset,flat384,20000,276.18,,0.022,29.297,,,,,,
+build,subset,flat128,20000,237.004,,0.01,9.766,,,,,,
+build,subset,hnsw128,20000,242.043,,0.672,12.516,,,,,,
+build,full,flat384,520000,1740.871,,0.827,761.719,,,,,,
+build,full,flat128,520000,724.992,,0.242,253.906,,,,,,
+build,full,hnsw128,520000,819.797,,64.437,325.454,,,,,,
+runtime,full,flat384,520000,4313.996,,,,0.434,0.427,53.762,62.643,522.803,596.498
+runtime,full,flat128,520000,3951.969,,,,0.235,0.193,15.432,17.284,513.323,561.447
+runtime,full,hnsw128,520000,3926.914,,,,0.342,0.259,0.702,0.933,520.21,574.776

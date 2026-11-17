@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "phase": "pca",
+  "scope": "subset",
+  "system": null,
+  "settings": {
+    "schema_version": 1,
+    "threads": 4,
+    "subset_rows": 20000,
+    "full_rows": 520000,
+    "pca_sample_full": 100000,
+    "pca_sample_subset": 10000,
+    "pca_components": 256,
+    "seed": 20260714,
+    "batch_size": 10000,
+    "query_count": 100,
+    "warmup_queries": 3,
+    "repeats": 2,
+    "top_k": 40,
+    "hnsw_m": 16,
+    "hnsw_ef_construction": 100,
+    "hnsw_ef_search": 128
+  },
+  "hardware": {
+    "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+    "python": "3.13.9",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
+    "logical_cpus": 12,
+    "ram_total_gib": 14.901,
+    "gpu": {
+      "available": false,
+      "reason": "nvidia-smi exit 9"
+    },
+    "packages": {
+      "faiss-cpu": "1.14.3",
+      "numpy": "2.3.5",
+      "scikit-learn": "1.8.0",
+      "pyarrow": "25.0.0",
+      "psutil": "7.2.2",
+      "sentence-transformers": "5.6.0",
+      "torch": "2.11.0"
+    }
+  },
+  "command": "/home/abdullloh/CodeAnswer-Experiments/scripts/profile_resources.py pca --scope subset --output-dir /home/abdullloh/CodeAnswer-Experiments/results/evaluation/b4",
+  "details": {
+    "scope": "subset",
+    "rows": 20000,
+    "fit_sample_rows": 10000,
+    "fit_seconds": 0.245,
+    "explained_variance_256": 0.971028,
+    "transforms": {
+      "256": {
+        "seconds": 0.046,
+        "output_bytes": 20480000,
+        "stream_sha256": "fa61e0f72caf64e37774b6752077c3fc37f2a0890b5f57ed8b5c0732265d6520"
+      },
+      "128": {
+        "seconds": 0.03,
+        "output_bytes": 10240000,
+        "stream_sha256": "b473bc5be0beba634637a1056ec615effa4c6f84b73812ea50db1784ad28e549"
+      }
+    },
+    "memory": {
+      "rss_start_mib": 260.895,
+      "rss_peak_mib": 340.164,
+      "rss_delta_mib": 79.27
+    },
+    "source_sha256": "c70fac0a93ef59a93a6f1a199aaa7c70cd42252309e080303cb827b9e9d737e1",
+    "method": "randomized PCA fit; full streaming transform, no output file write",
+    "gpu_peak_vram_mib": null,
+    "gpu_note": "CPU-only phase; GPU driver unavailable"
+  }
+}

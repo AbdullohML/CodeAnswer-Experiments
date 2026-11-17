@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "threads": 4,
+  "subset_rows": 20000,
+  "full_rows": 520000,
+  "pca_sample_full": 100000,
+  "pca_sample_subset": 10000,
+  "pca_components": 256,
+  "seed": 20260714,
+  "batch_size": 10000,
+  "query_count": 100,
+  "warmup_queries": 3,
+  "repeats": 2,
+  "top_k": 40,
+  "hnsw_m": 16,
+  "hnsw_ef_construction": 100,
+  "hnsw_ef_search": 128
+}

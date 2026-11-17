@@ -1,5 +1,17 @@
 # CodeAnswer Experiments
 
+## B4 resource profile
+
+The [B4 resource profile](RESOURCE_COSTS.md) measured full and 20,000-vector
+subset PCA/build work, then profiled full-index loading and two warmed
+100-query retrieval rounds. On the full artifacts, Flat-384 / Flat-128 /
+HNSW-128 add times were 0.827 / 0.242 / 64.437 seconds, with process peak
+RSS 1,740.87 / 724.99 / 819.80 MiB. In the first warmed runtime round,
+HNSW-128 search p95 was 0.933 ms, but fetching and cleaning its 40 Parquet
+rows took 574.776 ms p95; process RSS peaked at 3,926.91 MiB. This excludes
+reranking and generation. First index load was process-first, with OS cache
+uncontrolled; GPU driver access was unavailable, so VRAM is unmeasured.
+
 These are recorded historical results. The [C1 evaluation audit](EVALUATION_AUDIT.md)
 explains which aggregates can be checked from committed files and which still
 need raw labels, per-query outputs, or a rerun. Citation validity here concerns
