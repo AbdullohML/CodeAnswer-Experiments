@@ -370,8 +370,6 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 14 | D3 | A4 and D2 | DONE |
 | 15 | E1 | A3, B4, D3 | DONE |
 | 16 | E2 | C3, D3, E1 | DONE |
-| 17 | E3 | E2 | TODO |
-| 18 | E4 | E2 | TODO |
 
 ### A — Retrieval improvements
 
@@ -584,10 +582,10 @@ some raw generation variation. Answer correctness and source support remain
 unjudged.
 
 Human answer-quality review and its dependent failure-analysis task were
-removed from this interview roadmap. D2/D3 measure behavior and citation
+removed from the active roadmap. D2/D3 measure behavior and citation
 format only; their answers are not quality-rated.
 
-### E — Documentation and interview preparation
+### E — Documentation and reproducibility
 
 #### E1 — Architecture and methodology update
 
@@ -622,28 +620,6 @@ and plot to its saved outputs. Run
 `PYTHONPATH=src python scripts/verify_results_summary.py` to recompute
 headline retrieval, reranking, uncertainty and RAG values from committed
 per-query records and check the cited configs.
-
-#### E3 — Interview preparation guide
-
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
-- **Goal:** Explain technical decisions and limits confidently in the Yandex interview.
-- **Implementation:** Update the interview guide with verified results; cover BM25/RRF, PCA/HNSW, reranking, leakage, abstention and failure cases.
-- **Experiments:** Walk through at least two queries and recalculate headline trade-offs from E2.
-- **Metrics:** Coverage of decisions, measured trade-offs and known limitations.
-- **Deliverables:** Updated guide with concise questions and evidence-backed answers.
-- **Dependencies:** E2.
-- **Acceptance criteria:** No claim of model training, answer correctness or whole-pipeline speedup beyond evidence.
-
-#### E4 — CV-ready project description
-
-- **Priority:** P2. **Status:** TODO. **Estimated effort:** Small.
-- **Goal:** Summarize impact without overstating results.
-- **Implementation:** Write two short bullets describing the pipeline and a verified, scoped measurement.
-- **Experiments:** Cross-check every number against E2 and its source files.
-- **Metrics:** Number of verified quantitative claims.
-- **Deliverables:** CV-ready bullets in docs.
-- **Dependencies:** E2.
-- **Acceptance criteria:** Each claim specifies its benchmark and scope; unverified RAG quality figures are excluded.
 
 ## License
 
