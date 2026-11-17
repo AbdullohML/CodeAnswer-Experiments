@@ -1,5 +1,16 @@
 # CodeAnswer Experiments
 
+## D1 citation and fallback audit
+
+The [D1 audit](FALLBACK_CITATION_AUDIT.md) exercises the current citation
+gate with 11 synthetic fixtures and separates raw generated text from the
+final output. Four of ten returning fixtures used fallback, one raised a
+synthetic generator error, and two final outputs still had 0/0 citation
+metrics due to empty evidence. These fixture counts are **not** production
+rates. The historical 0.619048 fallback aggregate cannot be attributed to
+specific triggers because raw examples and logs are absent. The gate checks
+numeric citation syntax and coverage of long lines, not claim support.
+
 ## C6 paired error analysis
 
 The [C6 analysis](ERROR_ANALYSIS.md) reused A3's 1,200 frozen StackSample
@@ -181,7 +192,7 @@ The final retriever uses `efSearch=128`. Compared with Flat-384, its
 single-query search p95 is approximately 138 times lower and its index is
 approximately 57% smaller. Recall@10 decreases by 0.0515.
 
-## Iteration 3: reranked citation-grounded RAG
+## Iteration 3: reranked cited-answer RAG
 
 The final pipeline retrieves 40 candidates, reranks them using
 `cross-encoder/ms-marco-MiniLM-L-6-v2`, and gives the best three sources
@@ -206,9 +217,12 @@ decides whether the retrieved evidence is answerable.
 | Total p50 | 2,941.517 ms |
 | Total p95 | 5,476.624 ms |
 
-When generated citation formatting fails validation, CodeAnswer returns a
-shortened version of a retrieved human-written answer instead of exposing
-an unsupported generated response.
+When generated citation-number validity is below 1.0 or long-line citation
+coverage is below 0.5, the current code returns a shortened version of the
+top retrieved human-written answer. It does not check claim-to-source support
+in either the generated or extractive answer. The raw examples behind the
+historical aggregate are unavailable, so the causes of its fallback rate
+cannot be verified.
 
 ## Limitations
 

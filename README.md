@@ -1,11 +1,12 @@
 # CodeAnswer
 
-CodeAnswer is a semantic search and citation-grounded RAG system for
+CodeAnswer is a semantic search and cited-answer RAG system for
 programming questions.
 
 It searches 520,000 answered Stack Overflow questions, reranks the most
-relevant candidates, and produces a concise answer grounded in the
-original human-written sources.
+relevant candidates, and attempts to produce a concise answer using the
+original human-written sources. Citation formatting checks do not verify
+whether a source supports the answer.
 
 The repository contains reusable Python modules and command-line scripts.
 Notebooks, datasets, embeddings, indexes, and model files are not tracked
@@ -26,9 +27,9 @@ ms-marco-MiniLM-L-6-v2 cross-encoder
     ↓
 Top 3 Stack Overflow sources
     ↓
-Calibrated answerability threshold
-    ├── weak evidence → abstain
-    └── sufficient evidence
+Configured answerability threshold
+    ├── score below threshold → abstain
+    └── score at or above threshold
             ↓
         Qwen2.5:3B through Ollama
             ↓
@@ -47,11 +48,12 @@ Normalized 384-dimensional MiniLM embeddings are stored in
 PCA reduces the vectors to 128 dimensions. HNSW provides approximate
 nearest-neighbor search with a controllable latency-quality trade-off.
 
-### 3. Reranked citation-grounded RAG
+### 3. Reranked cited-answer RAG
 
 The optimized retriever returns 40 candidates, a cross-encoder reranks
 them, and local Qwen generates an answer from the best three sources.
-The system checks citation numbering and abstains when evidence is weak.
+The system checks citation-number syntax and abstains when its top reranker
+score is below a configured threshold; that score is not a support judgment.
 
 ## Recorded results
 
@@ -264,7 +266,7 @@ PYTHONPATH=src python -m pytest -q
 
 The test suite covers corpus construction, resumable embeddings, FAISS
 indexing, retrieval metrics, PCA, HNSW, reranking, threshold calibration,
-citation validation, and safe fallback behavior.
+citation-format checks and extractive fallback behavior.
 
 ## Generated artifacts
 
@@ -287,7 +289,8 @@ models/
 - The answerability and RAG evaluation sets are relatively small.
 - The reported faithfulness value is an embedding-based proxy.
 - Qwen generation is the main latency bottleneck.
-- Invalid citation formatting often triggers the extractive fallback.
+- The historical 61.9% fallback aggregate has no saved raw answers or trigger
+  labels; the current syntax gate can trigger an extractive fallback.
 
 ## Project Improvement Roadmap
 
@@ -330,7 +333,7 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 9 | B3 | C2; can run alongside B1/B2 | DONE |
 | 10 | B4 | B1, B2, B3 | DONE |
 | 11 | C6 | A3 | DONE |
-| 12 | D1 | C1; can run alongside retrieval work | TODO |
+| 12 | D1 | C1; can run alongside retrieval work | DONE |
 | 13 | D2 | C2 and D1 | TODO |
 | 14 | D3 | A4 and D2 | TODO |
 | 15 | D4 | D3 | TODO |
@@ -495,7 +498,7 @@ inspected wins/losses on the same frozen StackSample test set.
 
 #### D1 — Audit extractive fallback and citation gate
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P0. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Explain the recorded 61.9% fallback rate and actual safety behavior.
 - **Implementation:** Trace citation coverage, invalid-number handling, word limit, source truncation, empty evidence and Ollama failures; classify final versus raw generated output.
 - **Experiments:** Add targeted fixture cases and manually inspect a small saved answer sample if available.
@@ -503,6 +506,11 @@ inspected wins/losses on the same frozen StackSample test set.
 - **Deliverables:** Behavior matrix, tests and prioritized fixes.
 - **Dependencies:** C1.
 - **Acceptance criteria:** Document that the current 50% line-coverage gate checks citation syntax, not claim support; no unsupported safety claim remains.
+
+The completed [D1 audit](docs/FALLBACK_CITATION_AUDIT.md) records synthetic
+raw/final gate behavior, source truncation, empty-evidence and generator
+failures, and prioritized fixes. The historical fallback rate remains
+unverified without its raw examples.
 
 #### D2 — Reproducible RAG evaluation harness
 

@@ -1,0 +1,247 @@
+{
+  "task": "D1",
+  "scope": "synthetic fixtures against current production helper; no Ollama call",
+  "historical_fallback_rate": 0.619048,
+  "historical_rate_status": "unverified aggregate; raw examples and triggers unavailable",
+  "cases": [
+    {
+      "case": "valid_number",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "Use the implementation. [1]",
+      "raw_word_count": 4,
+      "raw_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "raw_trigger_reasons": [],
+      "used_fallback": false,
+      "final_text": "Use the implementation. [1]",
+      "final_word_count": 4,
+      "final_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "out_of_range_number",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "Use the implementation. [3]",
+      "raw_word_count": 4,
+      "raw_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 0.0
+      },
+      "raw_trigger_reasons": [
+        "numeric_citation_validity_below_one"
+      ],
+      "used_fallback": true,
+      "final_text": "Use the supported implementation. [1]",
+      "final_word_count": 5,
+      "final_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "missing_citation",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "Use the implementation without citation.",
+      "raw_word_count": 5,
+      "raw_citation_metrics": {
+        "citation_coverage": 0.0,
+        "citation_validity": 0.0
+      },
+      "raw_trigger_reasons": [
+        "numeric_citation_validity_below_one",
+        "long_line_coverage_below_half"
+      ],
+      "used_fallback": true,
+      "final_text": "Use the supported implementation. [1]",
+      "final_word_count": 5,
+      "final_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "half_lines_cited",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "First long statement has a citation. [1]\nSecond long statement has no citation.",
+      "raw_word_count": 13,
+      "raw_citation_metrics": {
+        "citation_coverage": 0.5,
+        "citation_validity": 1.0
+      },
+      "raw_trigger_reasons": [],
+      "used_fallback": false,
+      "final_text": "First long statement has a citation. [1]\nSecond long statement has no citation.",
+      "final_word_count": 13,
+      "final_citation_metrics": {
+        "citation_coverage": 0.5,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "short_uncited_line",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "Short\nA long cited line follows. [1]",
+      "raw_word_count": 7,
+      "raw_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "raw_trigger_reasons": [],
+      "used_fallback": false,
+      "final_text": "Short\nA long cited line follows. [1]",
+      "final_word_count": 7,
+      "final_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "unsupported_claim_valid_syntax",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "The moon is made of blue code. [1]",
+      "raw_word_count": 8,
+      "raw_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "raw_trigger_reasons": [],
+      "used_fallback": false,
+      "final_text": "The moon is made of blue code. [1]",
+      "final_word_count": 8,
+      "final_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "malformed_and_valid_citation",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "Use the implementation [1] and maybe [x].",
+      "raw_word_count": 7,
+      "raw_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "raw_trigger_reasons": [],
+      "used_fallback": false,
+      "final_text": "Use the implementation [1] and maybe [x].",
+      "final_word_count": 7,
+      "final_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "over_word_limit",
+      "source_count": 1,
+      "maximum_words": 5,
+      "raw_text": "One two three four five six seven eight [1]",
+      "raw_word_count": 9,
+      "raw_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "raw_trigger_reasons": [],
+      "used_fallback": false,
+      "final_text": "One two three four five six seven eight [1]",
+      "final_word_count": 9,
+      "final_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      }
+    },
+    {
+      "case": "empty_answer_fallback",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": "No citation in this long text.",
+      "raw_word_count": 6,
+      "raw_citation_metrics": {
+        "citation_coverage": 0.0,
+        "citation_validity": 0.0
+      },
+      "raw_trigger_reasons": [
+        "numeric_citation_validity_below_one",
+        "long_line_coverage_below_half"
+      ],
+      "used_fallback": true,
+      "final_text": " [1]",
+      "final_word_count": 1,
+      "final_citation_metrics": {
+        "citation_coverage": 0.0,
+        "citation_validity": 0.0
+      }
+    },
+    {
+      "case": "no_source_fallback",
+      "source_count": 0,
+      "maximum_words": 50,
+      "raw_text": "A cited claim without a source. [1]",
+      "raw_word_count": 7,
+      "raw_citation_metrics": {
+        "citation_coverage": 1.0,
+        "citation_validity": 0.0
+      },
+      "raw_trigger_reasons": [
+        "numeric_citation_validity_below_one"
+      ],
+      "used_fallback": true,
+      "final_text": "I could not find enough reliable evidence in the Stack Overflow collection.",
+      "final_word_count": 12,
+      "final_citation_metrics": {
+        "citation_coverage": 0.0,
+        "citation_validity": 0.0
+      }
+    },
+    {
+      "case": "generator_error",
+      "source_count": 1,
+      "maximum_words": 50,
+      "raw_text": null,
+      "raw_word_count": null,
+      "error_type": "RuntimeError"
+    }
+  ],
+  "fixture_counts": {
+    "total": 11,
+    "returned": 10,
+    "fallback": 4,
+    "generator_errors": 1,
+    "raw_invalid_numeric_or_absent": 4,
+    "raw_coverage_below_half": 2,
+    "final_invalid_citation_metrics": 2
+  },
+  "empty_pipeline_error_type": "IndexError",
+  "below_threshold": {
+    "abstained": true,
+    "used_fallback": false,
+    "citation_metrics_present": false
+  },
+  "source_truncation": {
+    "question_limit_chars": 700,
+    "answer_limit_chars": 1400,
+    "tail_in_prompt": false,
+    "tail_in_fallback": true
+  },
+  "provenance": {
+    "rag_py_sha256": "5034a310c940f80b336a8134f1018196eea39d434e20627a28ff4b9174bfd01b",
+    "audit_py_sha256": "616d0c5c21a86fe4d2a79032a0bf462d948175eff9fa0fbb59ea5842fdc5454f",
+    "historical_summary_sha256": "cf397a1cd98afaf26bc3b17e1df04b55d27bfb0d8e4948ef5107a9bfc6cbf554"
+  },
+  "environment": {
+    "python": "3.13.9",
+    "pandas": "2.2.3"
+  },
+  "command": "scripts/audit_rag_gate.py"
+}

@@ -1,4 +1,4 @@
-"""Citation-grounded RAG pipeline for CodeAnswer."""
+"""RAG pipeline with citation-format checks for CodeAnswer."""
 
 from __future__ import annotations
 
@@ -17,10 +17,8 @@ from codeanswer.indexing import search_index
 from codeanswer.optimization import transform_queries
 from codeanswer.reranking import PairScorer, rerank_candidates
 
-
 ABSTENTION_TEXT = (
-    "I could not find enough reliable evidence "
-    "in the Stack Overflow collection."
+    "I could not find enough reliable evidence in the Stack Overflow collection."
 )
 
 CITATION_PATTERN = re.compile(r"\[(\d+)\]")
@@ -139,28 +137,18 @@ def citation_metrics(
     citation_numbers: list[int] = []
 
     for paragraph in paragraphs:
-        numbers = [
-            int(value)
-            for value in CITATION_PATTERN.findall(paragraph)
-        ]
+        numbers = [int(value) for value in CITATION_PATTERN.findall(paragraph)]
 
         if numbers:
             cited_paragraphs += 1
             citation_numbers.extend(numbers)
 
-    valid_citations = sum(
-        1 <= number <= source_count
-        for number in citation_numbers
-    )
+    valid_citations = sum(1 <= number <= source_count for number in citation_numbers)
 
     return {
-        "citation_coverage": (
-            cited_paragraphs / len(paragraphs)
-        ),
+        "citation_coverage": (cited_paragraphs / len(paragraphs)),
         "citation_validity": (
-            valid_citations / len(citation_numbers)
-            if citation_numbers
-            else 0.0
+            valid_citations / len(citation_numbers) if citation_numbers else 0.0
         ),
     }
 
@@ -189,14 +177,12 @@ def extractive_fallback(
     *,
     maximum_words: int,
 ) -> str:
-    """Return a shortened human-written answer."""
+    """Return a shortened top-source answer without checking support."""
 
     if sources.empty:
         return ABSTENTION_TEXT
 
-    words = clean_text(
-        str(sources.iloc[0]["answer"])
-    ).split()
+    words = clean_text(str(sources.iloc[0]["answer"])).split()
 
     answer = " ".join(words[:maximum_words])
 
@@ -213,7 +199,7 @@ def generate_grounded_answer(
     generator: Generator,
     maximum_words: int,
 ) -> dict[str, Any]:
-    """Generate a cited answer or use a safe extractive fallback."""
+    """Generate an answer or use the citation-format-triggered fallback."""
 
     system_prompt = f"""
 You are CodeAnswer, a programming assistant.
@@ -228,9 +214,7 @@ Do not add a separate Sources section.
 """.strip()
 
     user_prompt = (
-        f"Question:\n{query}\n\n"
-        f"Sources:\n{build_context(sources)}\n\n"
-        "Write the answer."
+        f"Question:\n{query}\n\nSources:\n{build_context(sources)}\n\nWrite the answer."
     )
 
     result = generator.generate(
@@ -247,8 +231,7 @@ Do not add a separate Sources section.
     )
 
     used_fallback = (
-        metrics["citation_validity"] < 1.0
-        or metrics["citation_coverage"] < 0.5
+        metrics["citation_validity"] < 1.0 or metrics["citation_coverage"] < 0.5
     )
 
     if used_fallback:
@@ -264,15 +247,9 @@ Do not add a separate Sources section.
 
     return {
         "answer": answer,
-        "generation_ms": float(
-            result.get("elapsed_ms", 0.0)
-        ),
-        "prompt_tokens": int(
-            result.get("prompt_tokens", 0)
-        ),
-        "output_tokens": int(
-            result.get("output_tokens", 0)
-        ),
+        "generation_ms": float(result.get("elapsed_ms", 0.0)),
+        "prompt_tokens": int(result.get("prompt_tokens", 0)),
+        "output_tokens": int(result.get("output_tokens", 0)),
         "used_fallback": used_fallback,
         **metrics,
     }
@@ -297,14 +274,10 @@ class CodeAnswerPipeline:
         ef_search: int = 128,
         maximum_answer_words: int = 140,
     ) -> None:
-        self.corpus_path = Path(
-            corpus_path
-        ).expanduser().resolve()
+        self.corpus_path = Path(corpus_path).expanduser().resolve()
 
         if not self.corpus_path.exists():
-            raise FileNotFoundError(
-                f"Corpus not found: {self.corpus_path}"
-            )
+            raise FileNotFoundError(f"Corpus not found: {self.corpus_path}")
 
         self.dataset = pads.dataset(
             self.corpus_path,
@@ -329,16 +302,9 @@ class CodeAnswerPipeline:
         self,
         document_ids: list[int],
     ) -> pd.DataFrame:
-        table = self.dataset.to_table(
-            filter=pads.field("doc_id").isin(document_ids)
-        )
+        table = self.dataset.to_table(filter=pads.field("doc_id").isin(document_ids))
 
-        frame = (
-            table.to_pandas()
-            .set_index("doc_id")
-            .loc[document_ids]
-            .reset_index()
-        )
+        frame = table.to_pandas().set_index("doc_id").loc[document_ids].reset_index()
 
         for column in [
             "title",
@@ -371,14 +337,10 @@ class CodeAnswerPipeline:
             top_k=self.retrieval_candidates,
         )
 
-        retrieval_ms = (
-            time.perf_counter() - retrieval_started_at
-        ) * 1000
+        retrieval_ms = (time.perf_counter() - retrieval_started_at) * 1000
 
         document_ids = [
-            int(document_id)
-            for document_id in vector_ids[0]
-            if document_id >= 0
+            int(document_id) for document_id in vector_ids[0] if document_id >= 0
         ]
 
         candidates = self._fetch_documents(document_ids)
@@ -386,7 +348,7 @@ class CodeAnswerPipeline:
         candidates.insert(
             1,
             "vector_similarity",
-            vector_scores[0][:len(candidates)],
+            vector_scores[0][: len(candidates)],
         )
 
         rerank_started_at = time.perf_counter()
@@ -399,9 +361,7 @@ class CodeAnswerPipeline:
             batch_size=self.reranker_batch_size,
         )
 
-        rerank_ms = (
-            time.perf_counter() - rerank_started_at
-        ) * 1000
+        rerank_ms = (time.perf_counter() - rerank_started_at) * 1000
 
         return sources, {
             "retrieval_ms": round(retrieval_ms, 3),
@@ -416,9 +376,7 @@ class CodeAnswerPipeline:
 
         sources, timing = self.retrieve_and_rerank(query)
 
-        top_score = float(
-            sources.iloc[0]["reranker_score"]
-        )
+        top_score = float(sources.iloc[0]["reranker_score"])
 
         if top_score < self.answerability_threshold:
             return {
@@ -429,17 +387,11 @@ class CodeAnswerPipeline:
                 **timing,
                 "generation_ms": 0.0,
                 "total_ms": round(
-                    (
-                        time.perf_counter()
-                        - total_started_at
-                    )
-                    * 1000,
+                    (time.perf_counter() - total_started_at) * 1000,
                     3,
                 ),
                 "used_fallback": False,
-                "sources": sources.to_dict(
-                    orient="records"
-                ),
+                "sources": sources.to_dict(orient="records"),
             }
 
         generation = generate_grounded_answer(
@@ -456,14 +408,8 @@ class CodeAnswerPipeline:
             **timing,
             **generation,
             "total_ms": round(
-                (
-                    time.perf_counter()
-                    - total_started_at
-                )
-                * 1000,
+                (time.perf_counter() - total_started_at) * 1000,
                 3,
             ),
-            "sources": sources.to_dict(
-                orient="records"
-            ),
+            "sources": sources.to_dict(orient="records"),
         }
