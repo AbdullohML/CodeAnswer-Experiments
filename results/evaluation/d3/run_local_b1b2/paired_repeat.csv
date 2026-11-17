@@ -1,0 +1,79 @@
+id,query,expected_behavior,dense_behavior,dense_fallback,dense_total_ms,dense_raw_answer,dense_final_answer,dense_source_doc_ids,bm25_behavior,bm25_fallback,bm25_total_ms,bm25_raw_answer,bm25_final_answer,bm25_source_doc_ids,hybrid_behavior,hybrid_fallback,hybrid_total_ms,hybrid_raw_answer,hybrid_final_answer,hybrid_source_doc_ids
+so-7274950,iPhone - How to send apprequests using facebook iOS sdk,answer,answer,True,4274.989,"You can send app requests using Facebook iOS SDK by following these steps:
+
+1) Ensure you have added the latest Facebook SDK to your project and registered your iPhone App as ""App on Facebook"" in Developer Settings.
+2) Use the FBSession.activeSession method to get the active session, then use [FBRequest requestForGraphPath:@""me/apprequests"" completionHandler:] with appropriate parameters like message and to user IDs. Make sure to adopt the FBDialogDelegate protocol for handling dialog events.
+
+[1] [2] [3]",The Requests dialog is not currently supported with the iOS SDK as documented in the README documentation hope this helps [1],"[330769, 288376, 87789]",answer,True,4923.902,"To send app requests using Facebook iOS SDK, follow these steps:
+
+1) Use the deprecated API with FBDialog:
+```objc
+NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@""Hi please add me as a friend."", @""message"", friendId, @""to"", nil];
+[appDelegate.facebook dialog:@""apprequests"" andParams:params andDelegate:self];
+```
+2) Ensure your app is registered on Facebook for App Integration.
+3) Update the expirationDate of *m_pFacebook object when session state changes:
+```objc
+[m_pFacebook fbDialogLogin:session.accessToken expirationDate:session.expirationDate];
+```
+Refer to [1] for detailed implementation.",The Requests dialog is not currently supported with the iOS SDK as documented in the README documentation hope this helps [1],"[330769, 87789, 234332]",answer,True,4256.848,"You can send app requests using Facebook iOS SDK by following these steps:
+
+1) Ensure you have added the latest Facebook SDK to your project and registered your iPhone App as ""App on Facebook"" in Developer Settings.
+2) Use the FBSession.activeSession method to get the active session, then use [FBRequest requestForGraphPath:@""me/apprequests"" completionHandler:] with appropriate parameters like message and to user IDs. Make sure to adopt the FBDialogDelegate protocol for handling dialog events.
+
+[1] [2] [3]",The Requests dialog is not currently supported with the iOS SDK as documented in the README documentation hope this helps [1],"[330769, 288376, 87789]"
+so-8574460,PHP if / else statements don't seem to work,answer,answer,False,2957.746,"if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","[157805, 276736, 440762]",answer,True,3947.966,"Change your if statements to use == instead of = for comparison in PHP. For example, change $category = ""Love"" to $category == ""Love"". This will fix the issue with not getting data from the database when checking categories.","= is not the same as == . In your if statements you are doing assignments not comparison. if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","[157805, 440762, 109866]",answer,False,3695.379,"if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","[157805, 276736, 440762]"
+so-14493620,Way to force image to reload from server,answer,answer,False,3508.965,"Try adding a timestamp parameter to force reload: var counter = 0; $(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>'); counter++; This will ensure each load is unique and forces IE to reload the image from server [1].","Try adding a timestamp parameter to force reload: var counter = 0; $(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>'); counter++; This will ensure each load is unique and forces IE to reload the image from server [1].","[148226, 121748, 194401]",answer,False,4825.505,"Add no-cache headers to the response so that the browser never caches the page. You can do this with a Filter which is mapped on the url-pattern of interest. For example *.jsf or just on the FacesServlet. Let the Filter set the following headers in the doFilter() method: response.setHeader(""Cache-Control"", ""no-cache, no-store, must-revalidate""); // HTTP 1.1. response.setHeader(""Pragma"", ""no-cache""); // HTTP 1.0. response.setDateHeader(""Expires"", 0); // Proxies. [3]","Add no-cache headers to the response so that the browser never caches the page. You can do this with a Filter which is mapped on the url-pattern of interest. For example *.jsf or just on the FacesServlet. Let the Filter set the following headers in the doFilter() method: response.setHeader(""Cache-Control"", ""no-cache, no-store, must-revalidate""); // HTTP 1.1. response.setHeader(""Pragma"", ""no-cache""); // HTTP 1.0. response.setDateHeader(""Expires"", 0); // Proxies. [3]","[148226, 78119, 177704]",answer,True,4077.866,"To force IE to reload the image from server, modify your code as follows:
+
+var counter = 0;
+$(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>');
+counter++;
+
+This increments a parameter in the URL which forces IE to refresh the image.","Try this: var counter = 0; ... $(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>'); counter++'; [1]","[148226, 78119, 194401]"
+so-31145620,How to rename Columns via Lamda function - fasterXML,answer,answer,True,3741.003,"You can rename columns in a DataFrame using pandas, which is more efficient than iterating with lambda functions for large datasets. Here's how you can do it:
+
+```python
+df.columns = ['ZZ'] + df.columns[:-1].tolist()
+```
+
+This code slices all column names except the last one, creates a list from those names, adds 'ZZ' to this list, and then reassigns the new list back to `df.columns`. This approach avoids loading everything into memory.","You could instead use uniVocity-parsers for that. The following solution streams the input rows to the output so you don't need to load everything in memory to then write your data back with new headers. It will be much faster: public static void main(String ... args) throws Exception{ Writer output = new StringWriter(); // use a FileWriter for your case CsvWriterSettings writerSettings = new CsvWriterSettings(); //many options here - check the documentation final CsvWriter writer = new CsvWriter(output, writerSettings); CsvParserSettings parserSettings = new CsvParserSettings(); //many options here as well parserSettings.setHeaderExtractionEnabled(true); // indicates the first row of the input are headers parserSettings.setRowProcessor(new AbstractRowProcessor(){ public void processStarted(ParsingContext context) { writer.writeHeaders(""Column A"", ""Column B"", ""... etc""); } public void rowProcessed(String[] row, ParsingContext context) { writer.writeRow(row); } public void processEnded(ParsingContext context) { writer.close(); } }); CsvParser parser = new CsvParser(parserSettings); Reader reader = new ... [1]","[164034, 419282, 402451]",answer,True,6943.9,"You could use uniVocity-parsers for faster and more efficient column renaming in CSV files without loading everything into memory. Here's a simplified example:
+
+```java
+public static void main(String[] args) throws Exception {
+    Writer output = new StringWriter();
+    CsvWriterSettings writerSettings = new CsvWriterSettings();
+    final CsvWriter writer = new CsvWriter(output, writerSettings);
+    
+    CsvParserSettings parserSettings = new CsvParserSettings();
+    parserSettings.setHeaderExtractionEnabled(true);
+    parserSettings.setRowProcessor(new AbstractRowProcessor() {
+        public void processStarted(ParsingContext context) {
+            writer.writeHeaders(""Column A"", ""Column B"", ""New Column Name"");
+        }
+        
+        public void rowProcessed(String[] row, ParsingContext context) {
+            writer.writeRow(row);
+        }
+        
+        public void processEnded(ParsingContext context) {
+            writer.close();
+        }
+    });
+    
+    CsvParser parser = new CsvParser(parserSettings);
+    Reader reader = new StringReader(""A,B,C\n1,2,3\n4,5,6"");
+    parser.parse(reader);
+    
+    System.out.println(output.toString());
+}
+```
+
+This code uses uniVocity-parsers to parse the CSV file and rename columns using a row processor.","You could instead use uniVocity-parsers for that. The following solution streams the input rows to the output so you don't need to load everything in memory to then write your data back with new headers. It will be much faster: public static void main(String ... args) throws Exception{ Writer output = new StringWriter(); // use a FileWriter for your case CsvWriterSettings writerSettings = new CsvWriterSettings(); //many options here - check the documentation final CsvWriter writer = new CsvWriter(output, writerSettings); CsvParserSettings parserSettings = new CsvParserSettings(); //many options here as well parserSettings.setHeaderExtractionEnabled(true); // indicates the first row of the input are headers parserSettings.setRowProcessor(new AbstractRowProcessor(){ public void processStarted(ParsingContext context) { writer.writeHeaders(""Column A"", ""Column B"", ""... etc""); } public void rowProcessed(String[] row, ParsingContext context) { writer.writeRow(row); } public void processEnded(ParsingContext context) { writer.close(); } }); CsvParser parser = new CsvParser(parserSettings); Reader reader = new ... [1]","[164034, 204312, 221326]",answer,True,3863.877,"You can use a list comprehension to rename columns dynamically without hardcoding each column name, which is suitable for many columns:
+
+```java
+df.columns = [col if col != 'NN' else 'ZZ' for col in df.columns]
+```
+
+This solution iterates over all current column names and renames the last one ('NN') to 'ZZ'.","You could instead use uniVocity-parsers for that. The following solution streams the input rows to the output so you don't need to load everything in memory to then write your data back with new headers. It will be much faster: public static void main(String ... args) throws Exception{ Writer output = new StringWriter(); // use a FileWriter for your case CsvWriterSettings writerSettings = new CsvWriterSettings(); //many options here - check the documentation final CsvWriter writer = new CsvWriter(output, writerSettings); CsvParserSettings parserSettings = new CsvParserSettings(); //many options here as well parserSettings.setHeaderExtractionEnabled(true); // indicates the first row of the input are headers parserSettings.setRowProcessor(new AbstractRowProcessor(){ public void processStarted(ParsingContext context) { writer.writeHeaders(""Column A"", ""Column B"", ""... etc""); } public void rowProcessed(String[] row, ParsingContext context) { writer.writeRow(row); } public void processEnded(ParsingContext context) { writer.close(); } }); CsvParser parser = new CsvParser(parserSettings); Reader reader = new ... [1]","[164034, 419282, 204312]"
+ood-test-07,Why do leaves change color in autumn?,abstain,abstain,False,2223.625,,I could not find enough reliable evidence in the Stack Overflow collection.,"[42082, 176592, 454603]",abstain,False,2249.717,,I could not find enough reliable evidence in the Stack Overflow collection.,"[212683, 372780, 377538]",abstain,False,2270.186,,I could not find enough reliable evidence in the Stack Overflow collection.,"[42082, 212683, 359206]"
+ood-test-08,How do I serve a tennis ball?,abstain,abstain,False,2325.039,,I could not find enough reliable evidence in the Stack Overflow collection.,"[178591, 340561, 452054]",abstain,False,2796.687,,I could not find enough reliable evidence in the Stack Overflow collection.,"[116557, 384262, 434404]",abstain,False,2715.775,,I could not find enough reliable evidence in the Stack Overflow collection.,"[116557, 384262, 353561]"

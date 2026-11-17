@@ -1,0 +1,70 @@
+{
+  "protocol": "D3 paired RAG; candidate strategy is the sole varied setting",
+  "test_labels_sha256": "a41a736ee8a8764811c86eb268a7a6daf39fce108ae949a5ccae86b2d55ab308",
+  "d2_manifest_sha256": "99d24af1abff472ed568df0a6995b283a91577ed35873d8c02938f32cfc0f123",
+  "answerability_threshold": 2.803920269012451,
+  "candidate_depth": 40,
+  "reranked_sources": 3,
+  "rrf_constant": 60,
+  "bm25_index_sha256": "fafb69241d24be96cef92e2381ac60bfdbcccd6d111ec3c57a3406466f6aa1ec",
+  "bm25_config_sha256": "c439a60450119dbfd99e2fd0b93c8518848941072b1aca0a576a21a0a8d29362",
+  "d2_shared_settings": {
+    "protocol": "D2 new local run; historical RAG aggregates are unverified",
+    "labels_sha256": "a41a736ee8a8764811c86eb268a7a6daf39fce108ae949a5ccae86b2d55ab308",
+    "calibration_source": "calibration only",
+    "selected_threshold": 2.803920269012451,
+    "corpus_path": "artifacts/corpus/qa_corpus.parquet",
+    "corpus_sha256": "d292c43bb416af90e24192fd430deab43c84c07c90faafbbc2313054eaf1cb0b",
+    "pca_path": "artifacts/b1/pca_384_to_256.joblib",
+    "pca_sha256": "6a14901bed744a24b8bec12a74b25bccf8aa7c45ade19065ef0eae0a89f326ca",
+    "pca_dimensions": 128,
+    "index_path": "artifacts/b2/hnsw_128.faiss",
+    "index_sha256": "bbd34835c59a6b71ec11d2f19a27f5c3b0331c5b2e60d225c23ce1cf748cbe9b",
+    "encoder_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "reranker_model_path": "artifacts/models/ms-marco-MiniLM-L-6-v2",
+    "reranker_model_sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+    "generator": {
+      "model": "qwen2.5:3b",
+      "base_url": "http://localhost:11434",
+      "temperature": 0.0,
+      "context_length": 4096,
+      "seed": 20260714,
+      "max_tokens": 320,
+      "maximum_answer_words": 140
+    },
+    "retrieval_candidates": 40,
+    "final_sources": 3,
+    "ef_search": 128,
+    "device": "cpu",
+    "files_sha256": {
+      "calibration.jsonl": "88a98c5f4e939a05829fcf623e9db2121d43bf20d040ae0855d8f25c5567f286",
+      "selected_threshold.json": "ab94c1d9e082fd666728dfcebcc11ca02277ff7e9873f62f8ae66a562363bbb8",
+      "development.jsonl": "cdd5a96c0c237875fc2a32fa19d3a5fd70000b2039dd0d3452efa6be9d4ce9fd",
+      "test.jsonl": "91103943533c08937e21988d61dc1654c64af9e8dcc468bd364c1e0b9a864f3b"
+    },
+    "config_sha256": "793ab0da5679d0c33ffafb07a09210697b1919e0c54c123f01789518033c243f",
+    "pipeline_source_sha256": "47b7cfe508f95d7ba9fb27d8c9642d58db93939a34a1bd6d449091657bbdd6dc",
+    "c2_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324"
+  },
+  "execution_order": "query major, strategies rotated by query index",
+  "repeat_query_ids": [
+    "so-7274950",
+    "so-8574460",
+    "so-14493620",
+    "so-31145620",
+    "ood-test-07",
+    "ood-test-08"
+  ],
+  "files_sha256": {
+    "summary.json": "fa84eff0ca32eac5822cd439510044e0c370f0e40bf7eddfac7304df129ac263",
+    "paired_per_query.csv": "7a8d865a3559cb4cbe13f33bfaca6072657da047f53a03f8c4254171273d05b6",
+    "paired_repeat.csv": "72fa5d13b2f435bd2d68793e42ba3f7464f9fc0348b9ff2496998fc0123c82b1",
+    "dense.jsonl": "78af61260802c46bedad5fc810972154d93434b4fde570d040ac9b403481fc73",
+    "bm25.jsonl": "93857da01d43e44e10c4f706cbda9d7c02eae955716b600826602401be6029d4",
+    "hybrid.jsonl": "f246f8ebfbfb2f24902e9f4fcb8b4cac40a49e16dc686ce028bb975598d0324a",
+    "dense_repeat.jsonl": "164e19275637678014cee1690d739be1f1cb3d27ff0d544508397dd822dc9038",
+    "bm25_repeat.jsonl": "05e1f74634eaee0fe0f3030617bfccd1558736e45c5b1ba58b482cd9e4395735",
+    "hybrid_repeat.jsonl": "a072f15cbcae65c8e49e400936936a8cad81ccdd88a82075f4797e1b73f680bb"
+  }
+}

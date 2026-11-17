@@ -1,5 +1,16 @@
 # CodeAnswer Experiments
 
+## D3 paired retrieval strategies in RAG
+
+The [D3 comparison](RAG_RETRIEVER_COMPARISON.md) switched only the top-40
+candidate strategy among B2 HNSW-128 dense, body-only BM25 and their RRF
+fusion on D2's same 28 held-out queries. Dense and hybrid matched 28/28
+simple answer/abstain labels; BM25 matched 27/28. Fallback among returned
+answers was 13/20, 14/19 and 12/20 respectively. All three saved full
+per-query raw and final outputs, sources, prompts and stage timings. The
+six-query repeat had stable final answers but some different raw Qwen text.
+These behavior and citation-format results do not establish answer quality.
+
 ## D2 local-Qwen behavior evaluation
 
 The [D2 protocol and results](RAG_EVALUATION.md) freeze 60 labeled behavior

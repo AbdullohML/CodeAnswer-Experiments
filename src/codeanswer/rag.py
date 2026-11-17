@@ -284,6 +284,7 @@ class CodeAnswerPipeline:
         reranker_batch_size: int = 32,
         ef_search: int = 128,
         maximum_answer_words: int = 140,
+        candidate_retriever: Any | None = None,
     ) -> None:
         self.corpus_path = Path(corpus_path).expanduser().resolve()
 
@@ -305,6 +306,7 @@ class CodeAnswerPipeline:
         self.final_sources = final_sources
         self.reranker_batch_size = reranker_batch_size
         self.maximum_answer_words = maximum_answer_words
+        self.candidate_retriever = candidate_retriever
 
         if hasattr(self.index, "hnsw"):
             self.index.hnsw.efSearch = ef_search
@@ -330,6 +332,33 @@ class CodeAnswerPipeline:
         self,
         query: str,
     ) -> tuple[pd.DataFrame, dict[str, float]]:
+        if self.candidate_retriever is not None:
+            ids, scores, retrieval_timing = self.candidate_retriever.retrieve(
+                query, self.retrieval_candidates
+            )
+            fetch_started_at = time.perf_counter()
+            candidates = self._fetch_documents(ids)
+            fetch_finished_at = time.perf_counter()
+            candidates.insert(1, "candidate_score", scores)
+            rerank_started_at = time.perf_counter()
+            sources = rerank_candidates(
+                query,
+                candidates,
+                scorer=self.reranker,
+                top_k=self.final_sources,
+                batch_size=self.reranker_batch_size,
+            )
+            rerank_finished_at = time.perf_counter()
+            timing = {
+                **retrieval_timing,
+                "fetch_ms": round((fetch_finished_at - fetch_started_at) * 1000, 3),
+                "rerank_model_ms": round(
+                    (rerank_finished_at - rerank_started_at) * 1000, 3
+                ),
+                "rerank_ms": round((rerank_finished_at - fetch_started_at) * 1000, 3),
+            }
+            return sources, timing
+
         retrieval_started_at = time.perf_counter()
 
         query_vector = self.encoder.encode(

@@ -1,0 +1,669 @@
+{
+  "main": {
+    "dense": {
+      "query_count": 28,
+      "behavior_accuracy": 1.0,
+      "in_domain_answer_rate": 1.0,
+      "out_of_domain_abstention_rate": 1.0,
+      "fallback_rate_among_answers": 0.65,
+      "error_rate": 0.0,
+      "counts": {
+        "answer": 20,
+        "abstain": 8,
+        "error": 0,
+        "fallback": 13,
+        "fallback_invalid_number": 11,
+        "fallback_low_coverage": 13,
+        "in_domain": 20,
+        "out_of_domain": 8,
+        "generator_errors": 0,
+        "pre_generation_errors": 0
+      },
+      "latency_ms": {
+        "total_ms": {
+          "n": 28,
+          "p50": 3598.671,
+          "p95": 5083.299
+        },
+        "retrieval_ms": {
+          "n": 28,
+          "p50": 10.057,
+          "p95": 23.693
+        },
+        "encode_ms": {
+          "n": 28,
+          "p50": 8.511,
+          "p95": 22.002
+        },
+        "projection_ms": {
+          "n": 28,
+          "p50": 0.383,
+          "p95": 0.538
+        },
+        "search_ms": {
+          "n": 28,
+          "p50": 1.082,
+          "p95": 1.606
+        },
+        "fetch_ms": {
+          "n": 28,
+          "p50": 577.05,
+          "p95": 753.834
+        },
+        "rerank_model_ms": {
+          "n": 28,
+          "p50": 1491.221,
+          "p95": 1740.573
+        },
+        "generation_ms": {
+          "n": 28,
+          "p50": 1398.704,
+          "p95": 3046.256
+        },
+        "gate_ms": {
+          "n": 20,
+          "p50": 0.228,
+          "p95": 0.335
+        },
+        "dense_search_ms": {
+          "n": 28,
+          "p50": 1.082,
+          "p95": 1.606
+        },
+        "bm25_search_ms": {
+          "n": 28,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "fusion_ms": {
+          "n": 28,
+          "p50": 0.0,
+          "p95": 0.0
+        }
+      },
+      "latency_boundary": "Per-query completed pipeline calls; errors excluded; total includes retrieval, fetch, rerank, gate, and generation",
+      "behavior_definition": "answer/abstain agreement with domain-control labels; does not measure answer correctness or source support",
+      "citation_format": {
+        "raw_citation_coverage": 0.379167,
+        "raw_citation_validity": 0.45,
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "tokens": {
+        "answered_queries": 20,
+        "prompt_total": 19788,
+        "output_total": 1735,
+        "prompt_distribution": {
+          "n": 20,
+          "p50": 949.0,
+          "p95": 1327.6
+        },
+        "output_distribution": {
+          "n": 20,
+          "p50": 77.0,
+          "p95": 160.25
+        }
+      },
+      "candidate_counts": {
+        "min": 40,
+        "max": 40
+      }
+    },
+    "bm25": {
+      "query_count": 28,
+      "behavior_accuracy": 0.9642857142857143,
+      "in_domain_answer_rate": 0.95,
+      "out_of_domain_abstention_rate": 1.0,
+      "fallback_rate_among_answers": 0.7368421052631579,
+      "error_rate": 0.0,
+      "counts": {
+        "answer": 19,
+        "abstain": 9,
+        "error": 0,
+        "fallback": 14,
+        "fallback_invalid_number": 13,
+        "fallback_low_coverage": 14,
+        "in_domain": 20,
+        "out_of_domain": 8,
+        "generator_errors": 0,
+        "pre_generation_errors": 0
+      },
+      "latency_ms": {
+        "total_ms": {
+          "n": 28,
+          "p50": 4098.073,
+          "p95": 6158.79
+        },
+        "retrieval_ms": {
+          "n": 28,
+          "p50": 384.887,
+          "p95": 709.788
+        },
+        "encode_ms": {
+          "n": 28,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "projection_ms": {
+          "n": 28,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "search_ms": {
+          "n": 28,
+          "p50": 384.877,
+          "p95": 709.774
+        },
+        "fetch_ms": {
+          "n": 28,
+          "p50": 568.876,
+          "p95": 665.234
+        },
+        "rerank_model_ms": {
+          "n": 28,
+          "p50": 1518.084,
+          "p95": 1832.746
+        },
+        "generation_ms": {
+          "n": 28,
+          "p50": 1523.704,
+          "p95": 3487.52
+        },
+        "gate_ms": {
+          "n": 19,
+          "p50": 0.254,
+          "p95": 0.398
+        },
+        "dense_search_ms": {
+          "n": 28,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "bm25_search_ms": {
+          "n": 28,
+          "p50": 384.877,
+          "p95": 709.774
+        },
+        "fusion_ms": {
+          "n": 28,
+          "p50": 0.0,
+          "p95": 0.0
+        }
+      },
+      "latency_boundary": "Per-query completed pipeline calls; errors excluded; total includes retrieval, fetch, rerank, gate, and generation",
+      "behavior_definition": "answer/abstain agreement with domain-control labels; does not measure answer correctness or source support",
+      "citation_format": {
+        "raw_citation_coverage": 0.276316,
+        "raw_citation_validity": 0.315789,
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "tokens": {
+        "answered_queries": 19,
+        "prompt_total": 18942,
+        "output_total": 2190,
+        "prompt_distribution": {
+          "n": 19,
+          "p50": 1011.0,
+          "p95": 1284.1
+        },
+        "output_distribution": {
+          "n": 19,
+          "p50": 96.0,
+          "p95": 212.1
+        }
+      },
+      "candidate_counts": {
+        "min": 40,
+        "max": 40
+      }
+    },
+    "hybrid": {
+      "query_count": 28,
+      "behavior_accuracy": 1.0,
+      "in_domain_answer_rate": 1.0,
+      "out_of_domain_abstention_rate": 1.0,
+      "fallback_rate_among_answers": 0.6,
+      "error_rate": 0.0,
+      "counts": {
+        "answer": 20,
+        "abstain": 8,
+        "error": 0,
+        "fallback": 12,
+        "fallback_invalid_number": 10,
+        "fallback_low_coverage": 11,
+        "in_domain": 20,
+        "out_of_domain": 8,
+        "generator_errors": 0,
+        "pre_generation_errors": 0
+      },
+      "latency_ms": {
+        "total_ms": {
+          "n": 28,
+          "p50": 3988.084,
+          "p95": 6695.368
+        },
+        "retrieval_ms": {
+          "n": 28,
+          "p50": 403.364,
+          "p95": 732.086
+        },
+        "encode_ms": {
+          "n": 28,
+          "p50": 8.436,
+          "p95": 14.236
+        },
+        "projection_ms": {
+          "n": 28,
+          "p50": 0.344,
+          "p95": 0.496
+        },
+        "search_ms": {
+          "n": 28,
+          "p50": 393.751,
+          "p95": 723.536
+        },
+        "fetch_ms": {
+          "n": 28,
+          "p50": 580.053,
+          "p95": 700.704
+        },
+        "rerank_model_ms": {
+          "n": 28,
+          "p50": 1557.626,
+          "p95": 1756.623
+        },
+        "generation_ms": {
+          "n": 28,
+          "p50": 1464.589,
+          "p95": 3849.269
+        },
+        "gate_ms": {
+          "n": 20,
+          "p50": 0.23,
+          "p95": 0.353
+        },
+        "dense_search_ms": {
+          "n": 28,
+          "p50": 1.01,
+          "p95": 1.415
+        },
+        "bm25_search_ms": {
+          "n": 28,
+          "p50": 391.673,
+          "p95": 722.236
+        },
+        "fusion_ms": {
+          "n": 28,
+          "p50": 0.072,
+          "p95": 0.131
+        }
+      },
+      "latency_boundary": "Per-query completed pipeline calls; errors excluded; total includes retrieval, fetch, rerank, gate, and generation",
+      "behavior_definition": "answer/abstain agreement with domain-control labels; does not measure answer correctness or source support",
+      "citation_format": {
+        "raw_citation_coverage": 0.46,
+        "raw_citation_validity": 0.54,
+        "citation_coverage": 0.9875,
+        "citation_validity": 1.0
+      },
+      "tokens": {
+        "answered_queries": 20,
+        "prompt_total": 19764,
+        "output_total": 2010,
+        "prompt_distribution": {
+          "n": 20,
+          "p50": 949.0,
+          "p95": 1262.05
+        },
+        "output_distribution": {
+          "n": 20,
+          "p50": 79.0,
+          "p95": 219.35
+        }
+      },
+      "candidate_counts": {
+        "min": 40,
+        "max": 40
+      }
+    }
+  },
+  "repeat": {
+    "dense": {
+      "query_count": 6,
+      "behavior_accuracy": 1.0,
+      "in_domain_answer_rate": 1.0,
+      "out_of_domain_abstention_rate": 1.0,
+      "fallback_rate_among_answers": 0.5,
+      "error_rate": 0.0,
+      "counts": {
+        "answer": 4,
+        "abstain": 2,
+        "error": 0,
+        "fallback": 2,
+        "fallback_invalid_number": 2,
+        "fallback_low_coverage": 2,
+        "in_domain": 4,
+        "out_of_domain": 2,
+        "generator_errors": 0,
+        "pre_generation_errors": 0
+      },
+      "latency_ms": {
+        "total_ms": {
+          "n": 6,
+          "p50": 3233.356,
+          "p95": 4141.492
+        },
+        "retrieval_ms": {
+          "n": 6,
+          "p50": 9.677,
+          "p95": 12.594
+        },
+        "encode_ms": {
+          "n": 6,
+          "p50": 8.142,
+          "p95": 10.8
+        },
+        "projection_ms": {
+          "n": 6,
+          "p50": 0.345,
+          "p95": 0.448
+        },
+        "search_ms": {
+          "n": 6,
+          "p50": 1.12,
+          "p95": 1.352
+        },
+        "fetch_ms": {
+          "n": 6,
+          "p50": 561.607,
+          "p95": 638.803
+        },
+        "rerank_model_ms": {
+          "n": 6,
+          "p50": 1694.395,
+          "p95": 1773.015
+        },
+        "generation_ms": {
+          "n": 6,
+          "p50": 965.71,
+          "p95": 1927.905
+        },
+        "gate_ms": {
+          "n": 4,
+          "p50": 0.154,
+          "p95": 0.43
+        },
+        "dense_search_ms": {
+          "n": 6,
+          "p50": 1.12,
+          "p95": 1.352
+        },
+        "bm25_search_ms": {
+          "n": 6,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "fusion_ms": {
+          "n": 6,
+          "p50": 0.0,
+          "p95": 0.0
+        }
+      },
+      "latency_boundary": "Per-query completed pipeline calls; errors excluded; total includes retrieval, fetch, rerank, gate, and generation",
+      "behavior_definition": "answer/abstain agreement with domain-control labels; does not measure answer correctness or source support",
+      "citation_format": {
+        "raw_citation_coverage": 0.5,
+        "raw_citation_validity": 0.5,
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "tokens": {
+        "answered_queries": 4,
+        "prompt_total": 3769,
+        "output_total": 303,
+        "prompt_distribution": {
+          "n": 4,
+          "p50": 949.0,
+          "p95": 1057.45
+        },
+        "output_distribution": {
+          "n": 4,
+          "p50": 80.0,
+          "p95": 105.8
+        }
+      },
+      "candidate_counts": {
+        "min": 40,
+        "max": 40
+      }
+    },
+    "bm25": {
+      "query_count": 6,
+      "behavior_accuracy": 1.0,
+      "in_domain_answer_rate": 1.0,
+      "out_of_domain_abstention_rate": 1.0,
+      "fallback_rate_among_answers": 0.75,
+      "error_rate": 0.0,
+      "counts": {
+        "answer": 4,
+        "abstain": 2,
+        "error": 0,
+        "fallback": 3,
+        "fallback_invalid_number": 2,
+        "fallback_low_coverage": 3,
+        "in_domain": 4,
+        "out_of_domain": 2,
+        "generator_errors": 0,
+        "pre_generation_errors": 0
+      },
+      "latency_ms": {
+        "total_ms": {
+          "n": 6,
+          "p50": 4386.735,
+          "p95": 6438.9
+        },
+        "retrieval_ms": {
+          "n": 6,
+          "p50": 400.945,
+          "p95": 489.819
+        },
+        "encode_ms": {
+          "n": 6,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "projection_ms": {
+          "n": 6,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "search_ms": {
+          "n": 6,
+          "p50": 400.934,
+          "p95": 489.807
+        },
+        "fetch_ms": {
+          "n": 6,
+          "p50": 565.878,
+          "p95": 628.507
+        },
+        "rerank_model_ms": {
+          "n": 6,
+          "p50": 1721.249,
+          "p95": 1773.364
+        },
+        "generation_ms": {
+          "n": 6,
+          "p50": 1607.67,
+          "p95": 3834.472
+        },
+        "gate_ms": {
+          "n": 4,
+          "p50": 0.276,
+          "p95": 0.444
+        },
+        "dense_search_ms": {
+          "n": 6,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "bm25_search_ms": {
+          "n": 6,
+          "p50": 400.934,
+          "p95": 489.807
+        },
+        "fusion_ms": {
+          "n": 6,
+          "p50": 0.0,
+          "p95": 0.0
+        }
+      },
+      "latency_boundary": "Per-query completed pipeline calls; errors excluded; total includes retrieval, fetch, rerank, gate, and generation",
+      "behavior_definition": "answer/abstain agreement with domain-control labels; does not measure answer correctness or source support",
+      "citation_format": {
+        "raw_citation_coverage": 0.28125,
+        "raw_citation_validity": 0.5,
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "tokens": {
+        "answered_queries": 4,
+        "prompt_total": 4021,
+        "output_total": 559,
+        "prompt_distribution": {
+          "n": 4,
+          "p50": 993.0,
+          "p95": 1199.7
+        },
+        "output_distribution": {
+          "n": 4,
+          "p50": 126.0,
+          "p95": 239.7
+        }
+      },
+      "candidate_counts": {
+        "min": 40,
+        "max": 40
+      }
+    },
+    "hybrid": {
+      "query_count": 6,
+      "behavior_accuracy": 1.0,
+      "in_domain_answer_rate": 1.0,
+      "out_of_domain_abstention_rate": 1.0,
+      "fallback_rate_among_answers": 0.75,
+      "error_rate": 0.0,
+      "counts": {
+        "answer": 4,
+        "abstain": 2,
+        "error": 0,
+        "fallback": 3,
+        "fallback_invalid_number": 3,
+        "fallback_low_coverage": 3,
+        "in_domain": 4,
+        "out_of_domain": 2,
+        "generator_errors": 0,
+        "pre_generation_errors": 0
+      },
+      "latency_ms": {
+        "total_ms": {
+          "n": 6,
+          "p50": 3779.628,
+          "p95": 4212.102
+        },
+        "retrieval_ms": {
+          "n": 6,
+          "p50": 400.312,
+          "p95": 499.569
+        },
+        "encode_ms": {
+          "n": 6,
+          "p50": 8.709,
+          "p95": 15.349
+        },
+        "projection_ms": {
+          "n": 6,
+          "p50": 0.384,
+          "p95": 0.439
+        },
+        "search_ms": {
+          "n": 6,
+          "p50": 391.457,
+          "p95": 484.52
+        },
+        "fetch_ms": {
+          "n": 6,
+          "p50": 580.993,
+          "p95": 619.921
+        },
+        "rerank_model_ms": {
+          "n": 6,
+          "p50": 1557.85,
+          "p95": 1741.927
+        },
+        "generation_ms": {
+          "n": 6,
+          "p50": 1134.504,
+          "p95": 1805.218
+        },
+        "gate_ms": {
+          "n": 4,
+          "p50": 0.217,
+          "p95": 0.293
+        },
+        "dense_search_ms": {
+          "n": 6,
+          "p50": 1.183,
+          "p95": 1.468
+        },
+        "bm25_search_ms": {
+          "n": 6,
+          "p50": 390.099,
+          "p95": 483.357
+        },
+        "fusion_ms": {
+          "n": 6,
+          "p50": 0.072,
+          "p95": 0.079
+        }
+      },
+      "latency_boundary": "Per-query completed pipeline calls; errors excluded; total includes retrieval, fetch, rerank, gate, and generation",
+      "behavior_definition": "answer/abstain agreement with domain-control labels; does not measure answer correctness or source support",
+      "citation_format": {
+        "raw_citation_coverage": 0.25,
+        "raw_citation_validity": 0.25,
+        "citation_coverage": 1.0,
+        "citation_validity": 1.0
+      },
+      "tokens": {
+        "answered_queries": 4,
+        "prompt_total": 3896,
+        "output_total": 280,
+        "prompt_distribution": {
+          "n": 4,
+          "p50": 949.0,
+          "p95": 1154.35
+        },
+        "output_distribution": {
+          "n": 4,
+          "p50": 68.5,
+          "p95": 101.9
+        }
+      },
+      "candidate_counts": {
+        "min": 40,
+        "max": 40
+      }
+    }
+  },
+  "repeat_query_ids": [
+    "so-7274950",
+    "so-8574460",
+    "so-14493620",
+    "so-31145620",
+    "ood-test-07",
+    "ood-test-08"
+  ],
+  "repeat_purpose": "descriptive sequential runtime stability; no significance test"
+}

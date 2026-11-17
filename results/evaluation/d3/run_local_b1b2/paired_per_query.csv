@@ -1,0 +1,372 @@
+id,query,expected_behavior,dense_behavior,dense_fallback,dense_total_ms,dense_raw_answer,dense_final_answer,dense_source_doc_ids,bm25_behavior,bm25_fallback,bm25_total_ms,bm25_raw_answer,bm25_final_answer,bm25_source_doc_ids,hybrid_behavior,hybrid_fallback,hybrid_total_ms,hybrid_raw_answer,hybrid_final_answer,hybrid_source_doc_ids
+so-7274950,iPhone - How to send apprequests using facebook iOS sdk,answer,answer,True,8504.829,"You can send app requests using Facebook iOS SDK by following these steps:
+
+1) Ensure you have added the latest Facebook SDK to your project and registered your iPhone App as ""App on Facebook"" in Developer Settings.
+2) Use the `FBDialogs` method with appropriate parameters like message, to (user ID), etc. Here's an example:
+```objc
+NSString *friendId = @""FacebookId Of Your Friends"";
+NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@""Hi please add me as a friend."", @""message"", friendId, @""to"", nil];
+[appDelegate.facebook dialog:@""apprequests"" andParams:params andDelegate:self];
+```
+Adopt the `FBDialogsDelegate` protocol in your ViewController class to handle responses.
+
+[3]",The Requests dialog is not currently supported with the iOS SDK as documented in the README documentation hope this helps [1],"[330769, 288376, 87789]",answer,True,5819.879,"To send app requests using Facebook iOS SDK, follow these steps:
+
+1) Use the deprecated API with FBDialog:
+```objc
+NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@""Hi please add me as a friend."", @""message"", friendId, @""to"", nil];
+[appDelegate.facebook dialog:@""apprequests"" andParams:params andDelegate:self];
+```
+
+2) Ensure your app is registered on Facebook for App Integration.
+
+3) Update the expirationDate of *m_pFacebook object when session state changes:
+```objc
+- (void)sessionStateChanged:(FBSession*)session state:(FBSessionState)state error:(NSError*)error {
+  switch(state) {
+    case FBSessionStateOpen: 
+      [m_pFacebook fbDialogLogin:session.accessToken expirationDate:session.expirationDate];
+      break;
+  }
+}
+```
+
+[1] [2] [3]",The Requests dialog is not currently supported with the iOS SDK as documented in the README documentation hope this helps [1],"[330769, 87789, 234332]",answer,True,4223.36,"You can send app requests using Facebook iOS SDK by following these steps:
+
+1) Ensure you have added the latest Facebook SDK to your project and registered your iPhone App as ""App on Facebook"" in Developer Settings.
+2) Use the FBSession.activeSession method to get the active session, then use [FBRequest requestForGraphPath:@""me/apprequests"" completionHandler:] with appropriate parameters like message and to user IDs. Make sure to adopt the FBDialogDelegate protocol for handling dialog events.
+
+[1] [2] [3]",The Requests dialog is not currently supported with the iOS SDK as documented in the README documentation hope this helps [1],"[330769, 288376, 87789]"
+so-8574460,PHP if / else statements don't seem to work,answer,answer,False,3010.355,"if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","[157805, 276736, 440762]",answer,True,3642.587,"Change your if statements to use == instead of = for comparison in PHP. For example, change $category = ""Love"" to $category == ""Love"". This will fix the issue with not getting data from the database as it checks for equality rather than assignment.","= is not the same as == . In your if statements you are doing assignments not comparison. if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","[157805, 440762, 109866]",answer,False,3536.013,"if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","if ($category = ""Love"") should be changed to if ($category == ""Love"") (or to if ($category === ""Love"") and so on... [1]","[157805, 276736, 440762]"
+so-14493620,Way to force image to reload from server,answer,answer,False,3771.5,"Try adding a timestamp parameter to force reload: var counter = 0; $(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>'); counter++; This will ensure each load is unique and forces IE to reload the image from server [1].","Try adding a timestamp parameter to force reload: var counter = 0; $(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>'); counter++; This will ensure each load is unique and forces IE to reload the image from server [1].","[148226, 121748, 194401]",answer,False,4740.016,"Add no-cache headers to the response so that the browser never caches the page. You can do this with a Filter which is mapped on the url-pattern of interest. For example *.jsf or just on the FacesServlet. Let the Filter set the following headers in the doFilter() method: response.setHeader(""Cache-Control"", ""no-cache, no-store, must-revalidate""); // HTTP 1.1. response.setHeader(""Pragma"", ""no-cache""); // HTTP 1.0. response.setDateHeader(""Expires"", 0); // Proxies. [3]","Add no-cache headers to the response so that the browser never caches the page. You can do this with a Filter which is mapped on the url-pattern of interest. For example *.jsf or just on the FacesServlet. Let the Filter set the following headers in the doFilter() method: response.setHeader(""Cache-Control"", ""no-cache, no-store, must-revalidate""); // HTTP 1.1. response.setHeader(""Pragma"", ""no-cache""); // HTTP 1.0. response.setDateHeader(""Expires"", 0); // Proxies. [3]","[148226, 78119, 177704]",answer,True,4281.638,"To force IE to reload the image from server, modify your code as follows:
+
+var counter = 0;
+$(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>');
+counter++;
+
+This increments a parameter in the URL which forces IE to refresh the image.","Try this: var counter = 0; ... $(""#imageBox"").html('<img src=""img/loader.gif?c='+counter+'"" alt=""Uploading....""/>'); counter++'; [1]","[148226, 78119, 194401]"
+so-31145620,How to rename Columns via Lamda function - fasterXML,answer,answer,True,4348.657,"You can rename columns in a DataFrame using pandas, which is more efficient than iterating with lambda functions for large datasets. Here's how you can do it:
+
+```python
+df.columns = ['ZZ'] + df.columns[:-1].tolist()
+```
+
+This code slices all column names except the last one, creates a list from those names, adds 'ZZ' to this list, and then reassigns the new list back to `df.columns`.","You could instead use uniVocity-parsers for that. The following solution streams the input rows to the output so you don't need to load everything in memory to then write your data back with new headers. It will be much faster: public static void main(String ... args) throws Exception{ Writer output = new StringWriter(); // use a FileWriter for your case CsvWriterSettings writerSettings = new CsvWriterSettings(); //many options here - check the documentation final CsvWriter writer = new CsvWriter(output, writerSettings); CsvParserSettings parserSettings = new CsvParserSettings(); //many options here as well parserSettings.setHeaderExtractionEnabled(true); // indicates the first row of the input are headers parserSettings.setRowProcessor(new AbstractRowProcessor(){ public void processStarted(ParsingContext context) { writer.writeHeaders(""Column A"", ""Column B"", ""... etc""); } public void rowProcessed(String[] row, ParsingContext context) { writer.writeRow(row); } public void processEnded(ParsingContext context) { writer.close(); } }); CsvParser parser = new CsvParser(parserSettings); Reader reader = new ... [1]","[164034, 419282, 402451]",answer,True,7103.673,"You could use uniVocity-parsers for faster and more efficient column renaming in CSV files without loading everything into memory. Here's a simplified example:
+
+```java
+public static void main(String[] args) throws Exception {
+    Writer output = new StringWriter();
+    CsvWriterSettings writerSettings = new CsvWriterSettings();
+    final CsvWriter writer = new CsvWriter(output, writerSettings);
+    
+    CsvParserSettings parserSettings = new CsvParserSettings();
+    parserSettings.setHeaderExtractionEnabled(true);
+    parserSettings.setRowProcessor(new AbstractRowProcessor() {
+        public void processStarted(ParsingContext context) {
+            writer.writeHeaders(""Column A"", ""Column B"", ""New Column Name"");
+        }
+        
+        public void rowProcessed(String[] row, ParsingContext context) {
+            writer.writeRow(row);
+        }
+        
+        public void processEnded(ParsingContext context) {
+            writer.close();
+        }
+    });
+    
+    CsvParser parser = new CsvParser(parserSettings);
+    Reader reader = new StringReader(""A,B,C\n1,2,3\n4,5,6"");
+    parser.parse(reader);
+    
+    System.out.println(output.toString());
+}
+```
+
+This code uses uniVocity-parsers to parse the CSV file and rename columns using a row processor.","You could instead use uniVocity-parsers for that. The following solution streams the input rows to the output so you don't need to load everything in memory to then write your data back with new headers. It will be much faster: public static void main(String ... args) throws Exception{ Writer output = new StringWriter(); // use a FileWriter for your case CsvWriterSettings writerSettings = new CsvWriterSettings(); //many options here - check the documentation final CsvWriter writer = new CsvWriter(output, writerSettings); CsvParserSettings parserSettings = new CsvParserSettings(); //many options here as well parserSettings.setHeaderExtractionEnabled(true); // indicates the first row of the input are headers parserSettings.setRowProcessor(new AbstractRowProcessor(){ public void processStarted(ParsingContext context) { writer.writeHeaders(""Column A"", ""Column B"", ""... etc""); } public void rowProcessed(String[] row, ParsingContext context) { writer.writeRow(row); } public void processEnded(ParsingContext context) { writer.close(); } }); CsvParser parser = new CsvParser(parserSettings); Reader reader = new ... [1]","[164034, 204312, 221326]",answer,True,4380.581,"You can use a list comprehension to rename columns dynamically without knowing their count in advance:
+
+```java
+df.columns = [col if col != df.columns[-1] else 'ZZ' for col in df.columns]
+```
+
+This solution iterates over all column names, checking if it's the last one. If so, it renames it to 'ZZ'.","You could instead use uniVocity-parsers for that. The following solution streams the input rows to the output so you don't need to load everything in memory to then write your data back with new headers. It will be much faster: public static void main(String ... args) throws Exception{ Writer output = new StringWriter(); // use a FileWriter for your case CsvWriterSettings writerSettings = new CsvWriterSettings(); //many options here - check the documentation final CsvWriter writer = new CsvWriter(output, writerSettings); CsvParserSettings parserSettings = new CsvParserSettings(); //many options here as well parserSettings.setHeaderExtractionEnabled(true); // indicates the first row of the input are headers parserSettings.setRowProcessor(new AbstractRowProcessor(){ public void processStarted(ParsingContext context) { writer.writeHeaders(""Column A"", ""Column B"", ""... etc""); } public void rowProcessed(String[] row, ParsingContext context) { writer.writeRow(row); } public void processEnded(ParsingContext context) { writer.close(); } }); CsvParser parser = new CsvParser(parserSettings); Reader reader = new ... [1]","[164034, 419282, 204312]"
+so-7744410,How to execute an app without elevation?,answer,answer,True,3708.291,"To run an app without elevation for checking only, add a manifest resource with requestedExecutionLevel level=""asInvoker"" uiAccess=""false"". This prevents Windows from inferring the need for elevated permissions. For example, in Qt Creator and mingw-gcc environment, create an rc file for resources containing the manifest.xml content and include it in your .pro file.","So it turns out that I had another bug that caused the non-elevated running branch to run in all cases. The model I described in the post works. To avoid Windows infering the need for elevated permissions, you need to add a manifest resource. (for example, if the name of your application exe contains the word ""updater"" it will be triggered) The contents of the manifest are the following: <?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?> <assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0""> <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v2""> <security> <requestedPrivileges xmlns=""urn:schemas-microsoft-com:asm.v3""> <requestedExecutionLevel level=""asInvoker"" uiAccess=""false"" /> </requestedPrivileges> </security> </trustInfo> </assembly> Compiling it to your .exe depends on your compiler and environment, so I'm only showing mine: Qt Creator and mingw-gcc: Create an rc file for the resources with the following content: 1 24 DISCARDABLE manifest.xml Add this rc file to your .pro like this: win32:RC_FILE = resources.rc After this, ShellExecute without ... [1]","[66401, 76286, 491196]",answer,True,6001.649,"To run an app without elevation for checking only, add a manifest resource to your .exe. The manifest should look like this:
+
+```xml
+<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">
+  <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v2"">
+    <security>
+      <requestedPrivileges xmlns=""urn:schemas-microsoft-com:asm.v3"">
+        <requestedExecutionLevel level=""asInvoker"" uiAccess=""false""/>
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>
+```
+
+Compile this manifest to your .exe using the compiler and environment you're using. For example, in Qt Creator with mingw-gcc, create an rc file for resources containing `manifest.xml` and add it to your `.pro` like: win32:RC_FILE = resources.rc","So it turns out that I had another bug that caused the non-elevated running branch to run in all cases. The model I described in the post works. To avoid Windows infering the need for elevated permissions, you need to add a manifest resource. (for example, if the name of your application exe contains the word ""updater"" it will be triggered) The contents of the manifest are the following: <?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?> <assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0""> <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v2""> <security> <requestedPrivileges xmlns=""urn:schemas-microsoft-com:asm.v3""> <requestedExecutionLevel level=""asInvoker"" uiAccess=""false"" /> </requestedPrivileges> </security> </trustInfo> </assembly> Compiling it to your .exe depends on your compiler and environment, so I'm only showing mine: Qt Creator and mingw-gcc: Create an rc file for the resources with the following content: 1 24 DISCARDABLE manifest.xml Add this rc file to your .pro like this: win32:RC_FILE = resources.rc After this, ShellExecute without ... [1]","[66401, 76286, 201485]",answer,True,5665.242,"To run an app without elevation for checking only, add a manifest resource to your .exe. The manifest should look like this:
+
+```xml
+<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">
+  <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v2"">
+    <security>
+      <requestedPrivileges xmlns=""urn:schemas-microsoft-com:asm.v3"">
+        <requestedExecutionLevel level=""asInvoker"" uiAccess=""false""/>
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>
+```
+
+Compile this manifest to your .exe using the compiler and environment you're using. For example, in Qt Creator with mingw-gcc, create an rc file for resources containing `manifest.xml` and add it to your `.pro` like: win32:RC_FILE = resources.rc","So it turns out that I had another bug that caused the non-elevated running branch to run in all cases. The model I described in the post works. To avoid Windows infering the need for elevated permissions, you need to add a manifest resource. (for example, if the name of your application exe contains the word ""updater"" it will be triggered) The contents of the manifest are the following: <?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?> <assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0""> <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v2""> <security> <requestedPrivileges xmlns=""urn:schemas-microsoft-com:asm.v3""> <requestedExecutionLevel level=""asInvoker"" uiAccess=""false"" /> </requestedPrivileges> </security> </trustInfo> </assembly> Compiling it to your .exe depends on your compiler and environment, so I'm only showing mine: Qt Creator and mingw-gcc: Create an rc file for the resources with the following content: 1 24 DISCARDABLE manifest.xml Add this rc file to your .pro like this: win32:RC_FILE = resources.rc After this, ShellExecute without ... [1]","[66401, 76286, 201485]"
+so-29695630,How to concatenate vector of integers interleaving elements with a character?,answer,answer,True,3875.748,"You could try using paste with collapse argument to concatenate vector of integers interleaving elements with a character:
+
+```r
+paste(a, sep=""_"", collapse="""")
+```
+
+For example, for `a <- 1:5`, this would result in `""1_2_3_4_5""`.
+
+Reference:
+[1]","You could try collapse paste(a, collapse=""_"") #[1] ""1_2_3_4_5"" [1]","[17824, 268976, 253419]",abstain,False,2949.581,,I could not find enough reliable evidence in the Stack Overflow collection.,"[205704, 421038, 28599]",answer,True,5166.184,"You could try collapse paste(a, collapse=""_"") #[1] ""1_2_3_4_5""
+
+For converting character array elements into an integer where characters are concatenated like '1' and '2', use atoi after ensuring your string is NULL-terminated: #include <stdlib.h> #include <stdio.h> int main() { char x[3]; x[0] = '1'; x[1] = '2'; x[2] = '\0'; int y = atoi(x); printf(""%i"", y); return 0; }","You could try collapse paste(a, collapse=""_"") #[1] ""1_2_3_4_5"" [1]","[17824, 268976, 205704]"
+so-31426410,Get Columns Names of Table,answer,answer,True,3489.05,"To get columns names of a table, use SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TABLENAME'. For Oracle, use SELECT column_name FROM USER_TAB_COLUMNS WHERE table_name = 'x' or equivalent depending on your schema access rights.
+[3]","We can get column names of the passed table name from sys table, and then to print table values for each row, we can use ROW_NUMBER and print the string by appending column values for each rows and get the final output. There would be to For each loop nested. Outer foreach loop will use ROW_NYMBER and will be executed for all rows in the table and inner loop will print column values in one string as required. [1]","[455224, 323947, 127403]",answer,True,3932.341,"Try using: SELECT COLUMN_NAME FROM ALL_TAB_COLS WHERE TABLE_NAME = 'TABLENAME' AND OWNER = 'USERNAME'; This query will work similar to INFORMATION_SCHEMA.COLUMNS for Oracle, providing column names of a specific table owned by a user.","Try this : SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TABLENAME' Hope this helps. EDIT : The Oracle equivalent for information_schema.COLUMNS is USER_TAB_COLS for tables owned by the current user, ALL_TAB_COLS or DBA_TAB_COLS for tables owned by all users. Tablespace is not equivalent to a schema, neither do you have to provide the tablespace name. Providing the schema/username would be of use if you want to query ALL_TAB_COLS or DBA_TAB_COLS for columns OF tables owned by a specific user. in your case, I'd imagine the query would look something like: String sqlStr= "" SELECT column_name FROM all_tab_cols WHERE table_name = 'users' AND owner = ' || +_db+ || ' AND column_name NOT IN ( 'password', 'version', 'id' ) "" Note that with this approach, you risk SQL injection. Source : Oracle query to fetch column names [1]","[127403, 359887, 213293]",answer,False,4004.111,"Use table.GetType().GetProperties() for getting column names from a specific table in Entity Framework [1]. For SQL databases, use SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TABLENAME' [2]. In Ruby on Rails, you can get all numerical columns by using ModelClass.columns.select{ |c| c.type == :integer }.map(&:name) [3].","Use table.GetType().GetProperties() for getting column names from a specific table in Entity Framework [1]. For SQL databases, use SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TABLENAME' [2]. In Ruby on Rails, you can get all numerical columns by using ModelClass.columns.select{ |c| c.type == :integer }.map(&:name) [3].","[323947, 127403, 359887]"
+so-11098800,Undefined function or variable 'mmread' - Matlab,answer,answer,True,3771.454,"For using mmread with MATLAB R2008a, you need to use [temp,audio]=mmread() instead of just mmread(). This bypasses the warning and allows reading files.
+URL: https://stackoverflow.com/questions/11098800
+
+[2] For the localfunctions undefined error in 2008b MATLAB version, update your MATLAB to R2013b or newer as it was introduced then.","I just tested it, 2010a does the ~ but 2009a does not, so with 2008 you would have to use [temp,audio]=mmread() ingoring the content of temp [1]","[453428, 66905, 112370]",answer,True,3572.63,"I just tested it, 2010a does the ~ but 2009a does not, so with 2008 you would have to use [temp,audio]=mmread() ingoring the content of temp
+URL: https://stackoverflow.com/questions/11098800","I just tested it, 2010a does the ~ but 2009a does not, so with 2008 you would have to use [temp,audio]=mmread() ingoring the content of temp [1]","[453428, 66905, 481664]",answer,False,4458.726,"Undefined function or variable 'mmread' - Matlab
+
+For MATLAB 2008a, you would need to use [temp,audio]=mmread() ingoring the content of temp [1]
+
+For localfunctions undefined error in R2009a and earlier versions, update your MATLAB version to R2013b or newer [2]
+
+To define g(x) = 1/2*(1+5/x) for fixed point iteration algorithm, use an anonymous function: g = @(x)1/2*(1+5/x) [3]","Undefined function or variable 'mmread' - Matlab
+
+For MATLAB 2008a, you would need to use [temp,audio]=mmread() ingoring the content of temp [1]
+
+For localfunctions undefined error in R2009a and earlier versions, update your MATLAB version to R2013b or newer [2]
+
+To define g(x) = 1/2*(1+5/x) for fixed point iteration algorithm, use an anonymous function: g = @(x)1/2*(1+5/x) [3]","[453428, 66905, 481664]"
+so-15334780,How to adding new section in INI file using TJvAppIniFileStorage,answer,answer,True,4913.353,"To add a new section in INI file using TJvAppIniFileStorage, you need to create a new section first and then write values into it. Here's how:
+
+```delphi
+var
+  Ini: TJvAppIniFile;
+begin
+  Ini := TJvAppIniFile.Create('path_to_your_ini_file.ini');
+  try
+    // Create a new section
+    Ini.WriteSection('NewSectionName', ['Key1=Value1', 'Key2=Value2']);
+  finally
+    Ini.Free;
+  end;
+```
+
+This code snippet creates a new section named 'NewSectionName' and writes two key-value pairs into it. Adjust the path to your INI file and keys/values as needed for your application.
+URL: [1]","Use the Source, Luke! ;) My guess is: It uses Parent.Name or Parent.ClassName to store parameters. Another point: take in mind several monitors on user's computer. Almost no app takes in mind this case. [1]","[478184, 273048, 304739]",answer,True,6243.404,"To add a new section in an INI file using TJvAppIniFileStorage, you can use the following approach:
+
+```delphi
+procedure AddNewSection(const IniFileName: string; const SectionName: string);
+var
+  IniStream: TMemoryStream;
+begin
+  IniStream := TMemoryStream.Create;
+  try
+    IniStream.WriteBuffer(Format('%s = %s', [SectionName, '']), Length('[%s'] + #13#10); // Format the section name and add a newline
+    TJvAppIniFileStorage.DefaultSection := SectionName; // Set default section to newly added one
+    TJvAppIniFileStorage.WriteFromFile(IniStream, IniFileName);
+  finally
+    IniStream.Free;
+  end;
+end;
+```
+
+This code creates a new section in the INI file by first writing the section name and then setting the `DefaultSection` property of `TJvAppIniFileStorage` to this newly added section.","Use the Source, Luke! ;) My guess is: It uses Parent.Name or Parent.ClassName to store parameters. Another point: take in mind several monitors on user's computer. Almost no app takes in mind this case. [1]","[478184, 40269, 68328]",answer,True,6346.67,"To add a new section in an INI file using TJvAppIniFileStorage, you can use the following approach:
+
+```delphi
+procedure AddNewSection(const IniFileName: string; const SectionName: string);
+var
+  IniStream: TMemoryStream;
+begin
+  IniStream := TMemoryStream.Create;
+  try
+    IniStream.WriteBuffer(Format('[' + SectionName + ']', [SectionName]), Length('[[') + Length(SectionName) + 2); // Format the section name with square brackets
+    TJvAppIniFileStorage.DefaultSection := SectionName; // Set default section to newly added one
+    TJvAppIniFileStorage.WriteStream(IniFileName, IniStream);
+  finally
+    IniStream.Free;
+  end;
+end;
+```
+
+This code creates a new section in the specified INI file by first writing the formatted section name into a memory stream and then using TJvAppIniFileStorage to write this stream to the INI file.","Use the Source, Luke! ;) My guess is: It uses Parent.Name or Parent.ClassName to store parameters. Another point: take in mind several monitors on user's computer. Almost no app takes in mind this case. [1]","[478184, 40269, 68328]"
+so-13450500,Using photoshop files from web application,answer,answer,True,4436.252,"For interacting with Photoshop files in a web application, consider using PHP's ImageMagick extension to convert JPEG/PNG images into PSD format and then instructing browsers to open these PSD files with Photoshop. However, this approach involves sending PSD content which might not be directly supported by all systems or require browser configuration for opening PSD files. For capturing emails from a simple HTML form and saving them locally in an Excel spreadsheet, using Google Docs could be a simpler solution as it allows downloading the spreadsheet to your local system.","First of all, I would like you to reflect on the legality of such a thing. Would Adobe let you practically just proxy their application to the web? I see they have a lot of licenses so maybe one of them actually grants you permission to do this (however, there could still be caveats so I suggest you read up on that). As that's not the question, I won't talk about this anymore, I just wanted to to mention it as it should be relevant. Now, for the actual question - if you look at Microsoft Office Interop, Microsoft states that it is unsupported in a server-side environment. Go to this Microsoft page and read Problems using server-side Automation of Office in the More information section. There are several issues if you decide to run a regular client application server-side, ... [1]","[185552, 469337, 252904]",answer,True,5393.119,"To achieve this in PHP, you can use the ImageMagick extension to convert JPEG/PNG files into PSD format and set the correct MIME type for Photoshop:
+
+```php
+$image = new Imagick();
+$image->readImage(""myImage.jpg"");
+$image->setImageFormat('psd');
+header('Content-type: image/photoshop'); 
+die($image);
+```
+
+This code reads a JPEG file, converts it to PSD format using ImageMagick, and sets the MIME type for Photoshop. The browser will then open the PSD file with Photoshop if installed.
+
+For opening PSD files in Illustrator, you can use:
+
+```app.preferences.photoshopFileOptions.preserveHiddenLayers = true;```
+
+This line of code is part of a larger script that opens PSD files in Illustrator and applies settings like preserving hidden layers.","You can load a JPEG file using the PHP ImageMagick extension and send it as PSD to the browser with its MIME type. I believe the PSD support is always available in ImageMagick, but check it out; I might be wrong. Then, the browser must know to reroute that file to PhotoShop. It is likely that the PhotoShop installation already instructs it that way, but you may also need to configure the browser instead. $image = new Imagick(); $image->readImage(""myImage.jpg""); $image->setImageFormat('psd'); header('Content-type: image/photoshop'); die($image); A really dirty way of doing things is to ""define"" your own MIME type: $jpeg = 'test.jpg'; Header('Content-Type: application/jpeg-with-photoshop'); Header('Content-Length: ' . filesize($jpeg); readfile($jpeg); The browser will, the first time, pop up a windows saying ""WTF? What do I do with a jpeg-with-photoshop file?!?"". Just click ""Open With > Choose Application > Find application on disk > ... [1]","[469337, 227361, 434854]",answer,False,3972.057,"For interacting with Photoshop files from a web application, you can use PHP's ImageMagick extension to convert JPEG/PNG images into PSD format and send it as an image file to be opened by Photoshop. However, this approach involves sending PSD content which might not work seamlessly across all systems or browsers. A cleaner solution would involve configuring the browser to recognize PSD files for opening in Photoshop, as suggested in Source [2].","For interacting with Photoshop files from a web application, you can use PHP's ImageMagick extension to convert JPEG/PNG images into PSD format and send it as an image file to be opened by Photoshop. However, this approach involves sending PSD content which might not work seamlessly across all systems or browsers. A cleaner solution would involve configuring the browser to recognize PSD files for opening in Photoshop, as suggested in Source [2].","[185552, 469337, 227361]"
+so-24609570,Accessing children of div and appending span,answer,answer,True,2951.432,"You're re-appending the same node each time, which just moves it (it doesn't copy it). Change this: element.appendChild(seg); to this: element.appendChild(seg.cloneNode(true));
+URL: https://stackoverflow.com/questions/1171360","this refers to the element, so you don't need to reselect it by ID. Just wrap this in a jQuery object. $(this).before($('<span />').css('margin-left' , '60px').attr({'class':'progress-title' }).html('Title')); [1]","[213553, 136793, 448452]",answer,True,4045.441,"You're re-appending the same node each time, which just moves it (it doesn't copy it). Change this: element.appendChild(seg); to this: element.appendChild(seg.cloneNode(true));
+URL: https://stackoverflow.com/questions/1171360","this refers to the element, so you don't need to reselect it by ID. Just wrap this in a jQuery object. $(this).before($('<span />').css('margin-left' , '60px').attr({'class':'progress-title' }).html('Title')); [1]","[213553, 136793, 448452]",answer,True,3529.405,"You're re-appending the same node each time, which just moves it (it doesn't copy it). Change this: element.appendChild(seg); to this: element.appendChild(seg.cloneNode(true));
+URL: https://stackoverflow.com/questions/1171360","this refers to the element, so you don't need to reselect it by ID. Just wrap this in a jQuery object. $(this).before($('<span />').css('margin-left' , '60px').attr({'class':'progress-title' }).html('Title')); [1]","[213553, 136793, 448452]"
+so-25855560,Windows Toolbar - Controlling button size and padding,answer,answer,False,3401.707,"To control button sizes in a Windows toolbar, recreate the toolbar from scratch after changing bitmap sizes. This avoids internal state issues that can cause unexpected behavior [1]. For buttons with inconsistent padding across screens, ensure styles are applied correctly or set Padding locally for each Button [2]. If UIBarButtonItem sizing differs, create and copy-paste UIBarButtonItems to maintain consistent appearance [3].","To control button sizes in a Windows toolbar, recreate the toolbar from scratch after changing bitmap sizes. This avoids internal state issues that can cause unexpected behavior [1]. For buttons with inconsistent padding across screens, ensure styles are applied correctly or set Padding locally for each Button [2]. If UIBarButtonItem sizing differs, create and copy-paste UIBarButtonItems to maintain consistent appearance [3].","[21048, 102896, 401411]",answer,False,4098.969,"To change toolbar button sizes in Windows, you should recreate the toolbar from scratch after changing the user's selected size option. This ensures no internal state issues arise and guarantees compatibility across different versions of comctl32.dll [1]. For macOS NSToolbar icons switching between regular and small sizes without scaling, provide multiple image representations for each icon size mode in a single image file like icns or tiff [2].","To change toolbar button sizes in Windows, you should recreate the toolbar from scratch after changing the user's selected size option. This ensures no internal state issues arise and guarantees compatibility across different versions of comctl32.dll [1]. For macOS NSToolbar icons switching between regular and small sizes without scaling, provide multiple image representations for each icon size mode in a single image file like icns or tiff [2].","[21048, 23265, 212164]",answer,False,4026.252,"For your toolbar button size issue, recreate the toolbar from scratch after changing bitmap sizes to avoid internal state issues [1]. For padding problems in a Button and text on same line, use CSS transform:translateY(-5px) for quick adjustment [3].","For your toolbar button size issue, recreate the toolbar from scratch after changing bitmap sizes to avoid internal state issues [1]. For padding problems in a Button and text on same line, use CSS transform:translateY(-5px) for quick adjustment [3].","[21048, 102896, 212164]"
+so-18592980,"How do I float container to the left? [SUSY, Sass]",answer,answer,True,3878.104,"To float a container to the left using SUSY and Sass, you can use margin-left instead of float. [1] For example:
+
+.container {
+  @include container;
+  margin-left: 1em; // Adjust as needed for offset
+}
+
+This will center the container by default, then adjusting the margin-left value moves it to the desired position without disrupting the grid layout.","Yes. You don't need to float. The centering happens simply by setting margin: auto on both the right and left. Change either of those margins, and the container will move. In your case: just add any non-auto margin-left . The value you use will be the offset from the left edge. // flush @include container; margin-left: 0; // offset @include container; margin-left: 1em; [1]","[226302, 420155, 141906]",answer,True,4426.158,"To float a container to the left using SUSY and Sass, you can use margin-left instead of float. [1] For example:
+
+.container {
+  @include container;
+  margin-left: 1em; // Adjust as needed for offset
+}
+
+This will center the container by default, then adjusting the margin-left value moves it to the desired position without disrupting the grid layout.","Yes. You don't need to float. The centering happens simply by setting margin: auto on both the right and left. Change either of those margins, and the container will move. In your case: just add any non-auto margin-left . The value you use will be the offset from the left edge. // flush @include container; margin-left: 0; // offset @include container; margin-left: 1em; [1]","[226302, 420155, 141906]",answer,True,3913.753,"To float a container to the left using SUSY and Sass, you can use margin-left instead of float. [1] For example:
+
+.container {
+  @include container;
+  margin-left: 1em; // Adjust as needed for offset
+}
+
+This will center the container by default, then adjusting the margin-left value moves it to the desired position without disrupting the grid layout.","Yes. You don't need to float. The centering happens simply by setting margin: auto on both the right and left. Change either of those margins, and the container will move. In your case: just add any non-auto margin-left . The value you use will be the offset from the left edge. // flush @include container; margin-left: 0; // offset @include container; margin-left: 1em; [1]","[226302, 420155, 141906]"
+so-8942400,What is the best way to check if a specific plugin is installed and enabled from a helper class?,answer,answer,False,3137.1,"To check if a specific plugin is installed and enabled from a helper class in WordPress, you can use ProjectConfiguration::getPlugins(). This method returns an array with loaded plugins [1].","To check if a specific plugin is installed and enabled from a helper class in WordPress, you can use ProjectConfiguration::getPlugins(). This method returns an array with loaded plugins [1].","[410772, 516811, 463773]",answer,False,4634.642,"To check if a specific plugin is installed and enabled, use ProjectConfiguration::getPlugins() as suggested in Source [1]. For checking if ReportViewer is installed, you can create a helper method like in Source [2], opening a registry key to see if it's installed. For dynamic lists of keywords, consider storing them in a database for easier management, as shown in Source [3].","To check if a specific plugin is installed and enabled, use ProjectConfiguration::getPlugins() as suggested in Source [1]. For checking if ReportViewer is installed, you can create a helper method like in Source [2], opening a registry key to see if it's installed. For dynamic lists of keywords, consider storing them in a database for easier management, as shown in Source [3].","[410772, 197924, 432892]",answer,True,6883.128,"To check if a specific plugin is installed and enabled, you can use ProjectConfiguration::getPlugins() as suggested in Source [1]. For checking if ReportViewer is installed, you could create a helper method like in Source [2], for example:
+
+```ruby
+def report_viewer_installed?
+  registryBase = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, '')
+  registryBase.OpenSubKey(""Software\\Microsoft\\ReportViewer\\v2.0.50727"") != nil
+end
+```
+
+For creating a model helper for an array of strings to check against in each loop, you can define the helper as shown in Source [3]:
+
+```ruby
+class Entry < ActiveRecord::Base
+  KEYWORDS = [""Google"",""IBM"",""Surge"",""Apple"", ""8"",""100""].freeze
+
+  def title_matches?
+    !self.title.scan(/#{KEYWORDS.join('|')}/).empty?
+  end
+end
+```
+
+This helper method `title_matches?` checks if the entry's title contains any of the keywords in the `KEYWORDS` array.",Have you tried with ProjectConfiguration::getPlugins() ? It should return an array with loaded plugins. [1],"[410772, 197924, 432892]"
+so-15882710,Is it Safe to use ReaderWriterLockSlim in an async method,answer,answer,False,4398.109,"It's not safe to use ReaderWriterLockSlim in an async method where you enter and exit the lock spanning an await, as ExitWriteLock must be called from the same thread that called EnterWriteLock. This can throw a SynchronizationLockException if the current thread has not entered the lock in write mode [1]. For optimal usage, ensure there's a current SynchronizationContext or use Task.ConfigureAwait(false) to maintain the calling context [2]. If you need multiple writers and a single reader, consider using TPL's BufferBlock or BlockingCollection classes instead of ReaderWriterLockSlim [3].","It's not safe to use ReaderWriterLockSlim in an async method where you enter and exit the lock spanning an await, as ExitWriteLock must be called from the same thread that called EnterWriteLock. This can throw a SynchronizationLockException if the current thread has not entered the lock in write mode [1]. For optimal usage, ensure there's a current SynchronizationContext or use Task.ConfigureAwait(false) to maintain the calling context [2]. If you need multiple writers and a single reader, consider using TPL's BufferBlock or BlockingCollection classes instead of ReaderWriterLockSlim [3].","[145348, 55558, 61354]",answer,True,4952.549,"Yes, using ReaderWriterLockSlim in an async method is generally safe if you ensure that all operations related to the lock are performed on the same thread. However, it's not safe to span a call to `await` across entering and exiting the write lock because the lock must be held by the same thread that entered it. If you need to use ReaderWriterLockSlim in an async method, consider using a SynchronizationContext or ensuring the operation is always on the UI thread for WPF/WCF scenarios.","Is it Safe to use ReaderWriterLockSlim in an async method Yes and no. It can be safe to use this in an async method, but it is likely not safe to use it in an async method where you enter and exit the lock spanning an await . In this case, no, this is not necessarily safe. ExitWriteLock must be called from the same thread that called EnterWriteLock . Otherwise, it throws a SynchronizationLockException . From the documentation , this exception is thrown when: The current thread has not entered the lock in write mode. The only time this would be safe is if this was used in an async method which was always in an environment where there was a current SynchronizationContext in place which will move things back to the same thread (ie: Windows Forms, WPF, etc), and ... [1]","[145348, 55558, 518379]",answer,True,4572.387,"No, it is not safe to use ReaderWriterLockSlim in an async method where you enter and exit the lock spanning an await . The exception SynchronizationLockException can be thrown if ExitWriteLock is called from a different thread than EnterWriteLock was called on. This scenario typically occurs when using ReaderWriterLockSlim with async methods that could yield control back to the caller, potentially leading to concurrent access issues.","Is it Safe to use ReaderWriterLockSlim in an async method Yes and no. It can be safe to use this in an async method, but it is likely not safe to use it in an async method where you enter and exit the lock spanning an await . In this case, no, this is not necessarily safe. ExitWriteLock must be called from the same thread that called EnterWriteLock . Otherwise, it throws a SynchronizationLockException . From the documentation , this exception is thrown when: The current thread has not entered the lock in write mode. The only time this would be safe is if this was used in an async method which was always in an environment where there was a current SynchronizationContext in place which will move things back to the same thread (ie: Windows Forms, WPF, etc), and ... [1]","[145348, 55558, 518379]"
+so-6075540,How can I underline a single character in the Content of a Button in WPF?,answer,answer,True,4642.633,"You would have to do this explicitly like so:
+
+<Button> 
+  <Button.Content> 
+    <TextBlock> My <Underline>C</Underline>ontent </TextBlock> 
+  </Button.Content> 
+</Button>
+
+This approach uses a TextBlock for setting the underline, but it doesn't support setting the underline only on part of the content like ""My_C"". For that, you can use an AccessText element within the Button's ContentPresenter to set the underline specifically on ""_C"" without affecting the entire button text.",You would have to do this explicitly like so: <Button> <Button.Content> <TextBlock> My <Underline>C</Underline>ontent </TextBlock> </Button.Content> </Button> This would remove the ability to click the button using Alt+Char though. For that an AccessText element is used. But that doesn't support the markup syntax of TextBlock. [1],"[314251, 3273, 155614]",answer,True,4751.047,"You would have to do this explicitly like so:
+
+<Button> <Button.Content> <TextBlock> My <Underline>C</Underline>ontent </TextBlock> </Button.Content> </Button>
+
+This approach allows you to underline a single character in WPF Button's Content using XAML. However, it doesn't support setting the underline for only part of the content like ""My_Content"". For that, an AccessText element can be used but it doesn't support markup syntax of TextBlock.",You would have to do this explicitly like so: <Button> <Button.Content> <TextBlock> My <Underline>C</Underline>ontent </TextBlock> </Button.Content> </Button> This would remove the ability to click the button using Alt+Char though. For that an AccessText element is used. But that doesn't support the markup syntax of TextBlock. [1],"[314251, 155614, 503720]",answer,False,4070.465,"You would have to do this explicitly like so: <Button> <Button.Content> <TextBlock> My <Underline>C</Underline>ontent </TextBlock> </Button.Content> </Button> This would remove the ability to click the button using Alt+Char though. For that an AccessText element is used instead of TextBlock, as shown in [2].","You would have to do this explicitly like so: <Button> <Button.Content> <TextBlock> My <Underline>C</Underline>ontent </TextBlock> </Button.Content> </Button> This would remove the ability to click the button using Alt+Char though. For that an AccessText element is used instead of TextBlock, as shown in [2].","[314251, 3273, 155614]"
+so-7308210,How to set up a Facebook Chat API connection when authorizing as a Desktop App,answer,answer,False,4204.171,"To get the session key in a client-side flow for Facebook Chat API connections from a JavaScript (Google Chrome extension), you can use the auth.promote_session method via the REST API, though this is deprecated and will be removed by October [2]. For current authentication methods, ensure your app uses the latest SDK version to avoid deprecation issues. If using the Web dialog for authorization, make sure to request the necessary permissions like publish_actions to send messages [1].","To get the session key in a client-side flow for Facebook Chat API connections from a JavaScript (Google Chrome extension), you can use the auth.promote_session method via the REST API, though this is deprecated and will be removed by October [2]. For current authentication methods, ensure your app uses the latest SDK version to avoid deprecation issues. If using the Web dialog for authorization, make sure to request the necessary permissions like publish_actions to send messages [1].","[464000, 244892, 488604]",answer,False,4123.092,"To set up a Facebook Chat API connection for a desktop app, ensure you pass the access token right after the POST request, not at the bottom of your function [1]. Use FB.api(""/""+ thread +""/messages"", ""POST"", {""access_token"": pageToken, ""message"": ""your message""}, ...).","To set up a Facebook Chat API connection for a desktop app, ensure you pass the access token right after the POST request, not at the bottom of your function [1]. Use FB.api(""/""+ thread +""/messages"", ""POST"", {""access_token"": pageToken, ""message"": ""your message""}, ...).","[382383, 244892, 260458]",answer,False,4454.232,"To get session key in client-side flow for Facebook Chat API connection, you can use auth.promote_session method from REST API, though this is deprecated and will be removed by October [1]. For getting message to appear in chat after sending via app, ensure access_token is passed just after the POST request [2].","To get session key in client-side flow for Facebook Chat API connection, you can use auth.promote_session method from REST API, though this is deprecated and will be removed by October [1]. For getting message to appear in chat after sending via app, ensure access_token is passed just after the POST request [2].","[464000, 382383, 244892]"
+so-27881850,Fade out of div background affects other divs on top of background image,answer,answer,True,5174.809,"To solve your issue, you can use absolute positioning for both the background div and content divs within it. This way, only the background image fades out while keeping other elements visible:
+
+```html
+<div id=""hpbg-image"">
+    <div id=""stuff"">
+        <div id=""header"">...</div>
+        <div id=""search-area"">...</div>
+        <div id=""content1"" style=""height:150px"">No minimum contract, pay for everything online</div>
+        <div id=""howitworks""><b>How it works</b></div>
+        <div id=""freelancers"" style=""height:300px""></div>
+    </div>
+</div>
+
+#hpbg-image {
+    position:absolute;
+}
+
+#stuff {
+    position:absolute;
+}
+```
+
+This ensures the content remains visible while only the background image fades out.","You have to move the content out of the background div. So you can hide the div without hiding the content. Use position:absolute to place the content over the background: <div id=""hpbg-image""> </div> <div id=""stuff""> <div id=""header""> <div id=""logo""><img src=""images/logo.png""></div> <div id=""login""><img src=""images/login.png""></div> <div id=""menu""> </div> </div><!--Header End--> <div id=""search-area""> <div id=""holder1""> <img src=""images/slogan.png""><br> <div id=""searchbox""> </div> </div> </div> </div> <div id=""content1"" style=""height:150px"">No minimum contract, pay for everything online</div> <div id=""howitworks""> <b>How it works</b> </div> <div id=""freelancers"" style=""height:300px""> </div> </div> Now use position:absolute on both root divs #hpbg-image{ position:absolute; } #stuff{ position:absolute; } [1]","[181052, 348629, 193124]",answer,True,5520.465,"To solve your issue, you can use absolute positioning for both the background div and content divs within it. This way, only the background image fades out while keeping other elements visible:
+
+```html
+<div id=""hpbg-image"">
+    <div id=""stuff"">
+        <div id=""header"">...</div>
+        <div id=""search-area"">...</div>
+        <div id=""content1"" style=""height:150px"">No minimum contract, pay for everything online</div>
+        <div id=""howitworks""><b>How it works</b></div>
+        <div id=""freelancers"" style=""height:300px""></div>
+    </div>
+</div>
+
+#hpbg-image {
+    position:absolute;
+}
+
+#stuff {
+    position:absolute;
+}
+```
+
+This ensures the content remains visible while only the background image fades out.","You have to move the content out of the background div. So you can hide the div without hiding the content. Use position:absolute to place the content over the background: <div id=""hpbg-image""> </div> <div id=""stuff""> <div id=""header""> <div id=""logo""><img src=""images/logo.png""></div> <div id=""login""><img src=""images/login.png""></div> <div id=""menu""> </div> </div><!--Header End--> <div id=""search-area""> <div id=""holder1""> <img src=""images/slogan.png""><br> <div id=""searchbox""> </div> </div> </div> </div> <div id=""content1"" style=""height:150px"">No minimum contract, pay for everything online</div> <div id=""howitworks""> <b>How it works</b> </div> <div id=""freelancers"" style=""height:300px""> </div> </div> Now use position:absolute on both root divs #hpbg-image{ position:absolute; } #stuff{ position:absolute; } [1]","[181052, 348629, 193124]",answer,True,7250.253,"To solve your issue, you can use absolute positioning for both the background and content divs within #hpbg-image. This way, only the background image fades out while keeping other elements visible:
+
+```html
+<div id=""hpbg-image"">
+  <div id=""stuff""> <!-- Content Div -->
+    <div id=""header"">
+      <div id=""logo""><img src=""images/logo.png""></div>
+      <div id=""login""><img src=""images/login.png""></div>
+      <div id=""menu""></div>
+    </div> <!-- Header End -->
+    <div id=""search-area"">
+      <div id=""holder1"">
+        <img src=""images/slogan.png""><br>
+        <div id=""searchbox""></div>
+      </div>
+    </div>
+  </div> <!-- Stuff End -->
+</div> <!-- Hpbg-image End -->
+
+#hpbg-image {
+  position: absolute;
+}
+
+#stuff {
+  position: absolute;
+}
+```
+
+This ensures the content div (#stuff) remains visible while the background image fades out.","You have to move the content out of the background div. So you can hide the div without hiding the content. Use position:absolute to place the content over the background: <div id=""hpbg-image""> </div> <div id=""stuff""> <div id=""header""> <div id=""logo""><img src=""images/logo.png""></div> <div id=""login""><img src=""images/login.png""></div> <div id=""menu""> </div> </div><!--Header End--> <div id=""search-area""> <div id=""holder1""> <img src=""images/slogan.png""><br> <div id=""searchbox""> </div> </div> </div> </div> <div id=""content1"" style=""height:150px"">No minimum contract, pay for everything online</div> <div id=""howitworks""> <b>How it works</b> </div> <div id=""freelancers"" style=""height:300px""> </div> </div> Now use position:absolute on both root divs #hpbg-image{ position:absolute; } #stuff{ position:absolute; } [1]","[181052, 348629, 193124]"
+so-12528720,Place for declaring interface,answer,answer,False,2895.037,"The interface should be declared in ProjectC, as it needs to know about the implementation details of ClassA and ClassB. [1]","The interface should be declared in ProjectC, as it needs to know about the implementation details of ClassA and ClassB. [1]","[330674, 274847, 207457]",answer,False,4106.536,"Whereas declaring an interface as abstract in Java is redundant due to every interface being implicitly abstract [1], for Objective-C, declaring instance variables like NSMutableArray _assets under the interface declaration allows you to use them within your class implementation and provides a way to access or modify these variables from other classes through properties. However, getting the variable type directly from its value (like in Java) isn't possible; you can only determine the type of the object it refers to [3].","Whereas declaring an interface as abstract in Java is redundant due to every interface being implicitly abstract [1], for Objective-C, declaring instance variables like NSMutableArray _assets under the interface declaration allows you to use them within your class implementation and provides a way to access or modify these variables from other classes through properties. However, getting the variable type directly from its value (like in Java) isn't possible; you can only determine the type of the object it refers to [3].","[274847, 440637, 462632]",answer,False,3741.416,The interface IClassC should be declared in ProjectC or another project that all projects (A and B) depend on to ensure it's accessible by both ClassA and ClassB. [1],The interface IClassC should be declared in ProjectC or another project that all projects (A and B) depend on to ensure it's accessible by both ClassA and ClassB. [1],"[330674, 274847, 440637]"
+so-29780620,What is the git equivalent of hg summary?,answer,answer,True,3742.459,"Try git log --graph --oneline --decorate to see the revision history similar to what 'hg summary --remote' would show for Mercurial.
+URL: https://stackoverflow.com/questions/29780620",Try git status . This will display the information I believe you are looking for. [1],"[363014, 477411, 132955]",answer,True,4097.177,"Try `git reset HEAD^` to undo the last commit without deleting changes, or use `git revert <commit-hash>` to create a new commit that undoes the changes of a specific commit.
+URL: https://stackoverflow.com/questions/4881190",Try git status . This will display the information I believe you are looking for. [1],"[363014, 2909, 458011]",answer,True,3396.674,"Try `git status .` This will display information similar to what 'hg summary' does, including parents, branch, commit status, and available updates.
+URL: [1]",Try git status . This will display the information I believe you are looking for. [1],"[363014, 2909, 458011]"
+ood-test-01,How do I knead bread dough?,abstain,abstain,False,2077.323,,I could not find enough reliable evidence in the Stack Overflow collection.,"[11840, 132986, 79443]",abstain,False,2341.447,,I could not find enough reliable evidence in the Stack Overflow collection.,"[300651, 61888, 325980]",abstain,False,2287.472,,I could not find enough reliable evidence in the Stack Overflow collection.,"[300651, 325980, 132986]"
+ood-test-02,What causes a solar eclipse?,abstain,abstain,False,1891.592,,I could not find enough reliable evidence in the Stack Overflow collection.,"[444661, 134083, 515056]",abstain,False,2442.557,,I could not find enough reliable evidence in the Stack Overflow collection.,"[284767, 111498, 435219]",abstain,False,2296.591,,I could not find enough reliable evidence in the Stack Overflow collection.,"[284767, 111437, 507094]"
+ood-test-03,Which instrument has six strings in standard tuning?,abstain,abstain,False,2047.109,,I could not find enough reliable evidence in the Stack Overflow collection.,"[78442, 174792, 185935]",abstain,False,2492.583,,I could not find enough reliable evidence in the Stack Overflow collection.,"[80403, 220370, 215304]",abstain,False,2492.202,,I could not find enough reliable evidence in the Stack Overflow collection.,"[80403, 78442, 220370]"
+ood-test-04,How do I care for an orchid?,abstain,abstain,False,1905.393,,I could not find enough reliable evidence in the Stack Overflow collection.,"[454573, 72261, 147184]",abstain,False,2630.887,,I could not find enough reliable evidence in the Stack Overflow collection.,"[249937, 50704, 7920]",abstain,False,2280.841,,I could not find enough reliable evidence in the Stack Overflow collection.,"[249937, 50704, 7920]"
+ood-test-05,What is the distance between Earth and the Moon?,abstain,abstain,False,1909.748,,I could not find enough reliable evidence in the Stack Overflow collection.,"[302004, 53296, 276726]",abstain,False,2541.648,,I could not find enough reliable evidence in the Stack Overflow collection.,"[302004, 81037, 53296]",abstain,False,2621.939,,I could not find enough reliable evidence in the Stack Overflow collection.,"[302004, 53296, 190143]"
+ood-test-06,How do I cook lentils?,abstain,abstain,False,2139.941,,I could not find enough reliable evidence in the Stack Overflow collection.,"[517312, 247426, 268471]",abstain,False,2466.744,,I could not find enough reliable evidence in the Stack Overflow collection.,"[333087, 111891, 77992]",abstain,False,2551.289,,I could not find enough reliable evidence in the Stack Overflow collection.,"[333087, 150628, 107403]"
+ood-test-07,Why do leaves change color in autumn?,abstain,abstain,False,2052.222,,I could not find enough reliable evidence in the Stack Overflow collection.,"[42082, 176592, 454603]",abstain,False,2182.152,,I could not find enough reliable evidence in the Stack Overflow collection.,"[212683, 372780, 377538]",abstain,False,2478.329,,I could not find enough reliable evidence in the Stack Overflow collection.,"[42082, 212683, 359206]"
+ood-test-08,How do I serve a tennis ball?,abstain,abstain,False,2250.792,,I could not find enough reliable evidence in the Stack Overflow collection.,"[178591, 340561, 452054]",abstain,False,2813.023,,I could not find enough reliable evidence in the Stack Overflow collection.,"[116557, 384262, 434404]",abstain,False,2331.397,,I could not find enough reliable evidence in the Stack Overflow collection.,"[116557, 384262, 353561]"

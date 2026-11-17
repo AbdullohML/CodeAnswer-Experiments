@@ -335,7 +335,7 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 11 | C6 | A3 | DONE |
 | 12 | D1 | C1; can run alongside retrieval work | DONE |
 | 13 | D2 | C2 and D1 | DONE |
-| 14 | D3 | A4 and D2 | TODO |
+| 14 | D3 | A4 and D2 | DONE |
 | 15 | D4 | D3 | TODO |
 | 16 | D5 | D4 | TODO |
 | 17 | E1 | A3, B4, D4 | TODO |
@@ -534,7 +534,7 @@ source support, and the historical RAG aggregates remain unverified.
 
 #### D3 — BM25, dense and hybrid RAG
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Medium.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Medium.
 - **Goal:** Measure whether retrieval changes improve final answers.
 - **Implementation:** Add a retriever adapter to the existing pipeline; hold top-40 candidates, reranker, three sources, prompt and Qwen2.5:3B settings fixed.
 - **Experiments:** Run the three strategies on D2's small held-out set; repeat a subset for runtime stability.
@@ -542,6 +542,16 @@ source support, and the historical RAG aggregates remain unverified.
 - **Deliverables:** Paired per-query outputs and RAG comparison table.
 - **Dependencies:** A4, D2.
 - **Acceptance criteria:** Only the candidate strategy varies; report model failures and fallback separately from successful generation.
+
+The [D3 paired RAG comparison](docs/RAG_RETRIEVER_COMPARISON.md) ran all
+three top-40 candidate strategies on D2's same 28 held-out questions with
+the threshold, reranker, top-three sources, Qwen settings and citation gate
+fixed. Dense and hybrid matched 28/28 simple answer/abstain labels; BM25
+matched 27/28. Extractive fallback occurred in 13/20, 14/19 and 12/20
+returned answers respectively; no model or retrieval errors occurred.
+Saved per-query outputs and a six-query repeat show changed sources and
+some raw generation variation. Answer correctness and source support remain
+unjudged.
 
 #### D4 — Answer and citation quality
 
