@@ -100,6 +100,10 @@ top-40 rankings on the same 1,200 test queries and measured raw-title
 single-query latency on a shared 100-query prefix. It includes a fixed
 29-query exact-term slice and per-query wins and losses.
 
+The [E2 verified results summary](docs/RESULTS_SUMMARY.md) brings the
+completed retrieval, indexing, resource and RAG measurements into one place
+with denominators, timing boundaries, source files and uncertainty.
+
 ### Historical retrieval aggregate (search-only timing)
 
 | System | Recall@10 | Search p95 | Index size |
@@ -141,6 +145,7 @@ CodeAnswer/
 │   └── default.yaml
 ├── docs/
 │   ├── METHODOLOGY.md
+│   ├── RESULTS_SUMMARY.md
 │   ├── EXPERIMENTS.md
 │   └── RAG_RETRIEVER_COMPARISON.md
 ├── results/
@@ -151,7 +156,8 @@ CodeAnswer/
 │   ├── build_corpus.py
 │   ├── prepare_evaluation.py
 │   ├── evaluate_rag.py
-│   └── compare_rag_retrievers.py
+│   ├── compare_rag_retrievers.py
+│   └── verify_results_summary.py
 ├── src/codeanswer/
 │   ├── data.py
 │   ├── rag.py
@@ -363,7 +369,7 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 13 | D2 | C2 and D1 | DONE |
 | 14 | D3 | A4 and D2 | DONE |
 | 15 | E1 | A3, B4, D3 | DONE |
-| 16 | E2 | C3, D3, E1 | TODO |
+| 16 | E2 | C3, D3, E1 | DONE |
 | 17 | E3 | E2 | TODO |
 | 18 | E4 | E2 | TODO |
 
@@ -602,7 +608,7 @@ different thresholds and latency boundaries.
 
 #### E2 — Experimental results summary
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Present quality, speed and resource trade-offs in one place.
 - **Implementation:** Consolidate verified A/B/C/D1–D3 tables with artifact references, denominators and confidence intervals where applicable.
 - **Experiments:** Recompute tables from saved outputs and verify cited configs.
@@ -610,6 +616,12 @@ different thresholds and latency boundaries.
 - **Deliverables:** Results summary with compact plots and reproducibility commands.
 - **Dependencies:** C3, D3, E1.
 - **Acceptance criteria:** Every headline number has a source file, dataset/split, method and measurement scope.
+
+The completed [results summary](docs/RESULTS_SUMMARY.md) links each table
+and plot to its saved outputs. Run
+`PYTHONPATH=src python scripts/verify_results_summary.py` to recompute
+headline retrieval, reranking, uncertainty and RAG values from committed
+per-query records and check the cited configs.
 
 #### E3 — Interview preparation guide
 

@@ -3,6 +3,8 @@
 The [architecture and methodology notes](METHODOLOGY.md) map each run to its
 query set, artifact path and timing boundary. Figures from different sections
 are not automatically paired comparisons.
+The [E2 results summary](RESULTS_SUMMARY.md) consolidates the verified
+quality, latency, resource and uncertainty figures with their source files.
 
 ## D3 paired retrieval strategies in RAG
 
