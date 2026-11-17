@@ -14,6 +14,11 @@ in Git.
 
 ## Architecture
 
+The standard `scripts/ask_codeanswer.py` command uses this configured dense
+path. Here **dense** means vector search; HNSW is its approximate search
+index, not a second retrieval stage. The 40-candidate and three-source limits
+come from [`configs/default.yaml`](configs/default.yaml).
+
 ```text
 User question
     ↓
@@ -21,20 +26,33 @@ all-MiniLM-L6-v2 bi-encoder
     ↓
 PCA projection: 384 → 128 dimensions
     ↓
-FAISS HNSW retrieval: top 40
+FAISS HNSW dense search: up to 40 candidates
     ↓
-ms-marco-MiniLM-L-6-v2 cross-encoder
+ms-marco-MiniLM-L-6-v2 cross-encoder reranks candidates
     ↓
-Top 3 Stack Overflow sources
-    ↓
-Configured answerability threshold
+Raw reranker score of top-ranked source compared with threshold
     ├── score below threshold → abstain
     └── score at or above threshold
             ↓
+        Top 3 Stack Overflow sources
+            ↓
         Qwen2.5:3B through Ollama
             ↓
-        cited answer or extractive fallback
+        numeric citation-format gate
+            ↓
+        raw answer or extractive fallback
 ```
+
+The top source is ranked by cross-encoder score plus a small answer-vote bonus;
+its **raw** cross-encoder score is compared with the configured threshold.
+That score is not a probability or a check that the evidence supports the
+answer. The citation gate checks numeric citation
+format and line coverage, not factual correctness. The separate D3 experiment
+replaced candidate selection with BM25 top 40 or a hybrid: HNSW top 40 plus
+BM25 top 40, combined by RRF into 40 before the same reranker. The standard
+answer command does not select those alternatives. See the
+[architecture and methodology notes](docs/METHODOLOGY.md) for artifact lineage,
+query definitions and benchmark boundaries.
 
 ## Recorded iterations
 
@@ -82,7 +100,7 @@ top-40 rankings on the same 1,200 test queries and measured raw-title
 single-query latency on a shared 100-query prefix. It includes a fixed
 29-query exact-term slice and per-query wins and losses.
 
-### Retrieval
+### Historical retrieval aggregate (search-only timing)
 
 | System | Recall@10 | Search p95 | Index size |
 |---|---:|---:|---:|
@@ -90,10 +108,11 @@ single-query latency on a shared 100-query prefix. It includes a fixed
 | Flat-PCA128 | 0.6655 | 11.170 ms | 253.91 MiB |
 | HNSW-PCA128, ef=128 | 0.6555 | 0.514 ms | 325.45 MiB |
 
-The selected HNSW retriever has approximately 138 times lower search p95
-than the exact baseline and uses approximately 57% less index storage.
+In that historical run, HNSW had approximately 138 times lower search p95
+than the exact baseline and used approximately 57% less index storage. This
+does not describe whole-pipeline latency or the frozen C2/B1/B2 tests.
 
-### Final RAG pipeline
+### Historical RAG aggregate (unverified per-example evidence)
 
 | Metric | Result |
 |---|---:|
@@ -107,38 +126,36 @@ than the exact baseline and uses approximately 57% less index storage.
 
 Detailed results are available in
 [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md).
+The RAG table above comes from a historical aggregate without saved labels,
+raw answers or per-query traces. It is not a result of the newer D2/D3
+protocols. Their separately measured behavior and latency are documented in
+[D2](docs/RAG_EVALUATION.md) and [D3](docs/RAG_RETRIEVER_COMPARISON.md).
 
 ## Repository structure
+
+Selected paths:
 
 ```text
 CodeAnswer/
 ├── configs/
 │   └── default.yaml
 ├── docs/
-│   └── EXPERIMENTS.md
+│   ├── METHODOLOGY.md
+│   ├── EXPERIMENTS.md
+│   └── RAG_RETRIEVER_COMPARISON.md
 ├── results/
 │   ├── experiment_summary.json
-│   └── retrieval_comparison.csv
+│   └── evaluation/
 ├── scripts/
 │   ├── ask_codeanswer.py
 │   ├── build_corpus.py
-│   ├── build_flat_index.py
-│   ├── build_optimized_index.py
-│   ├── compare_retrievers.py
-│   ├── evaluate_retrieval.py
 │   ├── prepare_evaluation.py
-│   └── generate_embeddings.py
+│   ├── evaluate_rag.py
+│   └── compare_rag_retrievers.py
 ├── src/codeanswer/
-│   ├── comparison.py
-│   ├── config.py
 │   ├── data.py
-│   ├── embeddings.py
-│   ├── evaluation.py
-│   ├── evaluation_protocol.py
-│   ├── indexing.py
-│   ├── optimization.py
 │   ├── rag.py
-│   ├── provenance.py
+│   ├── rag_retrievers.py
 │   └── reranking.py
 ├── tests/
 ├── pyproject.toml
@@ -249,6 +266,12 @@ PYTHONPATH=src python scripts/ask_codeanswer.py \
   --device cuda
 ```
 
+This command loads the original `artifacts/optimized/` PCA/HNSW files and
+the threshold `0.449093` from the default config. Those original optimized
+files are not tracked here. D2/D3 instead used the saved B1 PCA basis,
+B2 HNSW index and a threshold of `2.803920269` selected from D2 calibration
+labels; their results do not validate the command above or its threshold.
+
 Return full JSON containing scores, latency, and sources:
 
 ```bash
@@ -287,8 +310,10 @@ models/
 - The source collection is historical and may contain outdated answers.
 - Retrieval evaluation uses a known-item task rather than live user labels.
 - The answerability and RAG evaluation sets are relatively small.
-- The reported faithfulness value is an embedding-based proxy.
-- Qwen generation is the main latency bottleneck.
+- The historical faithfulness value is an embedding-based proxy, not a
+  source-support judgment.
+- Search-only timing omits corpus fetch, reranking and generation. B4 measured
+  corpus fetch separately; D2/D3 measured complete calls on small query sets.
 - The historical 61.9% fallback aggregate has no saved raw answers or trigger
   labels; the current syntax gate can trigger an extractive fallback.
 
@@ -337,7 +362,7 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 12 | D1 | C1; can run alongside retrieval work | DONE |
 | 13 | D2 | C2 and D1 | DONE |
 | 14 | D3 | A4 and D2 | DONE |
-| 15 | E1 | A3, B4, D3 | TODO |
+| 15 | E1 | A3, B4, D3 | DONE |
 | 16 | E2 | C3, D3, E1 | TODO |
 | 17 | E3 | E2 | TODO |
 | 18 | E4 | E2 | TODO |
@@ -560,7 +585,7 @@ format only; their answers are not quality-rated.
 
 #### E1 — Architecture and methodology update
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Make the current design and evaluation boundaries easy to explain.
 - **Implementation:** Update the architecture diagram, corpus/query definitions, artifact lineage and benchmark protocols in README/docs.
 - **Experiments:** Check every claim against code, manifests and finished task outputs.
@@ -568,6 +593,12 @@ format only; their answers are not quality-rated.
 - **Deliverables:** Updated README and methodology notes.
 - **Dependencies:** A3, B4, D3.
 - **Acceptance criteria:** Descriptions match implementation and mark historical numbers clearly.
+
+The completed [methodology notes](docs/METHODOLOGY.md) trace the corpus,
+indexes, query labels, standard answer path and D2/D3 evaluation path. The
+README architecture now distinguishes dense/HNSW from BM25/RRF, labels the
+historical RAG figures as unaudited per-example aggregates, and states the
+different thresholds and latency boundaries.
 
 #### E2 — Experimental results summary
 

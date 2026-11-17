@@ -1,5 +1,9 @@
 # CodeAnswer Experiments
 
+The [architecture and methodology notes](METHODOLOGY.md) map each run to its
+query set, artifact path and timing boundary. Figures from different sections
+are not automatically paired comparisons.
+
 ## D3 paired retrieval strategies in RAG
 
 The [D3 comparison](RAG_RETRIEVER_COMPARISON.md) switched only the top-40
@@ -56,10 +60,11 @@ rows took 574.776 ms p95; process RSS peaked at 3,926.91 MiB. This excludes
 reranking and generation. First index load was process-first, with OS cache
 uncontrolled; GPU driver access was unavailable, so VRAM is unmeasured.
 
-These are recorded historical results. The [C1 evaluation audit](EVALUATION_AUDIT.md)
-explains which aggregates can be checked from committed files and which still
-need raw labels, per-query outputs, or a rerun. Citation validity here concerns
-number formatting, not whether a source supports an answer.
+The legacy aggregate tables later on this page are separate from the frozen
+and traced runs above. The [C1 evaluation audit](EVALUATION_AUDIT.md)
+explains which older aggregates can be checked from committed files and which
+still need raw labels, per-query outputs, or a rerun. Citation validity here
+concerns number formatting, not whether a source supports an answer.
 
 The [C2 frozen evaluation protocol](EVALUATION_PROTOCOL.md) was run on the full
 corpus. Its scores are reported separately below because its query selection
@@ -210,18 +215,20 @@ of the measured variance. HNSW then replaces exhaustive vector scanning.
 | HNSW-PCA128, ef=64 | 0.6430 | 14,345.05 | 0.310 ms | 325.45 MiB |
 | HNSW-PCA128, ef=128 | 0.6555 | 7,672.06 | 0.514 ms | 325.45 MiB |
 
-The final retriever uses `efSearch=128`. Compared with Flat-384, its
-single-query search p95 is approximately 138 times lower and its index is
-approximately 57% smaller. Recall@10 decreases by 0.0515.
+The retriever selected in that historical run uses `efSearch=128`. Compared
+with Flat-384 in the same run, its single-query search p95 is approximately
+138 times lower and its index is approximately 57% smaller. Recall@10
+decreases by 0.0515.
 
 ## Iteration 3: reranked cited-answer RAG
 
-The final pipeline retrieves 40 candidates, reranks them using
-`cross-encoder/ms-marco-MiniLM-L-6-v2`, and gives the best three sources
+The historical RAG pipeline retrieved 40 candidates, reranked them using
+`cross-encoder/ms-marco-MiniLM-L-6-v2`, and gave the best three sources
 to local `qwen2.5:3b`.
 
-A threshold calibrated on separate in-domain and out-of-domain queries
-decides whether the retrieved evidence is answerable.
+Its raw reranker-score threshold was calibrated on separate in-domain and
+out-of-domain queries and decided whether the system answered or abstained;
+it did not verify that retrieved evidence actually supported an answer.
 
 | Metric | Result |
 |---|---:|
