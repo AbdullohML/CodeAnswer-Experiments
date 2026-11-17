@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "dimension": 128,
+  "ef_search_values": [16, 32, 64, 128, 256],
+  "top_k": 40,
+  "latency_queries": 100,
+  "warmup_queries": 3,
+  "threads": 4,
+  "selected_ef_search": 128
+}

@@ -326,7 +326,7 @@ original benchmark.
 | 6 | A4 | A3 | DONE |
 | 7 | B1 | C2; can run alongside A tasks | DONE |
 | 8 | B2 | C2; can run alongside B1 | DONE |
-| 9 | B3 | C2; can run alongside B1/B2 | TODO |
+| 9 | B3 | C2; can run alongside B1/B2 | DONE |
 | 10 | B4 | B1, B2, B3 | TODO |
 | 11 | C3 | C1; can run alongside A/B tasks | TODO |
 | 12 | C4 | C3, if suitable | TODO |
@@ -425,7 +425,7 @@ the separate PCA and ANN losses.
 
 #### B3 — efSearch sweep
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
+- **Priority:** P1. **Status:** DONE. **Estimated effort:** Small.
 - **Goal:** Reassess the existing 16/32/64/128 sweep on the frozen evaluation set.
 - **Implementation:** Extend `compare_retrievers.py` to save per-query rankings and parameterized efSearch values for the selected HNSW index.
 - **Experiments:** Repeat the four existing settings at top-10 and top-40; add a higher value only if the curve has not saturated.
@@ -433,6 +433,10 @@ the separate PCA and ANN losses.
 - **Deliverables:** Reproducible sweep table and quality/latency curve.
 - **Dependencies:** C2.
 - **Acceptance criteria:** State the chosen efSearch and its measured trade-off; retain the historical sweep as historical evidence.
+
+The completed [B3 sweep](docs/EFSEARCH_SWEEP.md) records the full frozen
+query rankings, ANN overlap and recall, latency/QPS curve, and the current
+`efSearch=128` choice.
 
 #### B4 — Build and runtime resource costs
 

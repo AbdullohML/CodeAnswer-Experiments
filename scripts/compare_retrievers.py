@@ -58,6 +58,10 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--hybrid-config", default="configs/hybrid.json")
     parser.add_argument("--source-results-dir", default="results/evaluation")
     parser.add_argument("--limit", type=int, default=None, help="Frozen smoke run only")
+    parser.add_argument(
+        "--ef-sweep", action="store_true", help="Run B3 frozen efSearch sweep"
+    )
+    parser.add_argument("--ef-sweep-config", default="configs/ef_sweep.json")
 
     return parser.parse_args()
 
@@ -123,6 +127,16 @@ def build_flat_index(
 
 def main() -> None:
     arguments = parse_arguments()
+    if arguments.ef_sweep:
+        from codeanswer.ef_sweep import run
+
+        run(
+            Path(__file__).resolve().parents[1],
+            Path(arguments.output_dir or "results/evaluation/b3"),
+            limit=arguments.limit,
+            settings_path=Path(arguments.ef_sweep_config),
+        )
+        return
     config = load_config(arguments.config)
     if arguments.evaluation_manifest:
         from codeanswer.fair_comparison import run_frozen_comparison

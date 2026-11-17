@@ -97,6 +97,17 @@ HNSW search p95 was 0.715 ms at 128 and 1.283 ms at 384, while its indexes
 were larger than the exact indexes. The B2 page separates PCA loss from
 same-space ANN loss and links all 2,400 paired per-query rankings.
 
+## B3 frozen efSearch sweep
+
+The [B3 sweep](EFSEARCH_SWEEP.md) reused the B2 HNSW-128 index and exact
+same-space reference on all 1,200 frozen test queries. Recall@10 rose from
+0.630833 at `efSearch=16` to 0.700000 at the configured 128 and 0.705000
+at 256. Search p95 rose from 0.178 to 0.872 and 1.303 ms respectively.
+Top-40 ANN overlap at 128 was 0.975417, so the curve had not saturated.
+The configured 128 remains the stated choice pending a development-set
+selection. Query-level rankings, overlap, QPS, and the curve are linked from
+the B3 page. Earlier sweep figures below remain historical evidence.
+
 ## Historical experiments
 
 ## Evaluation protocol

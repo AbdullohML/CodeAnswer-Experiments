@@ -1,0 +1,168 @@
+{
+  "task": "B3",
+  "scope": "single-positive title-to-own-body known-item",
+  "query_count": 1200,
+  "smoke_limit": null,
+  "settings": {
+    "schema_version": 1,
+    "dimension": 128,
+    "ef_search_values": [
+      16,
+      32,
+      64,
+      128,
+      256
+    ],
+    "top_k": 40,
+    "latency_queries": 100,
+    "warmup_queries": 3,
+    "threads": 4,
+    "selected_ef_search": 128
+  },
+  "settings_sha256": "d93adcc711dbcc3a5f0cc33b8e484c4a00808c99a1dae6b654f73fa3ef205ad2",
+  "command": [
+    "scripts/compare_retrievers.py",
+    "--ef-sweep",
+    "--output-dir",
+    "results/evaluation/b3"
+  ],
+  "reference": {
+    "b2_results_sha256": "48e8bd59d0654cca2dd16db6634083136cfa80d19c4d51e3d3c7be5e0ddcc31e",
+    "exact_quality": {
+      "queries": 1200,
+      "recall@10": 0.71,
+      "recall@40": 0.81,
+      "mrr@10": 0.535694,
+      "ndcg@10": 0.577338
+    },
+    "hnsw_index_sha256": "bbd34835c59a6b71ec11d2f19a27f5c3b0331c5b2e60d225c23ce1cf748cbe9b",
+    "pca_model_sha256": "6a14901bed744a24b8bec12a74b25bccf8aa7c45ade19065ef0eae0a89f326ca",
+    "frozen_manifest_sha256": "d8b18db44b5c5de587e3c2e5e2c0d5c8d31b072aaf3078a7590a8082dc401324",
+    "query_encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+  },
+  "selected_ef_search": 128,
+  "selection_reason": "retain previously configured efSearch=128; test sweep is diagnostic",
+  "summaries": [
+    {
+      "ef_search": 16,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.630833,
+        "recall@40": 0.695833,
+        "mrr@10": 0.487974,
+        "ndcg@10": 0.522203
+      },
+      "overlap@10": 0.865167,
+      "overlap@40": 0.736979,
+      "timing": {
+        "queries": 100,
+        "p50_ms": 0.11,
+        "p95_ms": 0.178,
+        "sequential_qps": 8547.28
+      },
+      "sequential_qps": 8547.28,
+      "recall@10_delta_vs_exact": -0.079167,
+      "recall@40_delta_vs_exact": -0.114167
+    },
+    {
+      "ef_search": 32,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.67,
+        "recall@40": 0.7475,
+        "mrr@10": 0.514122,
+        "ndcg@10": 0.55147
+      },
+      "overlap@10": 0.936583,
+      "overlap@40": 0.861167,
+      "timing": {
+        "queries": 100,
+        "p50_ms": 0.194,
+        "p95_ms": 0.285,
+        "sequential_qps": 4935.07
+      },
+      "sequential_qps": 4935.07,
+      "recall@10_delta_vs_exact": -0.04,
+      "recall@40_delta_vs_exact": -0.0625
+    },
+    {
+      "ef_search": 64,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.690833,
+        "recall@40": 0.775833,
+        "mrr@10": 0.525291,
+        "ndcg@10": 0.564906
+      },
+      "overlap@10": 0.973583,
+      "overlap@40": 0.939083,
+      "timing": {
+        "queries": 100,
+        "p50_ms": 0.35,
+        "p95_ms": 0.514,
+        "sequential_qps": 2784.65
+      },
+      "sequential_qps": 2784.65,
+      "recall@10_delta_vs_exact": -0.019167,
+      "recall@40_delta_vs_exact": -0.034167
+    },
+    {
+      "ef_search": 128,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.7,
+        "recall@40": 0.7925,
+        "mrr@10": 0.530531,
+        "ndcg@10": 0.571033
+      },
+      "overlap@10": 0.98975,
+      "overlap@40": 0.975417,
+      "timing": {
+        "queries": 100,
+        "p50_ms": 0.584,
+        "p95_ms": 0.872,
+        "sequential_qps": 1638.19
+      },
+      "sequential_qps": 1638.19,
+      "recall@10_delta_vs_exact": -0.01,
+      "recall@40_delta_vs_exact": -0.0175
+    },
+    {
+      "ef_search": 256,
+      "quality": {
+        "queries": 1200,
+        "recall@10": 0.705,
+        "recall@40": 0.801667,
+        "mrr@10": 0.532604,
+        "ndcg@10": 0.573799
+      },
+      "overlap@10": 0.995667,
+      "overlap@40": 0.990979,
+      "timing": {
+        "queries": 100,
+        "p50_ms": 1.004,
+        "p95_ms": 1.303,
+        "sequential_qps": 980.72
+      },
+      "sequential_qps": 980.72,
+      "recall@10_delta_vs_exact": -0.005,
+      "recall@40_delta_vs_exact": -0.008333
+    }
+  ],
+  "files": {
+    "comparison.csv": "44ee32aa880ac392d0053893ae50d50e741bf9ae2a43e5d43dd0890da648ff86",
+    "tradeoff.svg": "7f3de865ffbb592ce140fd631bd07caec37ae621a266b07cfd534582f7b5c729",
+    "per_query.csv.gz": "878fa18c2a153e836d2ac323453c7ca8433cc013c1bab7ad0d190e2af59dc453"
+  },
+  "environment": {
+    "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+    "logical_cpus": 12,
+    "faiss_threads": 4,
+    "packages": {
+      "numpy": "2.3.5",
+      "faiss-cpu": "1.14.3",
+      "sentence-transformers": "5.6.0",
+      "torch": "2.11.0"
+    }
+  }
+}
