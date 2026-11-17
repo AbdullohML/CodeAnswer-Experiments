@@ -69,7 +69,7 @@ and does not prove an answer is correct.
 The top-three source IDs matched dense for only 3/28 BM25 queries and
 6/28 hybrid queries. Each of BM25 and hybrid produced a different final
 answer string from dense on 10/28 queries. Those text differences need
-human quality judgments in D4. The fallback difference between dense and
+human quality judgments in a separate review. The fallback difference between dense and
 hybrid is one answer on this small set, with no claim of a general gain.
 
 ## Runtime repeat and interpretation
@@ -103,7 +103,7 @@ HF_HUB_OFFLINE=1 PYTHONPATH=src python scripts/compare_rag_retrievers.py --devic
 The runner verifies D2 labels, calibration threshold, model and artifact
 settings before executing. It saves raw and final answers, sources, exact
 prompts, candidate IDs, fallback reasons, token counts, stage timings,
-model errors, and retrieval errors per query. D4 should blind the
-strategy names and score correctness, source support, usefulness and
-abstention on these saved answers; only then can candidate changes be
-judged as answer-quality improvements.
+model errors, and retrieval errors per query. A later quality review would
+need to blind the strategy names and score correctness, source support,
+usefulness and abstention on these saved answers. D4 was skipped, so
+candidate changes cannot be judged as answer-quality improvements here.

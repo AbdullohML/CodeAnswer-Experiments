@@ -108,5 +108,5 @@ directly comparable.
 The score threshold is a raw cross-encoder logit, not a calibrated
 probability. The reranker input includes the indexed title and body, which
 can make title-to-own-body examples easy. This protocol measures whether
-the configured system follows simple domain behavior; D4 must separately
-judge answer correctness and claim-to-source support.
+the configured system follows simple domain behavior. D4 was skipped, so
+answer correctness and claim-to-source support remain unjudged.

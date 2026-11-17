@@ -103,9 +103,10 @@ raw/final outputs and trigger reasons before making a new rate claim.
    whether each substantial line needs a citation, reject malformed
    citation-like tokens, enforce the word limit in code, and state whether
    fallback may quote answer text omitted from the generation prompt.
-4. **D4: assess source support separately.** Use human judgments on claims
-   and cited evidence; syntax checks and the historical embedding proxy
-   cannot establish correctness or faithfulness.
+4. **Optional future work: assess source support separately.** Human
+   judgments of claims and cited evidence would be required; syntax checks
+   and the historical embedding proxy cannot establish correctness or
+   faithfulness. This review was skipped in the current roadmap.
 
 These are proposals, except for the measured fixture behavior and the
 documentation corrections in D1. Changing the gate requires a new labeled

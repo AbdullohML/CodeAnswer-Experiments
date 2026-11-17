@@ -336,10 +336,10 @@ corpus and C2 frozen splits; no second dataset is planned.
 | 12 | D1 | C1; can run alongside retrieval work | DONE |
 | 13 | D2 | C2 and D1 | DONE |
 | 14 | D3 | A4 and D2 | DONE |
-| 15 | D4 | D3 | TODO |
-| 16 | D5 | D4 | TODO |
-| 17 | E1 | A3, B4, D4 | TODO |
-| 18 | E2 | C6, D5, E1 | TODO |
+| 15 | D4 | D3 | SKIPPED |
+| 16 | D5 | D4 | SKIPPED |
+| 17 | E1 | A3, B4, D3 | TODO |
+| 18 | E2 | C6, D3, E1 | TODO |
 | 19 | E3 | E2 | TODO |
 | 20 | E4 | E2 | TODO |
 
@@ -555,25 +555,13 @@ unjudged.
 
 #### D4 — Answer and citation quality
 
-- **Priority:** P0. **Status:** TODO. **Estimated effort:** Medium.
-- **Goal:** Separate valid citation numbers from supported, useful answers.
-- **Implementation:** Define a small blinded human rubric for answer correctness, claim-to-source support and abstention; score generated and extractive outputs separately.
-- **Experiments:** Review D3 answers with fixed criteria and adjudicate disagreements; include near-domain unanswerable cases.
-- **Metrics:** Correctness/support rates, raw/final citation validity and coverage, abstention precision/recall, reviewer agreement.
-- **Deliverables:** Rubric, anonymized judgments and quality table.
-- **Dependencies:** D3.
-- **Acceptance criteria:** Every reported quality score has a defined denominator and inspectable judgment; no embedding proxy is presented as factual faithfulness.
+**Status: SKIPPED.** Human judgments of correctness and claim-to-source
+support were removed from this interview roadmap. D2/D3 measure behavior
+and citation format only; their answers are not quality-rated.
 
 #### D5 — RAG failure analysis
 
-- **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
-- **Goal:** Turn observed errors into targeted next steps.
-- **Implementation:** Categorize misses from retrieval, reranking, thresholding, source formatting, citation checks, generation and fallback.
-- **Experiments:** Inspect representative D4 failures and test one low-cost prompt or gate hypothesis on development examples only.
-- **Metrics:** Error counts by stage, fallback causes, latency cost of the tested hypothesis.
-- **Deliverables:** Failure table and ranked improvement proposals.
-- **Dependencies:** D4.
-- **Acceptance criteria:** Examples link to per-query records; distinguish tested evidence from proposed fixes.
+**Status: SKIPPED.** This task depended on D4's judged answer failures.
 
 ### E — Documentation and interview preparation
 
@@ -585,18 +573,18 @@ unjudged.
 - **Experiments:** Check every claim against code, manifests and finished task outputs.
 - **Metrics:** Documented configuration coverage and count of unsupported claims corrected.
 - **Deliverables:** Updated README and methodology notes.
-- **Dependencies:** A3, B4, D4.
+- **Dependencies:** A3, B4, D3.
 - **Acceptance criteria:** Descriptions match implementation and mark historical numbers clearly.
 
 #### E2 — Experimental results summary
 
 - **Priority:** P1. **Status:** TODO. **Estimated effort:** Small.
 - **Goal:** Present quality, speed and resource trade-offs in one place.
-- **Implementation:** Consolidate verified A/B/C/D tables with artifact references, denominators and confidence intervals where applicable.
+- **Implementation:** Consolidate verified A/B/C/D1–D3 tables with artifact references, denominators and confidence intervals where applicable.
 - **Experiments:** Recompute tables from saved outputs and verify cited configs.
-- **Metrics:** Retrieval quality, answer quality, p50/p95, memory, build time and uncertainty.
+- **Metrics:** Retrieval quality, answer/abstain behavior, citation format, p50/p95, memory, build time and uncertainty.
 - **Deliverables:** Results summary with compact plots and reproducibility commands.
-- **Dependencies:** C6, D5, E1.
+- **Dependencies:** C6, D3, E1.
 - **Acceptance criteria:** Every headline number has a source file, dataset/split, method and measurement scope.
 
 #### E3 — Interview preparation guide
